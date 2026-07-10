@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>TPK Triton Calculator</title>
+  </head>
+  <body>
+    <h1>TPK Triton Calculator</h1>
+    <p>👋</p>
+    <h2>Выберите файл (xlfile)</h2>
+    <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls"/>
+    <pre id="output"></pre>
+
+  <script src="renderer.js"></script>
+  </body>
+</html>

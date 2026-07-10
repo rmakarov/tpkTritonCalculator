@@ -1,0 +1,38 @@
+{
+  "name": "tpktritoncalculator",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/rmakarov/tpkTritonCalculator#readme",
+  "bugs": {
+    "url": "https://github.com/rmakarov/tpkTritonCalculator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rmakarov/tpkTritonCalculator.git"
+  },
+  "license": "ISC",
+  "author": "RMakarov",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+  "appId": "com.triton.calculator",
+  "productName": "Triton Calculator",
+  "artifactName": "${productName} Setup.${ext}",
+  "win": {
+    "target": "nsis",
+    "icon": "icon.ico"
+  },
+  "files": ["main.js", "preload.js", "renderer.js", "index.html", "node_modules/**"]
+  },
+  "devDependencies": {
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
