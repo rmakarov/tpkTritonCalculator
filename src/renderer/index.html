@@ -1,25 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
+      content="default-src 'self'; script-src 'self'; style-src 'self'"
     />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TPK Triton Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>TPK Triton Calculator</h1>
-    <p>👋</p>
-    <h2>Выберите файл (xlfile)</h2>
-    <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls"/>
-    <pre id="output"></pre>
+    <header class="page-header">
+      <h1>TPK Triton Calculator</h1>
+    </header>
 
-  <script src="renderer.js"></script>
+    <div class="layout">
+      <div class="tab-bar">
+        <nav class="tabs" aria-label="Разделы">
+          <button class="tab is-active" type="button" data-tab="home">
+            Главная
+          </button>
+          <button class="tab" type="button" data-tab="gate">
+            Расчёт калитки
+          </button>
+        </nav>
+
+        <input
+          class="search"
+          id="tab-search"
+          type="search"
+          list="tab-suggestions"
+          placeholder="Найти расчёт..."
+          aria-label="Поиск расчёта"
+          autocomplete="off"
+        />
+        <datalist id="tab-suggestions">
+          <option value="Главная"></option>
+          <option value="Расчёт калитки"></option>
+        </datalist>
+      </div>
+
+      <main class="content">
+        <p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
+        <section class="tab-panel" id="home" aria-labelledby="home-title">
+          <h2 id="home-title">Главная</h2>
+          <p class="placeholder">Выберите файл с исходными данными.</p>
+
+          <div class="import">
+          <h2>Импорт данных</h2>
+          <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" />
+          <pre id="output"></pre>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
+          <h2 id="gate-title">Расчёт калитки</h2>
+          <p class="placeholder">Форма расчёта появится после подключения парсера.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="search.js"></script>
+    <script src="renderer.js"></script>
   </body>
 </html>
