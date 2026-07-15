@@ -41,6 +41,8 @@
         />
         <datalist id="tab-suggestions">
           <option value="Главная"></option>
+          <option value="Глав"></option>
+          <option value="Главпром"></option>
           <option value="Расчёт калитки"></option>
         </datalist>
       </div>
@@ -60,12 +62,36 @@
 
         <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
           <h2 id="gate-title">Расчёт калитки</h2>
+          <div class="contentContainer">
+             <div class="section">
+               <div class="fieldRow">
+                  <input id="wicketType1" type="radio" checked/>
+                  <label for="wicketType1">На столбах</label>
+               </div>
+               <div class="fieldRow">
+                 <input id="wicketType2" type="radio"/>
+                 <label for="wicketType2">В раме</label>
+               </div>
+             </div>
+             <div class="section">
+              <div class="fieldRow">
+                <input id="wicketWudth" type="number"/>
+                <label for="wicketWudth">Ширина</label>
+              </div>
+              <div class="fieldRow">
+                <input id="wicketHeight" type="number"/>
+                <label for="wicketHeight">Высота</label>
+              </div>
+             </div>
+          </div>
           <p class="placeholder">Форма расчёта появится после подключения парсера.</p>
         </section>
       </main>
     </div>
 
-    <script src="search.js"></script>
+  
     <script src="renderer.js"></script>
+    <script src="search.js"></script>
+    <script src="tabs.js"></script>
   </body>
 </html>
