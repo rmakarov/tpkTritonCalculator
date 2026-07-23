@@ -126,7 +126,6 @@ ipcMain.handle('pricelist:getAll', async () => {
 });
 
 
-
 const createWindow = () => {
   const iconPath = path.join(__dirname, '../../assets', 'icon.ico');
   const win = new BrowserWindow({
@@ -145,7 +144,6 @@ const createWindow = () => {
 }
 
 
-
 /*ipcMain.handle('read-excel', async (event, buffer) => {
   try {
     console.log(path.join(__dirname, 'assets', 'icon.ico'))
@@ -162,13 +160,12 @@ const createWindow = () => {
 });*/
 
 
-
-
-
-
-
 app.whenReady().then(() => {
-  createWindow()
+  /*const userDataPath = app.getPath('userData'); //Информация о пути к папке с данными на диске
+  console.log('📁 Папка данных пользователя:', userDataPath);
+  console.log(' Файл базы будет здесь:', path.join(userDataPath, 'pricelist.json'));*/
+  
+  createWindow();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
