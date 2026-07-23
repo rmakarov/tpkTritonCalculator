@@ -84,7 +84,29 @@
               </div>
              </div>
           </div>
-          <p class="placeholder">Форма расчёта появится после подключения парсера.</p>
+
+          <div class="calculator-section">
+            <h3>🧮 Калькулятор стоимости</h3>
+            
+            <div class="fieldRow">
+              <label for="itemSelect" class="calc-label">Выберите товар:</label>
+              <select id="itemSelect" class="calc-select">
+                <option value="">Сначала импортируйте прайс...</option>
+              </select>
+            </div>
+
+            <div class="fieldRow">
+              <label for="quantity" class="calc-label">Количество:</label>
+              <input id="quantity" type="number" value="1" min="1" class="calc-input" />
+            </div>
+
+            <div class="fieldRow calc-total">
+              <span>Итого: </span>
+              <span id="totalPrice">0</span>
+              <span> руб.</span>
+            </div>
+          </div>
+
         </section>
       </main>
     </div>
