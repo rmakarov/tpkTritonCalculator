@@ -1,5 +1,5 @@
 class WicketCalculator {
-    constructor(data) {
-        this.price = data;
+    constructor() {
+        this.items = await window.excelAPI.getAllItems();
     }
 }

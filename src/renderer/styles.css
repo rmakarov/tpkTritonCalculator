@@ -175,3 +175,37 @@ h1 {
   margin-top: 15px;
 }
 
+
+#addItemButton,
+#printButton {
+  background: transparent;  /* Убираем фон */
+  border: none;             /* Убираем рамку */
+  padding: 8px;             /* Небольшой отступ вокруг иконки (можно настроить) */
+  cursor: pointer;          /* Курсор-рука при наведении */
+  display: inline-flex;     /* Чтобы иконка центрировалась */
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;       /* Скругление для hover-эффекта */
+  transition: background 0.2s;
+}
+
+/* Красивый эффект при наведении */
+#addItemButton:hover,
+#printButton:hover {
+  background: rgba(0, 0, 0, 0.08); /* Легкая подсветка */
+}
+
+/* Убираем синюю рамку при клике (фокусе) */
+#addItemButton:focus,
+#printButton:focus {
+  outline: none;
+}
+
+/* Размер самой иконки */
+#addItemButton img,
+#printButton img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+

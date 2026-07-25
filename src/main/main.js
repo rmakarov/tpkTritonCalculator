@@ -129,8 +129,7 @@ ipcMain.handle('pricelist:getAll', async () => {
 const createWindow = () => {
   const iconPath = path.join(__dirname, '../../assets', 'icon.ico');
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    show: false, // 👈 ВАЖНО: скрываем окно до полной загрузки, чтобы не было "мигания"
     icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), // 👈 ВАЖНО!
@@ -138,6 +137,14 @@ const createWindow = () => {
       nodeIntegration: false
     }
   })
+
+  // Разворачиваем окно на весь экран (с учетом панели задач)
+  win.maximize();
+
+  // Показываем окно только когда оно готово к отображению
+  win.once('ready-to-show', () => {
+    win.show();
+  });
 
    win.loadFile(path.join(__dirname, '../renderer/index.html'));
    win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
