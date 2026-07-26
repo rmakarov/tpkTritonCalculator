@@ -1,134 +1,179 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self'"
-    />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TPK Triton Calculator</title>
     <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="page-header">
-      <h1>TPK Triton Calculator</h1>
+        <h1>TPK Triton Calculator</h1>
     </header>
 
     <div class="layout">
-      <div class="tab-bar">
-        <nav class="tabs" aria-label="Разделы">
-          <button class="tab is-active" type="button" data-tab="home">
-            Главная
-          </button>
-          <button class="tab" type="button" data-tab="gate">
-            Расчёт калитки
-          </button>
-        </nav>
-
-        <input
-          class="search"
-          id="tab-search"
-          type="search"
-          list="tab-suggestions"
-          placeholder="Найти расчёт..."
-          aria-label="Поиск расчёта"
-          autocomplete="off"
-        />
-        <datalist id="tab-suggestions">
-          <option value="Главная"></option>
-          <option value="Глав"></option>
-          <option value="Главпром"></option>
-          <option value="Расчёт калитки"></option>
-        </datalist>
-      </div>
-
-      <main class="content">
-        <p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
-        <section class="tab-panel" id="home" aria-labelledby="home-title">
-          <h2 id="home-title">Главная</h2>
-          <p class="placeholder">Выберите файл с исходными данными.</p>
-
-          <div class="import">
-          <h2>Импорт данных</h2>
-          <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" />
-          <pre id="output"></pre>
-          </div>
-        </section>
-
-        <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
-          <h2 id="gate-title">Расчёт калитки</h2>
-          <div class="contentContainer">
-             <div class="section">
-               <div class="fieldRow">
-                  <input id="wicketType1" type="radio" checked/>
-                  <label for="wicketType1">На столбах</label>
-               </div>
-               <div class="fieldRow">
-                 <input id="wicketType2" type="radio"/>
-                 <label for="wicketType2">В раме</label>
-               </div>
-             </div>
-             <div class="section">
-              <div class="fieldRow">
-                <input id="wicketWudth" type="number"/>
-                <label for="wicketWudth">Ширина</label>
-              </div>
-              <div class="fieldRow">
-                <input id="wicketHeight" type="number"/>
-                <label for="wicketHeight">Высота</label>
-              </div>
-             </div>
-          </div>
-
-          <div class="calculator-section">
-            <h3>🧮 Калькулятор стоимости</h3>
-            
-            <div class="fieldRow">
-              <label for="itemSelect" class="calc-label">Выберите товар:</label>
-              <select id="itemSelect" class="calc-select">
-                <option value="">Сначала импортируйте прайс...</option>
-              </select>
-            </div>
-
-            <div class="fieldRow">
-              <label for="quantity" class="calc-label">Количество:</label>
-              <input id="quantity" type="number" value="1" min="1" class="calc-input" />
-            </div>
-
-            <div class="fieldRow calc-total">
-              <span>Итого: </span>
-              <span id="totalPrice">0</span>
-              <span> руб.</span>
-            </div>
-          </div>
-
-          <div id="materialsSection">
-              <div id="addItemAndPrintSection">
-                <button id="addItemButton">
-                  <img src="../../assets/addIcon.svg" alt="Добавить позицию" />
+        <div class="tab-bar">
+            <nav class="tabs" aria-label="Разделы">
+                <button class="tab is-active" type="button" data-tab="home">
+                    Главная
                 </button>
-                <button id="printButton">
-                  <img src="../../assets/pdfIcon.svg" alt="Печать" />
+                <button class="tab" type="button" data-tab="gate">
+                    Расчёт калитки
                 </button>
+            </nav>
 
-              </div>
-              <div id="containerTableOfMaterials">
+            <input class="search" id="tab-search" type="search" list="tab-suggestions" placeholder="Найти расчёт..." aria-label="Поиск расчёта" autocomplete="off" />
+            <datalist id="tab-suggestions">
+                <option value="Главная"></option>
+                <option value="Глав"></option>
+                <option value="Главпром"></option>
+                <option value="Расчёт калитки"></option>
+            </datalist>
+        </div>
 
-              </div>
-          </div>
+        <main class="content">
+            <p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
+            <section class="tab-panel" id="home" aria-labelledby="home-title">
+                <h2 id="home-title">Главная</h2>
+                <p class="placeholder">Выберите файл с исходными данными.</p>
 
-        </section>
-      </main>
-    </div>
+                <div class="import">
+                    <h2>Импорт данных</h2>
+                    <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" />
+                    <pre id="output"></pre>
+                </div>
+            </section>
 
-  
-    <script src="renderer.js"></script>
-    <script src="search.js"></script>
-    <script src="tabs.js"></script>
-  </body>
+            <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
+                <h2 id="gate-title">Расчёт калитки</h2>
+                <div class="contentContainer">
+                    <div class="section">
+                        <div class="fieldRow">
+                            <input id="wicketType1" type="radio" checked/>
+                            <label for="wicketType1">На столбах</label>
+                        </div>
+                        <div class="fieldRow">
+                            <input id="wicketType2" type="radio" />
+                            <label for="wicketType2">В раме</label>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="fieldRow">
+                            <input id="wicketWudth" type="number" />
+                            <label for="wicketWudth">Ширина</label>
+                        </div>
+                        <div class="fieldRow">
+                            <input id="wicketHeight" type="number" />
+                            <label for="wicketHeight">Высота</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="greyPanel">
+                    <h3>🧮 Калькулятор стоимости</h3>
+
+                    <div class="fieldRow">
+                        <label for="itemSelect" class="calc-label">Выберите товар:</label>
+                        <select id="itemSelect" class="calc-select">
+                        <option value="">Сначала импортируйте прайс...</option>
+                        </select>
+                    </div>
+
+                    <div class="fieldRow">
+                        <label for="quantity" class="calc-label">Количество:</label>
+                        <input id="quantity" type="number" value="1" min="1" class="calc-input" />
+                    </div>
+
+                    <div class="fieldRow calc-total">
+                        <span>Итого: </span>
+                        <span id="totalPrice">0</span>
+                        <span> руб.</span>
+                    </div>
+                </div>
+
+                <div id="materialsSection">
+                    <div class="spaceBetween greyPanel" id="addItemAndPrintSection">
+                        <div class="fieldRow">
+                            <label for="addItemButton">Добавить позицию</label>
+                            <button class="iconButton" id="addItemButton">
+                            <img src="../../assets/addIcon.svg" alt="Добавить позицию" />
+                            </button>
+                        </div>
+                        <div class="fieldRow">
+                            <label for="printButton">Печать</label>
+                            <button class="iconButton" id="printButton">
+                            <img src="../../assets/pdfIcon.svg" alt="Печать" />
+                        </button>
+                        </div>
+                    </div>
+                    <div class="greyPanel" id="containerTableOfMaterials">
+                        <table class="mainTable">
+                            <thead>
+                                <tr>
+                                    <th>П.н</th>
+                                    <th>Наименование</th>
+                                    <th>Количество</th>
+                                    <th>Цена, руб</th>
+                                    <th>Сумма, руб</th>
+                                    <th>Удалить позицию</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div>
+                            <div class="fieldRow">
+                                <p>Адрес объекта / доставки:</p>
+                                <input class="textInput" type="text"/>
+                            </div>
+                            <div class="fieldRow">
+                                <p>Заказчик (ФИО / Организация):</p>
+                                <input class="textInput" type="text"/>
+                            </div>
+                            <div class="fieldRow">
+                                <p> Срок выполнения / доставки:</p>
+                                <input class="textInput" type="text"/>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+        </main>
+        </div>
+
+        <dialog id="addItemDialog" class="modal">
+            <form method="dialog" id="addItemForm">
+                <div class="modal-header">
+                    <h3>Добавить позицию</h3>
+                    <button type="button" class="close-btn" id="closeModalBtn">✕</button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="itemName">Наименование:</label>
+                        <input type="search" id="itemName" name="itemName" list="priceData" placeholder="Поиск товара..." required>
+                        <datalist id="priceData"></datalist>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemQuantity">Количество:</label>
+                        <input type="number" id="itemQuantity" name="itemQuantity" min="1" value="1" required>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Отмена</button>
+                    <button type="submit" id="addBtn" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </dialog>
+
+        <script src="renderer.js"></script>
+        <script src="search.js"></script>
+        <script src="tabs.js"></script>
+        <script src="modal.js"></script>
+</body>
+
 </html>

@@ -1,211 +1,389 @@
 :root {
-  color: #1f2937;
-  background: #f3f4f6;
-  font-family: Arial, sans-serif;
+	color: #1f2937;
+	background: #f3f4f6;
+	font-family: Arial, sans-serif;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
-  margin: 0;
+	margin: 0;
 }
 
 .page-header {
-  display: flex;
-  align-items: center;
-  padding: 20px 28px;
-  background: #ffffff;
-  border-bottom: 1px solid #d1d5db;
+	display: flex;
+	align-items: center;
+	padding: 20px 28px;
+	background: #ffffff;
+	border-bottom: 1px solid #d1d5db;
 }
 
 h1 {
-  margin: 0;
-  font-size: 22px;
+	margin: 0;
+	font-size: 22px;
 }
 
 .search {
-  width: min(260px, 40vw);
-  padding: 8px 11px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
+	width: min(260px, 40vw);
+	padding: 8px 11px;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	font-size: 14px;
 }
 
 .layout {
-  min-height: calc(100vh - 73px);
+	min-height: calc(100vh - 73px);
 }
 
 .tabs {
-  display: flex;
-  gap: 4px;
+	display: flex;
+	gap: 4px;
 }
 
 .tab-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 0 28px;
-  background: #ffffff;
-  border-bottom: 1px solid #d1d5db;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	padding: 0 28px;
+	background: #ffffff;
+	border-bottom: 1px solid #d1d5db;
 }
 
 .tab {
-  width: auto;
-  margin: 0;
-  padding: 14px 18px 12px;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 14px;
-  cursor: pointer;
+	width: auto;
+	margin: 0;
+	padding: 14px 18px 12px;
+	border: 0;
+	border-bottom: 3px solid transparent;
+	border-radius: 0;
+	background: transparent;
+	color: inherit;
+	font-size: 14px;
+	cursor: pointer;
 }
 
 .tab.is-active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
-  background: #eff6ff;
+	color: #2563eb;
+	border-bottom-color: #2563eb;
+	background: #eff6ff;
 }
 
 .content {
-  padding: 28px;
+	padding: 28px;
+}
+
+.tab-panel {
+	min-width: 868px;
 }
 
 .tab-panel,
 .import {
-  padding: 24px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
+	padding: 24px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #ffffff;
 }
 
 .tab-panel h2,
 .import h2 {
-  margin-top: 0;
+	margin-top: 0;
 }
 
 .placeholder,
 .empty-search {
-  color: #6b7280;
+	color: #6b7280;
 }
 
 .import {
-  margin-top: 20px;
-  padding: 20px 0 0;
-  border: 0;
-  border-top: 1px solid #e5e7eb;
-  border-radius: 0;
+	margin-top: 20px;
+	padding: 20px 0 0;
+	border: 0;
+	border-top: 1px solid #e5e7eb;
+	border-radius: 0;
 }
 
 #output {
-  overflow: auto;
-  max-height: 300px;
+	overflow: auto;
+	max-height: 300px;
 }
 
 [hidden] {
-  display: none;
+	display: none;
 }
 
 .contentContainer {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    border: solid 1px #000000;
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+	border: solid 1px #000000;
 }
 
 .section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
 .fieldRow {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}
+
+.spaceBetween {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.textInput {
+	padding: 10px;
+	border-radius: 4px;
+	border: 1px solid #ccc;
 }
 
 @media (max-width: 600px) {
-    .contentContainer {
-        flex-direction: column;
-    }
+	.contentContainer {
+		flex-direction: column;
+	}
 }
 
+.greyPanel {
+	min-width: 820px;
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: #f9f9f9;
+}
 
-.calculator-section {
-  margin-top: 30px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f9f9f9;
+.mainTable {
+	width: 100%;
+	min-width: 800px;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+.mainTable th,
+.mainTable td {
+	border: 1px solid #333;
+	padding: 8px 12px;
+	text-align: left;
+	overflow: hidden; /* Скрывает вылезающий контент в узких колонках */
+	text-overflow: ellipsis;
+}
+
+/* 1. Первая колонка (П.н) - фиксированная, 60px */
+.mainTable th:nth-child(1),
+.mainTable td:nth-child(1) {
+	width: 60px;
+	text-align: center; /* Порядковые номера лучше смотрятся по центру */
+	white-space: nowrap; /* Запрещаем перенос текста */
+}
+
+/* 2. Колонка "Наименование" - самая широкая, занимает всё оставшееся место */
+.mainTable th:nth-child(2),
+.mainTable td:nth-child(2) {
+	width: 100%; /* В режиме fixed это означает "забрать всё доступное пространство" */
+	white-space: normal; /* Разрешаем перенос строк для длинных названий */
+	word-wrap: break-word; /* На случай, если попадется одно очень длинное слово без пробелов */
+}
+
+/* 3. Колонки с числами (Количество, Цена, Сумма) */
+.mainTable th:nth-child(3),
+.mainTable th:nth-child(4),
+.mainTable th:nth-child(5),
+.mainTable td:nth-child(3),
+.mainTable td:nth-child(4),
+.mainTable td:nth-child(5) {
+	width: auto; /* Ширина подстраивается под содержимое, но не больше доступного */
+	text-align: right; /* Числа и валюты принято выравнивать по правому краю */
+	white-space: nowrap; /* Запрещаем перенос строк, чтобы цифры не ломались */
+}
+
+/* 4. Последняя колонка (Удалить позицию) - фиксированная, 60px */
+.mainTable th:nth-child(6),
+.mainTable td:nth-child(6) {
+	width: 60px;
+	text-align: center; /* Кнопку или иконку удаления лучше центрировать */
+	white-space: nowrap;
+}
+
+.mainTable thead {
+	background-color: #f4f4f4;
 }
 
 .calc-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
 }
 
 .calc-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  background: white;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 15px;
+	background: white;
 }
 
 .calc-input {
-  width: 100px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
+	width: 100px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 15px;
 }
 
 .calc-total {
-  font-size: 1.3em;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-top: 15px;
+	font-size: 1.3em;
+	font-weight: bold;
+	color: #2c3e50;
+	margin-top: 15px;
 }
 
-
-#addItemButton,
-#printButton {
-  background: transparent;  /* Убираем фон */
-  border: none;             /* Убираем рамку */
-  padding: 8px;             /* Небольшой отступ вокруг иконки (можно настроить) */
-  cursor: pointer;          /* Курсор-рука при наведении */
-  display: inline-flex;     /* Чтобы иконка центрировалась */
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;       /* Скругление для hover-эффекта */
-  transition: background 0.2s;
+.iconButton {
+	background: transparent;
+	border: none;
+	padding: 4px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	transition: background 0.2s;
 }
 
-/* Красивый эффект при наведении */
-#addItemButton:hover,
-#printButton:hover {
-  background: rgba(0, 0, 0, 0.08); /* Легкая подсветка */
+.iconButton:hover {
+	background: rgba(0, 0, 0, 0.08);
 }
 
-/* Убираем синюю рамку при клике (фокусе) */
-#addItemButton:focus,
-#printButton:focus {
-  outline: none;
+.iconButton:focus {
+	outline: none;
 }
 
-/* Размер самой иконки */
-#addItemButton img,
 #printButton img {
-  width: 24px;
-  height: 24px;
-  display: block;
+	width: 32px;
+	height: 32px;
+	display: block;
 }
 
+/* Базовые стили для модального окна */
+.modal {
+	border: none;
+	border-radius: 8px;
+	padding: 0;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	max-width: 500px;
+	width: 90%;
+}
+
+/* Затемняющий фон за модальным окном */
+.modal::backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	border-bottom: 1px solid #ddd;
+	background-color: #f8f9fa;
+}
+
+.modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.close-btn {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: #666;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.close-btn:hover {
+	color: #333;
+}
+
+.modal-body {
+	padding: 20px;
+}
+
+.form-group {
+	margin-bottom: 16px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 500;
+	color: #333;
+}
+
+.form-group input {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+.form-group input:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 16px 20px;
+	border-top: 1px solid #ddd;
+	background-color: #f8f9fa;
+}
+
+/* Стили для кнопок */
+.btn {
+	padding: 8px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: background-color 0.2s;
+}
+
+.btn-primary {
+	background-color: #007bff;
+	color: white;
+}
+
+.btn-primary:hover {
+	background-color: #0056b3;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+	color: white;
+}
+
+.btn-secondary:hover {
+	background-color: #545b62;
+}
