@@ -1,7 +1,5 @@
 import { priceManager } from "./priceManager.js";
 
-// 1. Создаем хранилище для цен (имя товара -> цена)
-//const itemsPriceMap = new Map();
 
 // Получаем элементы
 const dialog = document.getElementById("addItemDialog");

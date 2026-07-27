@@ -26,10 +26,10 @@ class PriceManager {
 				});
 
 				this.isLoaded = true;
-				console.log(`[PriceManager] Загружено ${items.length} позиций.`);
+				console.log(`[PriceManager] ✅ Загружено ${items.length} позиций.`);
 				return this.itemsArray;
 			} catch (error) {
-				console.error("[PriceManager] Ошибка загрузки прайса:", error);
+				console.error("[PriceManager] ❌ Ошибка загрузки прайса:", error);
 				throw error;
 			}
 		})();
@@ -45,19 +45,24 @@ class PriceManager {
 		return this.itemsArray;
 	}
 
-	/**
-	 * Заполнить <datalist> данными из прайса
-	 * @param {string} datalistId - ID элемента datalist
-	 * @param {HTMLElement|Document} context - Контейнер, в котором искать (по умолчанию document)
-	 */
+	// ✅ НОВЫЙ МЕТОД: Сброс кэша при импорте нового файла
+	resetCache() {
+		this.isLoaded = false;
+		this.loadPromise = null;
+		this.itemsArray = [];
+		this.itemsMap.clear();
+		console.log(
+			"[PriceManager] 🔄 Кэш очищен. Данные будут перезагружены при следующем запросе.",
+		);
+	}
+
 	populateDatalist(datalistId, context = document) {
-		// ✅ Теперь ищем внутри context, а не только в document
 		const datalist = context.getElementById
 			? context.getElementById(datalistId)
 			: context.querySelector(`#${datalistId}`);
 
 		if (!datalist) {
-			console.warn(`[PriceManager] Datalist с id="${datalistId}" не найден`);
+			console.warn(`[PriceManager] ⚠️ Datalist с id="${datalistId}" не найден`);
 			return;
 		}
 
@@ -70,7 +75,12 @@ class PriceManager {
 			option.textContent = `${item.price.toLocaleString("ru-RU")} руб.`;
 			datalist.appendChild(option);
 		});
+
+		console.log(
+			`[PriceManager] ✅ Datalist "${datalistId}" заполнен (${this.itemsArray.length} опций)`,
+		);
 	}
 }
 
+// Экспортируем единственный экземпляр класса (Singleton)
 export const priceManager = new PriceManager();

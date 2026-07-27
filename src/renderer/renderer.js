@@ -1,3 +1,4 @@
+import { priceManager } from "./priceManager.js";
 // Выбор файла
 document.getElementById("xlf").addEventListener("change", async (e) => {
 	const file = e.target.files[0];
@@ -17,6 +18,9 @@ document.getElementById("xlf").addEventListener("change", async (e) => {
 		});
 
 		console.log("[RENDERER] Результат импорта:", result);
+
+		// ✅ 2. ВАЖНО: Сообщаем менеджеру цен, что данные обновились!
+		priceManager.resetCache();
 
 		// Выводим результат в DOM вместо alert
 		outputEl.textContent = `

@@ -160,7 +160,11 @@ ipcMain.handle("pricelist:import", async (event, buffer, options) => {
 });
 
 ipcMain.handle("pricelist:getAll", async () => {
-	return priceManager.getAll();
+	const items = priceManager.getAll();
+	console.log(
+		`[MAIN] pricelist:getAll вызван. Возвращаю ${items.length} позиций.`,
+	); // <-- ДОБАВИТЬ ЭТО
+	return items;
 });
 
 const createWindow = () => {
