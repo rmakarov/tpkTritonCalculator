@@ -1,5 +1,7 @@
+import { priceManager } from "./priceManager.js";
+
 // 1. Создаем хранилище для цен (имя товара -> цена)
-const itemsPriceMap = new Map();
+//const itemsPriceMap = new Map();
 
 // Получаем элементы
 const dialog = document.getElementById("addItemDialog");
@@ -10,8 +12,9 @@ const addItemForm = document.getElementById("addItemForm");
 const itemNameInput = document.getElementById("itemName");
 const itemQuantityInput = document.getElementById("itemQuantity");
 
-addItemButton.addEventListener("click", () => {
-	loadItemsToModalDropdown();
+addItemButton.addEventListener("click", async () => {
+	await priceManager.ensureLoaded(); // Ждем загрузки (если еще не загружено)
+	priceManager.populateDatalist("modal-price-data"); // Заполняем наш datalist
 	dialog.showModal();
 	itemNameInput.focus();
 });
@@ -30,7 +33,9 @@ addItemForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 
 	const name = itemNameInput.value.trim();
-	const price = itemsPriceMap.get(name);
+
+	// Берем цену из нашего общего кэша!
+	const price = priceManager.getPrice(name);
 
 	// Защита от ручного ввода несуществующего товара
 	if (!price) {
@@ -47,30 +52,6 @@ addItemForm.addEventListener("submit", (e) => {
 		dialog.close();
 	}
 });
-
-async function loadItemsToModalDropdown() {
-	const priceData = document.getElementById("priceData");
-	if (!priceData) {
-		console.error("❌ Ошибка: Элемент с id='priceData' не найден в HTML!");
-		return;
-	}
-
-	itemsPriceMap.clear(); // Очищаем перед новой загрузкой
-
-	const items = await window.excelAPI.getAllItems();
-	priceData.innerHTML = '<option value="">Выберите товар...</option>';
-
-	items.forEach((item) => {
-		const option = document.createElement("option");
-		option.value = item.name;
-		option.textContent = `${item.price.toLocaleString("ru-RU")} руб.`;
-
-		// Сохраняем цену в Map для мгновенного поиска
-		itemsPriceMap.set(item.name, item.price);
-
-		priceData.appendChild(option);
-	});
-}
 
 // ==========================================
 // Пересчет порядковых номеров

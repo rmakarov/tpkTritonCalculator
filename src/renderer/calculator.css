@@ -1,153 +1,135 @@
 .calculator-choice {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  padding: 14px 0;
+	display: flex;
+	align-items: center;
+	gap: 28px;
+	padding: 14px 0;
 }
 
 .calculator-choice__option,
 .calculator-choice__markup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  color: #111827;
-  font-size: 18px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+	color: #111827;
+	font-size: 18px;
 }
 
 .calculator-choice__option {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 input[type="radio"] {
-  width: 28px;
-  height: 28px;
-  margin: 0;
-  cursor: pointer;
+	width: 24px;
+	height: 24px;
+	margin: 0;
+	cursor: pointer;
 }
 
 .calculator-choice__markup select {
-  width: 150px;
-  height: 30px;
-  padding: 4px 8px;
-  border: 0;
-  border-radius: 7px;
-  background: #d1d5db;
-  font: inherit;
+	width: 150px;
+	height: 30px;
+	padding: 4px 8px;
+	border: 0;
+	border-radius: 7px;
+	background: #d1d5db;
+	font: inherit;
 }
 
 .calculator-mount {
-  margin-top: 12px;
+	margin-top: 12px;
 }
 
 .calculator-card {
-  width: min(100%, 680px);
-  min-height: 340px;
-  padding: 10px 12px 12px;
-  border: 1px solid #111827;
-  border-radius: 5px;
-  background: #ffffff;
+	width: min(100%, 680px);
+	min-height: 340px;
+	padding: 10px 12px 12px;
+	border: 1px solid #111827;
+	border-radius: 5px;
+	background: #ffffff;
 }
 
 .calculator-card__switches {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	margin-bottom: 12px;
 }
 
 .calculator-card__radio {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
 }
 
 .calculator-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .calculator-field {
-  display: grid;
-  grid-template-columns: 150px minmax(150px, 218px);
-  align-items: center;
-  justify-content: start;
-  column-gap: 12px;
-  min-height: 26px;
+	display: grid;
+	grid-template-columns: 150px minmax(150px, 218px);
+	align-items: center;
+	justify-content: start;
+	column-gap: 12px;
+	min-height: 26px;
 }
 
 .calculator-field > span {
-  text-align: right;
-}
-
-.calculator-field input,
-.calculator-field select {
-  width: 100%;
-  height: 26px;
-  padding: 2px 8px;
-  border: 0;
-  border-radius: 6px;
-  background: #d1d5db;
-  font: inherit;
-}
-
-.calculator-choice__markup select:focus,
-.calculator-field input:focus,
-.calculator-field select:focus {
-  outline: 2px solid #9ca3af;
-  outline-offset: 2px;
+	text-align: right;
 }
 
 .calculator-field--short {
-  grid-template-columns: 150px 90px;
+	grid-template-columns: 150px 90px;
 }
 
 .calculator-field--sliding {
-  grid-template-columns: 150px minmax(150px, 218px) auto;
+	grid-template-columns: 150px minmax(150px, 218px) auto;
 }
 
 .calculator-field small {
-  white-space: nowrap;
-  font-size: 14px;
+	white-space: nowrap;
+	font-size: 14px;
 }
 
 .calculator-field--inactive {
-  opacity: 0.58;
+	opacity: 0.58;
 }
 
 .calculator-card__button {
-  display: block;
-  min-width: 120px;
-  margin: 30px 16px 0 auto;
-  padding: 10px 18px;
-  border: 0;
-  border-radius: 5px;
-  background: #009f5d;
-  color: #ffffff;
-  font-size: 16px;
-  cursor: pointer;
+	display: block;
+	min-width: 120px;
+	margin: 30px 16px 0 auto;
+	padding: 10px 18px;
+	border: 0;
+	border-radius: 5px;
+	background: #009f5d;
+	color: #ffffff;
+	font-size: 16px;
+	cursor: pointer;
 }
 
 .calculator-card__button:hover {
-  background: #008d53;
+	background: #008d53;
 }
 
 @media (max-width: 720px) {
-  .calculator-choice {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 16px;
-  }
+	.calculator-choice {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 16px;
+	}
 
-  .calculator-field,
-  .calculator-field--short,
-  .calculator-field--sliding {
-    grid-template-columns: minmax(120px, 150px) minmax(0, 1fr);
-  }
+	.calculator-field,
+	.calculator-field--short,
+	.calculator-field--sliding {
+		grid-template-columns: minmax(120px, 150px) minmax(0, 1fr);
+	}
 
-  .calculator-field small {
-    grid-column: 2;
-  }
+	.calculator-field small {
+		grid-column: 2;
+	}
 }

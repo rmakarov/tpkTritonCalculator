@@ -55,7 +55,7 @@
             </label>
 
             <label class="calculator-choice__markup">
-            <input type="number"/>
+            <input class="text-input" type="number"/>
             <span>Наценка (%)</span>
             </label>
         </div>
@@ -120,13 +120,13 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="itemName">Наименование:</label>
-                    <input type="search" id="itemName" name="itemName" list="priceData" placeholder="Поиск товара..." required>
-                    <datalist id="priceData"></datalist>
+                    <input type="search" id="itemName" class="text-input" name="itemName" list="modal-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="modal-price-data"></datalist>
                 </div>
                     
                 <div class="form-group">
                     <label for="itemQuantity">Количество:</label>
-                    <input type="number" id="itemQuantity" name="itemQuantity" min="1" value="1" required>
+                    <input type="number" id="itemQuantity" class="text-input" name="itemQuantity" min="1" value="1" required>
                 </div>
             </div>
                 
@@ -153,35 +153,31 @@
             <div class="calculator-fields">
                 <label class="calculator-field calculator-field--short">
                     <span>Ширина</span>
-                    <input id="wicket-width" type="number" min="0" />
+                    <input id="wicket-width" class="text-input" type="number" min="0" />
                 </label>
                 <label class="calculator-field calculator-field--short">
                     <span>Высота</span>
-                    <input id="wicket-height" type="number" min="0" />
+                    <input id="wicket-height" class="text-input" type="number" min="0" />
                 </label>
                 <label class="calculator-field">
                     <span>Материал каркаса</span>
-                    <select id="wicket-frame-material">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="wicket-frame-material" class="text-input" name="wicket-frame-material" list="wicket-frame-material-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="wicket-frame-material-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Столбы (Рама)</span>
-                    <select id="wicket-posts">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="wicket-posts" class="text-input" name="wicket-posts" list="wicket-posts-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="wicket-posts-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Обшивка</span>
-                    <select id="wicket-cladding">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="wicket-cladding" class="text-input" name="wicket-cladding" list="wicket-cladding-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="wicket-cladding-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Покраска</span>
-                    <select id="wicket-paint">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="wicket-paint" class="text-input" name="wicket-paint" list="wicket-paint-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="wicket-paint-price-data"></datalist>
                 </label>
             </div>
 
@@ -205,55 +201,48 @@
             <div class="calculator-fields">
                 <label class="calculator-field calculator-field--short">
                     <span>Ширина</span>
-                    <input id="gate-width" type="number" min="0" />
+                    <input id="gate-width" class="text-input" type="number" min="0" />
                 </label>
                 <label class="calculator-field calculator-field--short">
                     <span>Высота</span>
-                    <input id="gate-height" type="number" min="0" />
+                    <input id="gate-height" class="text-input" type="number" min="0" />
                 </label>
                 <label class="calculator-field">
                     <span>Столбы</span>
-                    <select id="gate-posts">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-posts" class="text-input" name="gate-posts" list="gate-posts-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-posts-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Материал каркаса</span>
-                    <select id="gate-frame-material">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-frame-material" class="text-input" name="gate-frame-material" list="gate-frame-material-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-frame-material-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Обшивка</span>
-                    <select id="gate-cladding">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-cladding" class="text-input" name="gate-cladding" list="gate-cladding-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-cladding-price-data"></datalist>
                 </label>
                 <label class="calculator-field">
                     <span>Покраска</span>
-                    <select id="gate-paint">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-paint" class="text-input" name="gate-paint" list="gate-paint-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-paint-price-data"></datalist>
                 </label>
                 <label class="calculator-field calculator-field--sliding">
                     <span>Комплект роликов</span>
-                    <select id="gate-rollers">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-rollers" class="text-input" name="gate-rollers" list="gate-rollers-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-rollers-price-data"></datalist>
                     <small>(Только в откатных)</small>
                 </label>
                 <label class="calculator-field calculator-field--sliding">
                     <span>Рейка</span>
-                    <select id="gate-rack">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-rack" class="text-input" name="gate-rack" list="gate-rack-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-rack-price-data"></datalist>
                     <small>(Только в откатных)</small>
                 </label>
                 <label class="calculator-field calculator-field--sliding">
                     <span>Привод</span>
-                    <select id="gate-drive">
-                    <option value=""></option>
-                    </select>
+                    <input type="search" id="gate-drive" class="text-input" name="gate-drive" list="gate-drive-price-data" placeholder="Поиск товара..." required>
+                    <datalist id="gate-drive-price-data"></datalist>
                     <small>(Только в откатных)</small>
                 </label>
             </div>
