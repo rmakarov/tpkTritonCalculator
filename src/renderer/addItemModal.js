@@ -106,9 +106,9 @@ function addRowToTable(name, price, summ, quantity) {
         <td>${quantity}</td>
         <td>${price.toLocaleString("ru-RU")}</td>
         <td>${summ.toLocaleString("ru-RU")}</td>
-        <td>
+        <td class="delete-item-column">
             <button class="iconButton deleteItemButton" type="button" title="Удалить позицию">
-                <img src="../../assets/deleteIcon.svg" alt="Удалить"/>
+                <img src="/assets/deleteIcon.svg" alt="Удалить"/>
             </button>
         </td>
     `;

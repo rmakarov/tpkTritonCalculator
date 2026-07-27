@@ -1,6 +1,6 @@
+const path = require("path");
 const { app, BrowserWindow } = require("electron/main");
 const { ipcMain } = require("electron");
-const path = require("path");
 const XLSX = require("xlsx");
 const fs = require("fs").promises;
 
@@ -164,7 +164,7 @@ ipcMain.handle("pricelist:getAll", async () => {
 });
 
 const createWindow = () => {
-	const iconPath = path.join(__dirname, "../../assets", "icon.ico");
+	const iconPath = path.join(__dirname, "../public/assets", "icon.ico");
 	const win = new BrowserWindow({
 		show: false, // 👈 ВАЖНО: скрываем окно до полной загрузки, чтобы не было "мигания"
 		minWidth: 940,
@@ -176,7 +176,6 @@ const createWindow = () => {
 			nodeIntegration: false,
 		},
 	});
-
 	// Разворачиваем окно на весь экран (с учетом панели задач)
 	win.maximize();
 
@@ -185,7 +184,19 @@ const createWindow = () => {
 		win.show();
 	});
 
-	win.loadFile(path.join(__dirname, "../renderer/index.html"));
+	// 1. РЕЖИМ РАЗРАБОТКИ (npm run dev)
+	// Vite автоматически подставляет этот URL, если запущен dev-сервер
+	if (process.env.VITE_DEV_SERVER_URL) {
+		win.loadURL(process.env.VITE_DEV_SERVER_URL);
+		win.webContents.openDevTools(); // Открываем консоль для удобства
+	}
+	// 2. РЕЖИМ ПРОДАКШЕНА (npm run build)
+	else {
+		// index.html лежит в КОРНЕ проекта, а main.js скомпилирован в dist-electron/
+		// Поэтому мы поднимаемся на одну папку вверх (../)
+		win.loadFile(path.join(__dirname, "../index.html"));
+	}
+
 	win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
 };
 

@@ -3,16 +3,13 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* ws://localhost:*; style-src 'self' 'unsafe-inline';" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TPK Triton Calculator</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="calculator.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="/src/renderer/styles.css" />
+    <link rel="stylesheet" href="/src/renderer/calculator.css" />
 </head>
-
 <body>
     <header class="page-header">
         <h1>TPK Triton Calculator</h1>
@@ -48,7 +45,7 @@
 
         <div class="calculator-choice">
             <label class="calculator-choice__option">
-                <input type="radio" name="calculator-type" value="wicket"checked/>
+                <input type="radio" name="calculator-type" value="wicket" checked/>
                 <span>Расчет калитки</span>
             </label>
 
@@ -65,22 +62,22 @@
 
         <div class="calculator-mount" id="calculator-mount" aria-live="polite"></div>
 
-        <div id="materialsSection">
-            <div class="spaceBetween greyPanel" id="addItemAndPrintSection">
-                <div class="fieldRow">
+        <div id="materials-section">
+            <div class="space-between grey-panel" id="addItemAndPrintSection">
+                <div class="field-row">
                     <label for="addItemButton">Добавить позицию</label>
                     <button class="iconButton" id="addItemButton">
-                        <img src="../../assets/addIcon.svg" alt="Добавить позицию" />
+                        <img src="/assets/addIcon.svg" alt="Добавить позицию" />
                     </button>
                 </div>
-                <div class="fieldRow">
+                <div class="field-row">
                     <label for="printButton">Печать</label>
                     <button class="iconButton" id="printButton">
-                        <img src="../../assets/pdfIcon.svg" alt="Печать" />
+                        <img src="/assets/pdfIcon.svg" alt="Печать" />
                     </button>
                 </div>
                 </div>
-                <div class="greyPanel" id="containerTableOfMaterials">
+                <div class="grey-panel" id="containerTableOfMaterials">
                     <table class="mainTable">
                         <thead>
                             <tr>
@@ -89,23 +86,23 @@
                                 <th>Количество</th>
                                 <th>Цена, руб</th>
                                 <th>Сумма, руб</th>
-                                <th>Удалить позицию</th>
+                                <th class="delete-item-column">Удалить позицию</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 <div>
-                    <div class="fieldRow">
+                    <div class="field-row">
                         <p>Адрес объекта / доставки:</p>
-                        <input class="textInput" type="text"/>
+                        <input class="text-input" type="text"/>
                     </div>
-                    <div class="fieldRow">
+                    <div class="field-row">
                         <p>Заказчик (ФИО / Организация):</p>
-                        <input class="textInput" type="text"/>
+                        <input class="text-input" type="text"/>
                     </div>
-                    <div class="fieldRow">
+                    <div class="field-row">
                         <p>Срок выполнения / доставки:</p>
-                        <input class="textInput" type="text"/>
+                        <input class="text-input" type="text"/>
                     </div>
                 </div>
             </div>
@@ -265,9 +262,9 @@
         </div>
     </template>
 
-    <script src="renderer.js"></script>
-    <script src="addItemModal.js"></script>
-    <script src="tabs.js"></script>
-    <script src="calculator.js"></script>
+    <script type="module" src="/src/renderer/renderer.js"></script>
+    <script type="module" src="/src/renderer/addItemModal.js"></script>
+    <script type="module" src="/src/renderer/tabs.js"></script>
+    <script type="module" src="/src/renderer/calculator.js"></script>
 </body>
 </html>

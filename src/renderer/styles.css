@@ -103,26 +103,26 @@ h1 {
 	display: none;
 }
 
-.fieldRow {
+.field-row {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: 8px;
 }
 
-.spaceBetween {
+.space-between {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
-.textInput {
+.text-input {
 	padding: 10px;
 	border-radius: 4px;
 	border: 1px solid #ccc;
 }
 
-.greyPanel {
+.grey-panel {
 	min-width: 820px;
 	margin-top: 10px;
 	padding: 10px;
