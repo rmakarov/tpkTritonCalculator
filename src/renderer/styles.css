@@ -1,6 +1,6 @@
 :root {
 	color: #1f2937;
-	background: #f3f4f6;
+	background: #ffffff;
 	font-family: Arial, sans-serif;
 }
 
@@ -16,21 +16,12 @@ body {
 	display: flex;
 	align-items: center;
 	padding: 20px 28px;
-	background: #ffffff;
 	border-bottom: 1px solid #d1d5db;
 }
 
 h1 {
 	margin: 0;
 	font-size: 22px;
-}
-
-.search {
-	width: min(260px, 40vw);
-	padding: 8px 11px;
-	border: 1px solid #cbd5e1;
-	border-radius: 6px;
-	font-size: 14px;
 }
 
 .layout {
@@ -48,7 +39,6 @@ h1 {
 	justify-content: space-between;
 	gap: 24px;
 	padding: 0 28px;
-	background: #ffffff;
 	border-bottom: 1px solid #d1d5db;
 }
 
@@ -75,12 +65,15 @@ h1 {
 	padding: 28px;
 }
 
+.tab-panel {
+	min-width: 868px;
+}
+
 .tab-panel,
 .import {
 	padding: 24px;
 	border: 1px solid #e5e7eb;
 	border-radius: 8px;
-	background: #ffffff;
 }
 
 .tab-panel h2,
@@ -110,15 +103,224 @@ h1 {
 	display: none;
 }
 
-.fieldRow {
+.field-row {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: 8px;
 }
 
-@media (max-width: 600px) {
-	.contentContainer {
-		flex-direction: column;
-	}
+.space-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.text-input {
+	padding: 8px 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+.text-input:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.grey-panel {
+	min-width: 820px;
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: #f9f9f9;
+}
+
+.mainTable {
+	width: 100%;
+	min-width: 800px;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+.mainTable th,
+.mainTable td {
+	border: 1px solid #333;
+	padding: 8px 12px;
+	text-align: left;
+	overflow: hidden; /* Скрывает вылезающий контент в узких колонках */
+	text-overflow: ellipsis;
+}
+
+/* 1. Первая колонка (П.н) - фиксированная, 60px */
+.mainTable th:nth-child(1),
+.mainTable td:nth-child(1) {
+	width: 60px;
+	text-align: center; /* Порядковые номера лучше смотрятся по центру */
+	white-space: nowrap; /* Запрещаем перенос текста */
+}
+
+/* 2. Колонка "Наименование" - самая широкая, занимает всё оставшееся место */
+.mainTable th:nth-child(2),
+.mainTable td:nth-child(2) {
+	width: 100%; /* В режиме fixed это означает "забрать всё доступное пространство" */
+	white-space: normal; /* Разрешаем перенос строк для длинных названий */
+	word-wrap: break-word; /* На случай, если попадется одно очень длинное слово без пробелов */
+}
+
+/* 3. Колонки с числами (Количество, Цена, Сумма) */
+.mainTable th:nth-child(3),
+.mainTable th:nth-child(4),
+.mainTable th:nth-child(5),
+.mainTable td:nth-child(3),
+.mainTable td:nth-child(4),
+.mainTable td:nth-child(5) {
+	width: auto; /* Ширина подстраивается под содержимое, но не больше доступного */
+	text-align: right; /* Числа и валюты принято выравнивать по правому краю */
+	white-space: nowrap; /* Запрещаем перенос строк, чтобы цифры не ломались */
+}
+
+/* 4. Последняя колонка (Удалить позицию) - фиксированная, 60px */
+.mainTable th:nth-child(6),
+.mainTable td:nth-child(6) {
+	width: 60px;
+	text-align: center; /* Кнопку или иконку удаления лучше центрировать */
+	white-space: nowrap;
+}
+
+.mainTable thead {
+	background-color: #f4f4f4;
+}
+
+.iconButton {
+	background: transparent;
+	border: none;
+	padding: 4px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 6px;
+	transition: background 0.2s;
+}
+
+.iconButton:hover {
+	background: rgba(0, 0, 0, 0.08);
+}
+
+.iconButton:focus {
+	outline: none;
+}
+
+#printButton img {
+	width: 32px;
+	height: 32px;
+	display: block;
+}
+
+/* Базовые стили для модального окна */
+.modal {
+	border: none;
+	border-radius: 8px;
+	padding: 0;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	max-width: 500px;
+	width: 90%;
+}
+
+/* Затемняющий фон за модальным окном */
+.modal::backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	border-bottom: 1px solid #ddd;
+	background-color: #f8f9fa;
+}
+
+.modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.close-btn {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: #666;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.close-btn:hover {
+	color: #333;
+}
+
+.modal-body {
+	padding: 20px;
+}
+
+.form-group {
+	margin-bottom: 16px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 500;
+	color: #333;
+}
+
+.form-group input {
+	width: 100%;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 16px 20px;
+	border-top: 1px solid #ddd;
+	background-color: #f8f9fa;
+}
+
+/* Стили для кнопок */
+.btn {
+	padding: 8px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: background-color 0.2s;
+}
+
+.btn-primary {
+	background-color: #007bff;
+	color: white;
+}
+
+.btn-primary:hover {
+	background-color: #0056b3;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+	color: white;
+}
+
+.btn-secondary:hover {
+	background-color: #545b62;
 }
