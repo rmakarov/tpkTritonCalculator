@@ -1,177 +1,124 @@
 :root {
-  color: #1f2937;
-  background: #f3f4f6;
-  font-family: Arial, sans-serif;
+	color: #1f2937;
+	background: #f3f4f6;
+	font-family: Arial, sans-serif;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 body {
-  margin: 0;
+	margin: 0;
 }
 
 .page-header {
-  display: flex;
-  align-items: center;
-  padding: 20px 28px;
-  background: #ffffff;
-  border-bottom: 1px solid #d1d5db;
+	display: flex;
+	align-items: center;
+	padding: 20px 28px;
+	background: #ffffff;
+	border-bottom: 1px solid #d1d5db;
 }
 
 h1 {
-  margin: 0;
-  font-size: 22px;
+	margin: 0;
+	font-size: 22px;
 }
 
 .search {
-  width: min(260px, 40vw);
-  padding: 8px 11px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
+	width: min(260px, 40vw);
+	padding: 8px 11px;
+	border: 1px solid #cbd5e1;
+	border-radius: 6px;
+	font-size: 14px;
 }
 
 .layout {
-  min-height: calc(100vh - 73px);
+	min-height: calc(100vh - 73px);
 }
 
 .tabs {
-  display: flex;
-  gap: 4px;
+	display: flex;
+	gap: 4px;
 }
 
 .tab-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 0 28px;
-  background: #ffffff;
-  border-bottom: 1px solid #d1d5db;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	padding: 0 28px;
+	background: #ffffff;
+	border-bottom: 1px solid #d1d5db;
 }
 
 .tab {
-  width: auto;
-  margin: 0;
-  padding: 14px 18px 12px;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 14px;
-  cursor: pointer;
+	width: auto;
+	margin: 0;
+	padding: 14px 18px 12px;
+	border: 0;
+	border-bottom: 3px solid transparent;
+	border-radius: 0;
+	background: transparent;
+	color: inherit;
+	font-size: 14px;
+	cursor: pointer;
 }
 
 .tab.is-active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
-  background: #eff6ff;
+	color: #2563eb;
+	border-bottom-color: #2563eb;
+	background: #eff6ff;
 }
 
 .content {
-  padding: 28px;
+	padding: 28px;
 }
 
 .tab-panel,
 .import {
-  padding: 24px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
+	padding: 24px;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	background: #ffffff;
 }
 
 .tab-panel h2,
 .import h2 {
-  margin-top: 0;
+	margin-top: 0;
 }
 
 .placeholder,
 .empty-search {
-  color: #6b7280;
+	color: #6b7280;
 }
 
 .import {
-  margin-top: 20px;
-  padding: 20px 0 0;
-  border: 0;
-  border-top: 1px solid #e5e7eb;
-  border-radius: 0;
+	margin-top: 20px;
+	padding: 20px 0 0;
+	border: 0;
+	border-top: 1px solid #e5e7eb;
+	border-radius: 0;
 }
 
 #output {
-  overflow: auto;
-  max-height: 300px;
+	overflow: auto;
+	max-height: 300px;
 }
 
 [hidden] {
-  display: none;
-}
-
-.contentContainer {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    border: solid 1px #000000;
-}
-
-.section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+	display: none;
 }
 
 .fieldRow {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
 }
 
 @media (max-width: 600px) {
-    .contentContainer {
-        flex-direction: column;
-    }
+	.contentContainer {
+		flex-direction: column;
+	}
 }
-
-
-.calculator-section {
-  margin-top: 30px;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #f9f9f9;
-}
-
-.calc-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.calc-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
-  background: white;
-}
-
-.calc-input {
-  width: 100px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
-}
-
-.calc-total {
-  font-size: 1.3em;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-top: 15px;
-}
-
