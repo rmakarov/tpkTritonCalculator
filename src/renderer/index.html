@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TPK Triton Calculator</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="calculator.css" />
   </head>
   <body>
     <header class="page-header">
@@ -62,58 +63,214 @@
 
         <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
           <h2 id="gate-title">Расчёт калитки</h2>
-          <div class="contentContainer">
-             <div class="section">
-               <div class="fieldRow">
-                  <input id="wicketType1" type="radio" checked/>
-                  <label for="wicketType1">На столбах</label>
-               </div>
-               <div class="fieldRow">
-                 <input id="wicketType2" type="radio"/>
-                 <label for="wicketType2">В раме</label>
-               </div>
-             </div>
-             <div class="section">
-              <div class="fieldRow">
-                <input id="wicketWudth" type="number"/>
-                <label for="wicketWudth">Ширина</label>
-              </div>
-              <div class="fieldRow">
-                <input id="wicketHeight" type="number"/>
-                <label for="wicketHeight">Высота</label>
-              </div>
-             </div>
-          </div>
 
-          <div class="calculator-section">
-            <h3>🧮 Калькулятор стоимости</h3>
-            
-            <div class="fieldRow">
-              <label for="itemSelect" class="calc-label">Выберите товар:</label>
-              <select id="itemSelect" class="calc-select">
-                <option value="">Сначала импортируйте прайс...</option>
+          <div class="calculator-choice">
+            <label class="calculator-choice__option">
+              <input
+                type="radio"
+                name="calculator-type"
+                value="wicket"
+                checked
+              />
+              <span>Расчет калитки</span>
+            </label>
+
+            <label class="calculator-choice__option">
+              <input
+                type="radio"
+                name="calculator-type"
+                value="gate"
+              />
+              <span>Расчет ворот</span>
+            </label>
+
+            <label class="calculator-choice__markup">
+              <select id="markup" aria-label="Наценка в процентах">
+                <option value="1">Нет наценки</option>
+                <option value="1.05">5%</option>
+                <option value="1.10">10%</option>
+                <option value="1.15">15%</option>
+                <option value="1.20">20%</option>
+                <option value="1.25">25%</option>
+                <option value="1.30">30%</option>
+                <option value="1.35">35%</option>
+                <option value="1.40">40%</option>
+                <option value="1.45">45%</option>
+                <option value="1.50">50%</option>
+                <option value="1.55">55%</option>
+                <option value="1.60">60%</option>
+                <option value="1.65">65%</option>
+                <option value="1.70">70%</option>
+                <option value="1.75">75%</option>
+                <option value="1.80">80%</option>
+                <option value="1.85">85%</option>
+                <option value="1.90">90%</option>
+                <option value="1.95">95%</option>
+                <option value="2">100%</option>
               </select>
-            </div>
-
-            <div class="fieldRow">
-              <label for="quantity" class="calc-label">Количество:</label>
-              <input id="quantity" type="number" value="1" min="1" class="calc-input" />
-            </div>
-
-            <div class="fieldRow calc-total">
-              <span>Итого: </span>
-              <span id="totalPrice">0</span>
-              <span> руб.</span>
-            </div>
+              <span>Наценка (%)</span>
+            </label>
           </div>
 
+          <div
+            class="calculator-mount"
+            id="calculator-mount"
+            aria-live="polite"
+          ></div>
         </section>
       </main>
     </div>
 
-  
+    <template id="wicket-calculator-template">
+      <div class="calculator-card" data-calculator="wicket">
+        <div class="calculator-card__switches">
+          <label class="calculator-card__radio">
+            <input
+              type="radio"
+              name="wicket-installation"
+              value="posts"
+              checked
+            />
+            <span>На столбах</span>
+          </label>
+          <label class="calculator-card__radio">
+            <input
+              type="radio"
+              name="wicket-installation"
+              value="frame"
+            />
+            <span>В раме</span>
+          </label>
+        </div>
+
+        <div class="calculator-fields">
+          <label class="calculator-field calculator-field--short">
+            <span>Ширина</span>
+            <input id="wicket-width" type="number" min="0" />
+          </label>
+          <label class="calculator-field calculator-field--short">
+            <span>Высота</span>
+            <input id="wicket-height" type="number" min="0" />
+          </label>
+          <label class="calculator-field">
+            <span>Материал каркаса</span>
+            <select id="wicket-frame-material">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Столбы (Рама)</span>
+            <select id="wicket-posts">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Обшивка</span>
+            <select id="wicket-cladding">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Покраска</span>
+            <select id="wicket-paint">
+              <option value=""></option>
+            </select>
+          </label>
+        </div>
+
+        <button class="calculator-card__button" type="button">
+          Рассчитать
+        </button>
+      </div>
+    </template>
+
+    <template id="gate-calculator-template">
+      <div class="calculator-card" data-calculator="gate">
+        <div class="calculator-card__switches">
+          <label class="calculator-card__radio">
+            <input
+              type="radio"
+              name="gate-opening"
+              value="swing"
+              checked
+            />
+            <span>Распашные</span>
+          </label>
+          <label class="calculator-card__radio">
+            <input
+              type="radio"
+              name="gate-opening"
+              value="sliding"
+            />
+            <span>Откатные</span>
+          </label>
+        </div>
+
+        <div class="calculator-fields">
+          <label class="calculator-field calculator-field--short">
+            <span>Ширина</span>
+            <input id="gate-width" type="number" min="0" />
+          </label>
+          <label class="calculator-field calculator-field--short">
+            <span>Высота</span>
+            <input id="gate-height" type="number" min="0" />
+          </label>
+          <label class="calculator-field">
+            <span>Столбы</span>
+            <select id="gate-posts">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Материал каркаса</span>
+            <select id="gate-frame-material">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Обшивка</span>
+            <select id="gate-cladding">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field">
+            <span>Покраска</span>
+            <select id="gate-paint">
+              <option value=""></option>
+            </select>
+          </label>
+          <label class="calculator-field calculator-field--sliding">
+            <span>Комплект роликов</span>
+            <select id="gate-rollers">
+              <option value=""></option>
+            </select>
+            <small>(Только в откатных)</small>
+          </label>
+          <label class="calculator-field calculator-field--sliding">
+            <span>Рейка</span>
+            <select id="gate-rack">
+              <option value=""></option>
+            </select>
+            <small>(Только в откатных)</small>
+          </label>
+          <label class="calculator-field calculator-field--sliding">
+            <span>Привод</span>
+            <select id="gate-drive">
+              <option value=""></option>
+            </select>
+            <small>(Только в откатных)</small>
+          </label>
+        </div>
+
+        <button class="calculator-card__button" type="button">
+          Рассчитать
+        </button>
+      </div>
+    </template>
+
     <script src="renderer.js"></script>
     <script src="search.js"></script>
     <script src="tabs.js"></script>
+    <script src="calculator.js"></script>
   </body>
 </html>
