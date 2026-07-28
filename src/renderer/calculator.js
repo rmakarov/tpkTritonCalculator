@@ -1,4 +1,5 @@
 import { priceManager } from "./priceManager.js";
+import { addMaterialToTable } from "./tableManager.js"; 
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -11,9 +12,50 @@ class WicketCalculatorView {
 
 		// ✅ Заполняем списки ВНУТРИ клонированного элемента (он еще не в DOM!)
 		await this.populateDatalists();
+		this.calcButton = this.element.querySelector(".calculator-card__button");
+        
+        if (this.calcButton) {
+            this.calcButton.addEventListener("click", () => this.handleCalculate());
+        }
 
 		return this.element;
 	}
+
+	// 🚀 Новый метод для обработки клика
+    handleCalculate() {
+        const itemsToAdd = [];
+
+        // Пример получения данных (ЗАМЕНИТЕ селекторы на ваши реальные id/class из HTML!)
+        const frameMaterial = this.element.querySelector('#wicket-frame-material')?.value;
+        const postsMaterial = this.element.querySelector('#wicket-posts')?.value;
+        const claddingMaterial = this.element.querySelector('#wicket-cladding')?.value;
+
+        // Собираем только заполненные поля
+        if (frameMaterial) {
+            const price = priceManager.getPrice(frameMaterial);
+            if (price) itemsToAdd.push({ name: frameMaterial, price, quantity: 1 });
+        }
+
+        if (postsMaterial) {
+            const price = priceManager.getPrice(postsMaterial);
+            if (price) itemsToAdd.push({ name: postsMaterial, price, quantity: 1 });
+        }
+
+        if (claddingMaterial) {
+            const price = priceManager.getPrice(claddingMaterial);
+            if (price) itemsToAdd.push({ name: claddingMaterial, price, quantity: 1 });
+        }
+
+        // 3. Добавляем каждую найденную позицию в общую таблицу
+        if (itemsToAdd.length === 0) {
+            alert("Пожалуйста, выберите хотя бы один материал!");
+            return;
+        }
+
+        itemsToAdd.forEach(item => {
+            addMaterialToTable(item.name, item.price, item.quantity);
+        });
+    }
 
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
@@ -49,9 +91,48 @@ class GateCalculatorView {
 		this.updateSlidingFields();
 
 		await this.populateDatalists();
+		
+        this.calcButton = this.element.querySelector(".calculator-card__button");
+        if (this.calcButton) {
+            this.calcButton.addEventListener("click", () => this.handleCalculate());
+        }
 
 		return this.element;
 	}
+
+	// 🚀 Новый метод для обработки клика (аналогично калитке, но со своими полями)
+    handleCalculate() {
+        const itemsToAdd = [];
+
+        // ЗАМЕНИТЕ селекторы на ваши реальные!
+        const frameMaterial = this.element.querySelector('#gate-frame-material')?.value;
+        const postsMaterial = this.element.querySelector('#gate-posts')?.value;
+        const rollers = this.element.querySelector('#gate-rollers')?.value;
+
+        if (frameMaterial) {
+            const price = priceManager.getPrice(frameMaterial);
+            if (price) itemsToAdd.push({ name: frameMaterial, price, quantity: 1 });
+        }
+
+        if (postsMaterial) {
+            const price = priceManager.getPrice(postsMaterial);
+            if (price) itemsToAdd.push({ name: postsMaterial, price, quantity: 1 });
+        }
+
+        if (rollers) {
+            const price = priceManager.getPrice(rollers);
+            if (price) itemsToAdd.push({ name: rollers, price, quantity: 1 });
+        }
+
+        if (itemsToAdd.length === 0) {
+            alert("Пожалуйста, выберите материалы для ворот!");
+            return;
+        }
+
+        itemsToAdd.forEach(item => {
+            addMaterialToTable(item.name, item.price, item.quantity);
+        });
+    };
 
 	updateSlidingFields() {
 		const selectedType = this.openingInputs.find((input) => input.checked);
