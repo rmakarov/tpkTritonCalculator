@@ -41,7 +41,7 @@ input[type="radio"] {
 }
 
 .calculator-card {
-	width: min(100%, 680px);
+	width: min(100%, 900px);
 	min-height: 340px;
 	padding: 10px 12px 12px;
 	border: 1px solid #111827;
@@ -69,15 +69,19 @@ input[type="radio"] {
 	gap: 10px;
 }
 
-
 .calculator-field {
 	position: relative; 
 	display: grid;
-	grid-template-columns: 150px minmax(150px, 218px);
+	grid-template-columns: 150px minmax(150px, 700px);
 	align-items: center;
 	justify-content: start;
 	column-gap: 12px;
 	min-height: 26px;
+}
+
+.calculator-field > .calculator-item-from-price {
+	width: clamp(300px, 100%, 700px);  
+    box-sizing: border-box;
 }
 
 .calculator-field > span {
@@ -94,7 +98,11 @@ input[type="radio"] {
 
 .calculator-field small {
 	white-space: nowrap;
-	font-size: 14px;
+    grid-row: 2;             /* Переносим на вторую строку */
+    grid-column: 2 / -1;     /* Растягиваем от 2-й колонки до самого конца */
+    margin-top: 2px;         /* Небольшой отступ сверху */
+    color: #888;
+    font-size: 0.85em;
 }
 
 .calculator-field--inactive {

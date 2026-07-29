@@ -195,6 +195,23 @@ h1 {
 	background-color: #f4f4f4;
 }
 
+.form-details {
+    display: grid;
+    grid-template-columns: auto 1fr;  /* 1-я колонка — текст, 2-я — инпут */
+    gap: 8px 12px;                    /* row-gap / column-gap */
+    align-items: center;
+}
+
+.form-details .field-row {
+    display: contents;  /* ← "растворяет" обёртку, дети становятся grid-элементами */
+}
+
+.form-details .field-row p {
+    text-align: right;
+    margin: 0;
+    white-space: nowrap;
+}
+
 .iconButton {
 	background: transparent;
 	border: none;

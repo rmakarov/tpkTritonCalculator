@@ -104,11 +104,11 @@ class GateCalculatorView {
 
 		priceManager.populateFilteredAutocomplete("gate-posts", this.element, ['профиль']);
 		priceManager.populateFilteredAutocomplete("gate-frame-material", this.element, ['профиль']);
-		priceManager.populateAutocomplete("gate-cladding", this.element);
+		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ['сетка', 'штакетник', 'панель', 'профнастил', 'профлист']);
 		priceManager.populateAutocomplete("gate-paint", this.element);
-		priceManager.populateAutocomplete("gate-rollers", this.element);
+		priceManager.populateFilteredAutocomplete("gate-rollers", this.element, ['ролик']);
 		priceManager.populateAutocomplete("gate-rack", this.element);
-		priceManager.populateAutocomplete("gate-drive", this.element);
+		priceManager.populateFilteredAutocomplete("gate-drive", this.element, ['привод', 'механизм', 'двигатель', 'мотор']);
 	}
 
 	updateSlidingFields() {
