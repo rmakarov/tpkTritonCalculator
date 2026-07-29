@@ -1,7 +1,6 @@
 import { priceManager } from "./priceManager.js";
 import { addMaterialToTable } from "./tableManager.js";
 
-
 // Получаем элементы
 const dialog = document.getElementById("addItemDialog");
 const addItemButton = document.getElementById("addItemButton");
@@ -11,44 +10,60 @@ const addItemForm = document.getElementById("addItemForm");
 const itemNameInput = document.getElementById("itemName");
 const itemQuantityInput = document.getElementById("itemQuantity");
 
-addItemButton.addEventListener("click", async () => {
-	await priceManager.ensureLoaded(); // Ждем загрузки (если еще не загружено)
+// 🔥 ЕДИНАЯ ФУНКЦИЯ ЗАКРЫТИЯ С ОЧИСТКОЙ
+const closeDialog = () => {
+    dialog.close();
+    addItemForm.reset(); // Сбрасываем значения полей
+    
+    // 🔥 УНИЧТОЖАЕМ экземпляр автокомплита, чтобы удалить слушатели событий
+    // и предотвратить утечку памяти при следующем открытии
+    priceManager.destroyAutocomplete("itemName");
+};
 
+addItemButton.addEventListener("click", async () => {
+    await priceManager.ensureLoaded();
 	dialog.showModal();
-	priceManager.populateAutocomplete("itemName", dialog);
-	itemNameInput.focus();
+
+    setTimeout(() => {
+        priceManager.populateAutocomplete("itemName", dialog);
+    }, 50); 
 });
 
-closeModalBtn.addEventListener("click", () => dialog.close());
-cancelBtn.addEventListener("click", () => dialog.close());
+// Используем единую функцию закрытия везде
+closeModalBtn.addEventListener("click", closeDialog);
+cancelBtn.addEventListener("click", closeDialog);
 
 // Закрытие по клику на затемненный фон (backdrop)
 dialog.addEventListener("click", (e) => {
-	if (e.target === dialog) {
-		dialog.close();
-	}
+    if (e.target === dialog) {
+        closeDialog();
+    }
 });
 
 addItemForm.addEventListener("submit", (e) => {
-	e.preventDefault();
+    e.preventDefault();
 
-	const name = itemNameInput.value.trim();
+    const name = itemNameInput.value.trim();
 
-	// Берем цену из нашего общего кэша!
-	const price = priceManager.getPrice(name);
+    // Берем цену из нашего общего кэша!
+    const price = priceManager.getPrice(name);
 
-	// Защита от ручного ввода несуществующего товара
-	if (!price) {
-		alert("Пожалуйста, выберите товар из выпадающего списка!");
-		return;
-	}
+    // Защита от ручного ввода несуществующего товара
+    if (!price) {
+        alert("Пожалуйста, выберите товар из выпадающего списка!");
+        return;
+    }
 
-	const quantity = parseInt(itemQuantityInput.value, 10);
-	const summ = price * quantity;
+    const quantity = parseInt(itemQuantityInput.value, 10);
+    
+    // Проверка на корректность количества
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("Пожалуйста, укажите корректное количество!");
+        return;
+    }
 
-	if (name && quantity > 0) {
-		addMaterialToTable(name, price, quantity);
-		addItemForm.reset();
-		dialog.close();
-	}
+    addMaterialToTable(name, price, quantity);
+    
+    // Закрываем с полной очисткой
+    closeDialog();
 });

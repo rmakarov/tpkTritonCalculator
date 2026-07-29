@@ -1,8 +1,9 @@
 
 export class CustomAutocomplete {
-    constructor(inputElement, optionsArray) {
+    constructor(inputElement, optionsArray, filterParams = []) {
         this.input = inputElement;
         this.options = optionsArray; 
+        this.filterParams = filterParams;
         this.dropdown = null;
         this.selectedIndex = -1;
         this.isSelecting = false;
@@ -53,31 +54,57 @@ export class CustomAutocomplete {
     }
 
     filter() {
-        const query = this.input.value.toLowerCase().trim();
-            this.selectedIndex = -1;
-            this.dropdown.innerHTML = '';
+        // 1. ЗАЩИТА: Если инпут был удален из DOM (зомби-элемент), тихо уничтожаем автокомплит
+        if (!this.input || !document.contains(this.input)) {
+            console.warn(`[CustomAutocomplete] Инпут был удален из DOM. Автоочистка.`);
+            this.destroy();
+            return;
+        }
+        // 🔥 ДОБАВИТЬ ЭТУ СТРОКУ ДЛЯ ДИАГНОСТИКИ:
+        console.log(`[CustomAutocomplete] Попытка фильтрации. Всего опций: ${this.options?.length || 0}, запрос: "${this.input.value}"`);
 
-            const filtered = this.options.filter(item => 
-                item.name.toLowerCase().includes(query)
-            );
 
-            if (filtered.length > 0) {
-                filtered.forEach((item, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'custom-autocomplete-item';
-                    li.innerHTML = `<span>${item.name}</span> <span class="price">${item.price.toLocaleString("ru-RU")} руб.</span>`;
-                    li.dataset.index = index;
-                    li.dataset.value = item.name;
-                    
-                    li.addEventListener('click', () => this.select(item.name));
-                    li.addEventListener('mouseenter', () => this.highlight(index));
-                    
-                    this.dropdown.appendChild(li);
-                });
-                this.open();
-            } else {
-                this.close();
+        // 2. ЗАЩИТА: Гарантируем, что value это строка
+        const inputValue = typeof this.input.value === 'string' ? this.input.value : '';
+        const query = inputValue.toLowerCase().trim();
+        
+        this.selectedIndex = -1;
+        this.dropdown.innerHTML = '';
+
+        // 3. ЗАЩИТА: Фильтрация с проверкой каждого элемента
+        const filtered = this.options.filter(item => {
+            if (!item || typeof item.name !== 'string') {
+                // Выводим предупреждение только один раз, чтобы не спамить консоль
+                if (!this._warnedAboutBadData) {
+                    console.warn('[CustomAutocomplete] Пропущена некорректная строка в данных:', item);
+                    this._warnedAboutBadData = true;
+                }
+                return false;
             }
+            return item.name.toLowerCase().includes(query);
+        });
+
+        if (filtered.length > 0) {
+            filtered.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.className = 'custom-autocomplete-item';
+                const price = typeof item.price === 'number' ? item.price : 0;
+                li.innerHTML = `<span>${item.name}</span> <span class="price">${price.toLocaleString("ru-RU")} руб.</span>`;
+                li.dataset.index = index;
+                li.dataset.value = item.name;
+                
+                li.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.select(item.name);
+                });
+                li.addEventListener('mouseenter', () => this.highlight(index));
+                
+                this.dropdown.appendChild(li);
+            });
+            this.open();
+        } else {
+            this.close();
+        }
     }
 
     handleKeydown(e) {
