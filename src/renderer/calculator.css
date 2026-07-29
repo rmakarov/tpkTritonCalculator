@@ -69,7 +69,9 @@ input[type="radio"] {
 	gap: 10px;
 }
 
+
 .calculator-field {
+	position: relative; 
 	display: grid;
 	grid-template-columns: 150px minmax(150px, 218px);
 	align-items: center;

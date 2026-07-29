@@ -13,8 +13,9 @@ const itemQuantityInput = document.getElementById("itemQuantity");
 
 addItemButton.addEventListener("click", async () => {
 	await priceManager.ensureLoaded(); // Ждем загрузки (если еще не загружено)
-	priceManager.populateDatalist("modal-price-data"); // Заполняем наш datalist
+
 	dialog.showModal();
+	priceManager.populateAutocomplete("itemName", dialog);
 	itemNameInput.focus();
 });
 

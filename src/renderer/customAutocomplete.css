@@ -1,0 +1,48 @@
+.custom-autocomplete-dropdown {
+    position: absolute;
+    top: 100%;       /* Ровно под нижней границей родителя (инпута) */
+    left: 0;         /* Прижат к левому краю родителя */
+    width: 100%;     /* Растягивается на всю ширину родителя */
+    margin-top: 4px; /* Небольшой визуальный отступ от инпута */
+    z-index: 10000;  /* Поверх всего, включая содержимое диалога */
+    
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 0;
+    list-style: none;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили элементов (для красоты) */
+.custom-autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #333;
+}
+
+.custom-autocomplete-item:hover,
+.custom-autocomplete-item.active {
+    background-color: #0078d7;
+    color: white;
+}
+
+.custom-autocomplete-item .price {
+    color: #666;
+    font-weight: bold;
+}
+
+.custom-autocomplete-item.active .price {
+    color: #e0e0e0;
+}
+
+/* Кастомный скроллбар */
+.custom-autocomplete-dropdown::-webkit-scrollbar { width: 8px; }
+.custom-autocomplete-dropdown::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 0 6px 6px 0; }
+.custom-autocomplete-dropdown::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+.custom-autocomplete-dropdown::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }

@@ -231,6 +231,11 @@ h1 {
 	width: 90%;
 }
 
+dialog, 
+dialog form {
+    overflow: visible !important; 
+}
+
 /* Затемняющий фон за модальным окном */
 .modal::backdrop {
 	background-color: rgba(0, 0, 0, 0.5);

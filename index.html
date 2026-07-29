@@ -9,6 +9,7 @@
     <title>TPK Triton Calculator</title>
     <link rel="stylesheet" href="/src/renderer/styles.css" />
     <link rel="stylesheet" href="/src/renderer/calculator.css" />
+    <link rel="stylesheet" href="/src/renderer/customAutocomplete.css" />
 </head>
 <body>
     <header class="page-header">
@@ -120,8 +121,8 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="itemName">Наименование:</label>
-                    <input type="search" id="itemName" class="text-input" name="itemName" list="modal-price-data" placeholder="Поиск товара..." required>
-                    <datalist id="modal-price-data"></datalist>
+                    <input type="search" id="itemName" class="text-input" name="itemName" placeholder="Поиск товара..." required>
+                    <!--<datalist id="modal-price-data"></datalist>-->
                 </div>
                     
                 <div class="form-group">
@@ -161,23 +162,23 @@
                 </label>
                 <label class="calculator-field">
                     <span>Материал каркаса</span>
-                    <input type="search" id="wicket-frame-material" class="text-input" name="wicket-frame-material" list="wicket-frame-material-price-data" placeholder="Поиск товара..." required>
-                    <datalist id="wicket-frame-material-price-data"></datalist>
+                    <input type="search" id="wicket-frame-material" class="text-input" name="wicket-frame-material" placeholder="Поиск товара..." required>
+                    <!--<datalist id="wicket-frame-material-price-data"></datalist>-->
                 </label>
                 <label class="calculator-field">
                     <span>Столбы (Рама)</span>
-                    <input type="search" id="wicket-posts" class="text-input" name="wicket-posts" list="wicket-posts-price-data" placeholder="Поиск товара..." required>
-                    <datalist id="wicket-posts-price-data"></datalist>
+                    <input type="search" id="wicket-posts" class="text-input" name="wicket-posts" placeholder="Поиск товара..." required>
+                    <!--<datalist id="wicket-posts-price-data"></datalist>-->
                 </label>
                 <label class="calculator-field">
                     <span>Обшивка</span>
-                    <input type="search" id="wicket-cladding" class="text-input" name="wicket-cladding" list="wicket-cladding-price-data" placeholder="Поиск товара..." required>
-                    <datalist id="wicket-cladding-price-data"></datalist>
+                    <input type="search" id="wicket-cladding" class="text-input" name="wicket-cladding" placeholder="Поиск товара..." required>
+                    <!--<datalist id="wicket-cladding-price-data"></datalist>-->
                 </label>
                 <label class="calculator-field">
                     <span>Покраска</span>
-                    <input type="search" id="wicket-paint" class="text-input" name="wicket-paint" list="wicket-paint-price-data" placeholder="Поиск товара..." required>
-                    <datalist id="wicket-paint-price-data"></datalist>
+                    <input type="search" id="wicket-paint" class="text-input" name="wicket-paint" placeholder="Поиск товара..." required>
+                    <!--<datalist id="wicket-paint-price-data"></datalist>-->
                 </label>
             </div>
 
@@ -252,6 +253,7 @@
     </template>
 
     <script type="module" src="/src/renderer/renderer.js"></script>
+    <script type="module" src="/src/renderer/customAutocomplete.js"></script>
     <script type="module" src="/src/renderer/priceManager.js"></script>
     <script type="module" src="/src/renderer/addItemModal.js"></script>
     <script type="module" src="/src/renderer/tabs.js"></script>

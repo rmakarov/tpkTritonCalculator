@@ -61,13 +61,10 @@ class WicketCalculatorView {
 		await priceManager.ensureLoaded();
 
 		// ✅ Передаем this.element как контекст поиска
-		priceManager.populateDatalist(
-			"wicket-frame-material-price-data",
-			this.element,
-		);
-		priceManager.populateDatalist("wicket-posts-price-data", this.element);
-		priceManager.populateDatalist("wicket-cladding-price-data", this.element);
-		priceManager.populateDatalist("wicket-paint-price-data", this.element);
+		priceManager.populateFilteredAutocomplete("wicket-frame-material", this.element, ['профиль']);
+		priceManager.populateFilteredAutocomplete("wicket-posts", this.element, ['профиль']);
+		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ['сетка', 'штакетник', 'панель', 'профнастил', 'профлист']);
+		priceManager.populateAutocomplete("wicket-paint", this.element);
 	}
 }
 
@@ -152,16 +149,16 @@ class GateCalculatorView {
 		await priceManager.ensureLoaded();
 
 		// ✅ Передаем this.element как контекст поиска
-		priceManager.populateDatalist("gate-posts-price-data", this.element);
-		priceManager.populateDatalist(
+		priceManager.populateAutocomplete("gate-posts-price-data", this.element);
+		priceManager.populateAutocomplete(
 			"gate-frame-material-price-data",
 			this.element,
 		);
-		priceManager.populateDatalist("gate-cladding-price-data", this.element);
-		priceManager.populateDatalist("gate-paint-price-data", this.element);
-		priceManager.populateDatalist("gate-rollers-price-data", this.element);
-		priceManager.populateDatalist("gate-rack-price-data", this.element);
-		priceManager.populateDatalist("gate-drive-price-data", this.element);
+		priceManager.populateAutocomplete("gate-cladding-price-data", this.element);
+		priceManager.populateAutocomplete("gate-paint-price-data", this.element);
+		priceManager.populateAutocomplete("gate-rollers-price-data", this.element);
+		priceManager.populateAutocomplete("gate-rack-price-data", this.element);
+		priceManager.populateAutocomplete("gate-drive-price-data", this.element);
 	}
 }
 
