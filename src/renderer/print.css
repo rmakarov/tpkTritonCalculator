@@ -89,7 +89,7 @@
 		width: 14%;
 	}
 
-	.print-order-details .field-row {
+	.field-row {
 		display: grid;
 		grid-template-columns: 72mm 1fr;
 		gap: 4mm;

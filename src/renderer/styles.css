@@ -195,6 +195,25 @@ h1 {
 	background-color: #f4f4f4;
 }
 
+.form-details {
+	display: grid;
+	grid-template-columns: 72mm 1fr;
+	gap: 4mm;
+	align-items: end;
+	margin: 3mm 0;
+	break-inside: avoid;
+}
+
+.form-details .field-row {
+    display: contents;  /* ← "растворяет" обёртку, дети становятся grid-элементами */
+}
+
+.form-details .field-row p {
+    text-align: right;
+    margin: 0;
+    white-space: nowrap;
+}
+
 .iconButton {
 	background: transparent;
 	border: none;
@@ -229,6 +248,11 @@ h1 {
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 	max-width: 500px;
 	width: 90%;
+}
+
+dialog, 
+dialog form {
+    overflow: visible !important; 
 }
 
 /* Затемняющий фон за модальным окном */

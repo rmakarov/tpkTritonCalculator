@@ -138,9 +138,11 @@ class PriceListManager {
 	}
 
 	getAll() {
-		return Object.values(this.data.items).sort(
-			(a, b) => parseInt(a.id) - parseInt(b.id),
-		);
+		return Object.values(this.data.items).sort((a, b) => {
+			const idA = parseInt(a.id) || 0;
+			const idB = parseInt(b.id) || 0;
+			return idA - idB;
+		});
 	}
 }
 
@@ -206,25 +208,18 @@ const createWindow = () => {
 	win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
 };
 
-/*ipcMain.handle('read-excel', async (event, buffer) => {
-  try {
-    console.log(path.join(__dirname, 'assets', 'icon.ico'))
-    // buffer — это ArrayBuffer, передаём его напрямую в XLSX
-    const workbook = XLSX.read(new Uint8Array(buffer), { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(sheet);
-    console.log('[MAIN] Данные прочитаны:', data); // 👈 лог в консоли main
-    return data;
-  } catch (err) {
-    console.error('[MAIN] Ошибка чтения:', err);
-    throw err;
-  }
-});*/
-
-app.whenReady().then(() => {
+app.whenReady().then(async() => {
 	/*const userDataPath = app.getPath('userData'); //Информация о пути к папке с данными на диске
-  console.log('📁 Папка данных пользователя:', userDataPath);
-  console.log(' Файл базы будет здесь:', path.join(userDataPath, 'pricelist.json'));*/
+console.log('📁 Папка данных пользователя:', userDataPath);
+console.log(' Файл базы будет здесь:', path.join(userDataPath, 'pricelist.json'));*/
+
+   // 🔥 АВТОМАТИЧЕСКАЯ ЗАГРУЗКА КЭША ПРИ СТАРТЕ
+    try {
+        await priceManager.load();
+        console.log("[Main] ✅ Кэш прайс-листа успешно загружен с диска.");
+    } catch (err) {
+        console.log("[Main] ℹ️ Кэш не найден (это нормально при самом первом запуске).");
+    }
 
 	createWindow();
 

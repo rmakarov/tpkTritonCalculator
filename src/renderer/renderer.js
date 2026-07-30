@@ -19,8 +19,8 @@ document.getElementById("xlf").addEventListener("change", async (e) => {
 
 		console.log("[RENDERER] Результат импорта:", result);
 
-		// ✅ 2. ВАЖНО: Сообщаем менеджеру цен, что данные обновились!
-		priceManager.resetCache();
+		// 🔥 МЯГКОЕ ОБНОВЛЕНИЕ: данные загрузятся, и все видимые списки мгновенно перестроятся!
+		await priceManager.refreshAll(); 
 
 		// Выводим результат в DOM вместо alert
 		outputEl.textContent = `
