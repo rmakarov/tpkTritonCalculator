@@ -3,6 +3,7 @@ const { app, BrowserWindow } = require("electron/main");
 const { ipcMain } = require("electron");
 const XLSX = require("xlsx");
 const fs = require("fs").promises;
+const { registerPdfPreview } = require("./pdfPreview");
 
 // ==========================================
 // 1. КЛАСС МЕНЕДЖЕРА ПРАЙС-ЛИСТА
@@ -147,6 +148,7 @@ class PriceListManager {
 // 2. СОЗДАНИЕ ЭКЗЕМПЛЯРА (ОДИН РАЗ НА ВСЁ ПРИЛОЖЕНИЕ)
 // ==========================================
 const priceManager = new PriceListManager();
+registerPdfPreview();
 
 // ==========================================
 // 3. НАСТРОЙКА IPC (МОСТЫ ДЛЯ RENDERER)
