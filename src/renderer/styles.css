@@ -196,10 +196,12 @@ h1 {
 }
 
 .form-details {
-    display: grid;
-    grid-template-columns: auto 1fr;  /* 1-я колонка — текст, 2-я — инпут */
-    gap: 8px 12px;                    /* row-gap / column-gap */
-    align-items: center;
+	display: grid;
+	grid-template-columns: 72mm 1fr;
+	gap: 4mm;
+	align-items: end;
+	margin: 3mm 0;
+	break-inside: avoid;
 }
 
 .form-details .field-row {

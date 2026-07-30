@@ -1,0 +1,117 @@
+@media print {
+	@page {
+		size: A4 portrait;
+		margin: 12mm;
+	}
+
+	body {
+		margin: 0;
+		background: #fff;
+		color: #000;
+	}
+
+	body * {
+		visibility: hidden !important;
+	}
+
+	#materials-section,
+	#materials-section * {
+		visibility: visible !important;
+	}
+
+	#materials-section {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		min-width: 0;
+		padding: 0;
+		background: #fff !important;
+		color: #000 !important;
+	}
+
+	#addItemAndPrintSection,
+	.delete-item-column {
+		display: none !important;
+	}
+
+	#containerTableOfMaterials {
+		width: 100%;
+		min-width: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: #fff !important;
+	}
+
+	.mainTable {
+		width: 100%;
+		min-width: 0;
+		margin-bottom: 8mm;
+		border-collapse: collapse;
+		table-layout: fixed;
+		font-size: 10pt;
+	}
+
+	.mainTable thead {
+		display: table-header-group;
+		background: #eee !important;
+	}
+
+	.mainTable tr {
+		break-inside: avoid;
+	}
+
+	.mainTable th,
+	.mainTable td {
+		padding: 5px 7px;
+		overflow: visible;
+		text-overflow: clip;
+		overflow-wrap: anywhere;
+	}
+
+	.mainTable th:nth-child(1),
+	.mainTable td:nth-child(1) {
+		width: 8%;
+	}
+
+	.mainTable th:nth-child(2),
+	.mainTable td:nth-child(2) {
+		width: 50%;
+	}
+
+	.mainTable th:nth-child(3),
+	.mainTable td:nth-child(3),
+	.mainTable th:nth-child(4),
+	.mainTable td:nth-child(4),
+	.mainTable th:nth-child(5),
+	.mainTable td:nth-child(5) {
+		width: 14%;
+	}
+
+	.field-row {
+		display: grid;
+		grid-template-columns: 72mm 1fr;
+		gap: 4mm;
+		align-items: end;
+		margin: 3mm 0;
+		break-inside: avoid;
+	}
+
+	.print-order-details label {
+		font-size: 10pt;
+		font-weight: 600;
+	}
+
+	#materials-section input.text-input {
+		width: 100%;
+		padding: 2mm 1mm;
+		border: 0;
+		border-bottom: 1px solid #333;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		color: #000;
+		font-size: 10pt;
+	}
+}

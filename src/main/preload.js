@@ -14,3 +14,7 @@ contextBridge.exposeInMainWorld('excelAPI', {
   getItemById: (id) => ipcRenderer.invoke('pricelist:getById', id),
   clearPriceList: () => ipcRenderer.invoke('pricelist:clear')
 });
+
+contextBridge.exposeInMainWorld('pdfAPI', {
+  openPreview: () => ipcRenderer.invoke('pdf:preview')
+});

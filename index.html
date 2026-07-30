@@ -9,6 +9,7 @@
     <title>TPK Triton Calculator</title>
     <link rel="stylesheet" href="/src/renderer/styles.css" />
     <link rel="stylesheet" href="/src/renderer/calculator.css" />
+    <link rel="stylesheet" href="/src/renderer/print.css" />
     <link rel="stylesheet" href="/src/renderer/customAutocomplete.css" />
 </head>
 <body>
@@ -67,19 +68,19 @@
             <div class="space-between grey-panel" id="addItemAndPrintSection">
                 <div class="field-row">
                     <label for="addItemButton">Добавить позицию</label>
-                    <button class="iconButton" id="addItemButton">
+                    <button class="iconButton" id="addItemButton" type="button">
                         <img src="/assets/addIcon.svg" alt="Добавить позицию" />
                     </button>
                 </div>
                 <div class="field-row">
                     <label for="printButton">Печать</label>
-                    <button class="iconButton" id="printButton">
+                    <button class="iconButton" id="printButton" type="button">
                         <img src="/assets/pdfIcon.svg" alt="Печать" />
                     </button>
                 </div>
-                </div>
-                <div class="grey-panel" id="containerTableOfMaterials">
-                    <table class="mainTable">
+            </div>
+            <div class="grey-panel" id="containerTableOfMaterials">
+                <table class="mainTable">
                         <thead>
                             <tr>
                                 <th>П.н</th>
@@ -91,23 +92,24 @@
                             </tr>
                         </thead>
                         <tbody></tbody>
-                    </table>
+                </table>
                 <div class="form-details">
                     <div class="field-row">
-                        <p>Адрес объекта / доставки:</p>
-                        <input class="text-input" type="text"/>
+                        <label for="deliveryAddress">Адрес объекта / доставки:</label>
+                        <input id="deliveryAddress" class="text-input" type="text"/>
                     </div>
                     <div class="field-row">
-                        <p>Заказчик (ФИО / Организация):</p>
-                        <input class="text-input" type="text"/>
+                        <label for="customerName">Заказчик (ФИО / Организация):</label>
+                        <input id="customerName" class="text-input" type="text"/>
                     </div>
                     <div class="field-row">
-                        <p>Срок выполнения / доставки:</p>
-                        <input class="text-input" type="text"/>
+                        <label for="deliveryDeadline">Срок выполнения / доставки:</label>
+                        <input id="deliveryDeadline" class="text-input" type="text"/>
                     </div>
                 </div>
             </div>
-            </section>
+        </div>
+        </section>
         </main>
     </div>
 
@@ -246,5 +248,6 @@
     <script type="module" src="/src/renderer/addItemModal.js"></script>
     <script type="module" src="/src/renderer/tabs.js"></script>
     <script type="module" src="/src/renderer/calculator.js"></script>
+    <script type="module" src="/src/renderer/pdfPreview.js"></script>
 </body>
 </html>
