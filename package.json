@@ -17,14 +17,18 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"dist:win": "node build-windows.js",
+		"dist:win": "npm run dist:full",
+		"dist:full": "node build-windows.js full",
+		"dist:trial": "node build-windows.js trial",
 		"preview": "vite preview",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"build": {
 		"appId": "com.triton.calculator",
 		"productName": "Triton Calculator",
-		"artifactName": "${productName} Setup.${ext}",
+		"artifactName": "${productName} Full Setup.${ext}",
+		"beforePack": "electron-builder-before-pack.js",
+		"afterPack": "electron-builder-after-pack.js",
 		"directories": {
 			"output": "release"
 		},

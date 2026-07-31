@@ -9,10 +9,16 @@ const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 const TRIAL_STATE_FILE = "trial-state.json";
 const TRIAL_TEST_STATE_FILE = "trial-state-test.json";
 const TRIAL_STATE_SECRET = "tpk-triton-calculator-trial-v1";
+const TRIAL_ENABLED = __APP_EDITION__ === "trial";
 
 let activeExpirationTime = null;
 
 async function ensureTrialAccess() {
+	// Full builds do not create or validate any trial state.
+	if (!TRIAL_ENABLED) {
+		return true;
+	}
+
 	const developmentTrialDuration = getDevelopmentTrialDuration();
 
 	// Обычный npm run dev не расходует тестовый период.

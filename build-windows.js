@@ -4,10 +4,6 @@ const { spawnSync } = require("child_process");
 const projectRoot = __dirname;
 const packageJson = require(path.join(projectRoot, "package.json"));
 const productName = packageJson.build.productName;
-const unpackedDirectory = path.join(projectRoot, "release", "win-unpacked");
-const executablePath = path.join(unpackedDirectory, `${productName}.exe`);
-const iconPath = path.join(projectRoot, "public", "assets", "icon.ico");
-const viteCliPath = path.join(projectRoot, "node_modules", "vite", "bin", "vite.js");
 const electronBuilderCliPath = path.join(
 	projectRoot,
 	"node_modules",
@@ -17,36 +13,22 @@ const electronBuilderCliPath = path.join(
 	"cli.js",
 );
 
-async function buildWindowsInstaller() {
-	runNodeScript(viteCliPath, ["build"]);
-	runNodeScript(electronBuilderCliPath, ["--win", "dir"]);
+function buildWindowsInstaller() {
+	const edition = process.argv[2] === "trial" ? "trial" : "full";
+	const artifactName = `${productName} ${edition === "trial" ? "Trial" : "Full"} Setup.\${ext}`;
 
-	const { rcedit } = await import("rcedit");
-	await rcedit(executablePath, {
-		icon: iconPath,
-		"file-version": packageJson.version,
-		"product-version": packageJson.version,
-		"version-string": {
-			ProductName: productName,
-			FileDescription: productName,
-			InternalName: productName,
-			OriginalFilename: `${productName}.exe`,
-			CompanyName: "TPK Triton",
-		},
-	});
-
-	runNodeScript(electronBuilderCliPath, [
-		"--win",
-		"nsis",
-		"--prepackaged",
-		unpackedDirectory,
-	]);
+	runNodeScript(
+		electronBuilderCliPath,
+		["--win", `--config.artifactName=${artifactName}`],
+		{ ...process.env, APP_EDITION: edition },
+	);
 }
 
-function runNodeScript(scriptPath, args = []) {
+function runNodeScript(scriptPath, args = [], environment = process.env) {
 	const result = spawnSync(process.execPath, [scriptPath, ...args], {
 		cwd: projectRoot,
 		stdio: "inherit",
+		env: environment,
 	});
 
 	if (result.error) throw result.error;
@@ -55,7 +37,9 @@ function runNodeScript(scriptPath, args = []) {
 	}
 }
 
-buildWindowsInstaller().catch((error) => {
+try {
+	buildWindowsInstaller();
+} catch (error) {
 	console.error("Не удалось собрать Windows-инсталлятор:", error);
 	process.exitCode = 1;
-});
+}
