@@ -4,6 +4,10 @@ const { ipcMain } = require("electron");
 const XLSX = require("xlsx");
 const fs = require("fs").promises;
 const { registerPdfPreview } = require("./pdfPreview");
+const {
+	ensureTrialAccess,
+	scheduleTrialExpiration,
+} = require("./trialLicense");
 
 // ==========================================
 // 1. КЛАСС МЕНЕДЖЕРА ПРАЙС-ЛИСТА
@@ -200,18 +204,20 @@ const createWindow = () => {
 	}
 	// 2. РЕЖИМ ПРОДАКШЕНА (npm run build)
 	else {
-		// index.html лежит в КОРНЕ проекта, а main.js скомпилирован в dist-electron/
-		// Поэтому мы поднимаемся на одну папку вверх (../)
-		win.loadFile(path.join(__dirname, "../index.html"));
+		win.loadFile(path.join(__dirname, "../dist/index.html"));
 	}
-
-	win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
 };
 
 app.whenReady().then(async() => {
 	/*const userDataPath = app.getPath('userData'); //Информация о пути к папке с данными на диске
 console.log('📁 Папка данных пользователя:', userDataPath);
 console.log(' Файл базы будет здесь:', path.join(userDataPath, 'pricelist.json'));*/
+	const trialAccessGranted = await ensureTrialAccess();
+	if (!trialAccessGranted) {
+		app.quit();
+		return;
+	}
+	scheduleTrialExpiration();
 
    // 🔥 АВТОМАТИЧЕСКАЯ ЗАГРУЗКА КЭША ПРИ СТАРТЕ
     try {
