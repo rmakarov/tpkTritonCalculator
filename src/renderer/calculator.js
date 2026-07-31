@@ -1,5 +1,6 @@
 import { priceManager } from "./priceManager.js";
 import { addMaterialToTable } from "./tableManager.js"; 
+import { WicketCalculator, GateCalculator } from './wickedAndGateCalculation.js';
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -33,7 +34,21 @@ class WicketCalculatorView {
 		priceManager.populateAutocomplete("wicket-paint", this.element);
 	}
 
-	handleCalculate() {
+	handleCalculate(type) {
+		try {
+			let calculator =  new WicketCalculator(this.element, priceManager);
+			const calculatedItems = calculator.calculate();
+
+			calculatedItems.forEach(item => {
+				addMaterialToTable(item.name, item.price, item.quantity);
+			});
+
+		} catch (error) {
+			alert(error.message);
+		}
+	}
+
+	/*handleCalculate() {
 		const itemsToAdd = [];
 		const frameMaterial = this.element.querySelector('#wicket-frame-material')?.value;
 		const postsMaterial = this.element.querySelector('#wicket-posts')?.value;
@@ -65,7 +80,7 @@ class WicketCalculatorView {
 		itemsToAdd.forEach(item => {
 			addMaterialToTable(item.name, item.price, item.quantity);
 		});
-	}
+	}*/
 }
 
 class GateCalculatorView {
@@ -124,7 +139,22 @@ class GateCalculatorView {
 		});
 	}
 
-	handleCalculate() {
+	handleCalculate(type) {
+		try {
+			
+			let calculator = new GateCalculator(this.element, priceManager);
+			const calculatedItems = calculator.calculate();
+
+			calculatedItems.forEach(item => {
+				addMaterialToTable(item.name, item.price, item.quantity);
+			});
+
+		} catch (error) {
+			console.log(error.message);
+		}
+	}
+
+	/*handleCalculate() {
 		const itemsToAdd = [];
 
 		const postsMaterial = this.element.querySelector('#gate-posts')?.value;
@@ -174,7 +204,7 @@ class GateCalculatorView {
 		itemsToAdd.forEach(item => {
 			addMaterialToTable(item.name, item.price, item.quantity);
 		});
-	}
+	}*/
 }
 
 class CalculatorViewSwitcher {

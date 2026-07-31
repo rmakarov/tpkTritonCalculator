@@ -1,5 +1,7 @@
+import { BaseCalculator } from './baseCalculator.js';
 import { priceManager } from "./priceManager.js";
 import { addMaterialToTable } from "./tableManager.js";
+
 
 // Получаем элементы
 const dialog = document.getElementById("addItemDialog");
@@ -44,12 +46,14 @@ addItemForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const name = itemNameInput.value.trim();
+    
 
-    // Берем цену из нашего общего кэша!
-    const price = priceManager.getPrice(name);
+    // Берем цену из нашего общего кэша (c наценкой)!
+    const baseCalculator = new BaseCalculator(dialog, priceManager);
+    const finalPrice = baseCalculator.getPriceWithMarkup(name);
 
     // Защита от ручного ввода несуществующего товара
-    if (!price) {
+    if (!finalPrice) {
         alert("Пожалуйста, выберите товар из выпадающего списка!");
         return;
     }
@@ -62,7 +66,7 @@ addItemForm.addEventListener("submit", (e) => {
         return;
     }
 
-    addMaterialToTable(name, price, quantity);
+    addMaterialToTable(name, finalPrice, quantity);
     
     // Закрываем с полной очисткой
     closeDialog();

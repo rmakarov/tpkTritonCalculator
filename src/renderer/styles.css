@@ -348,3 +348,33 @@ dialog form {
 .btn-secondary:hover {
 	background-color: #545b62;
 }
+
+/* Стиль кнопки загрузки */
+.custom-file-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Зеленый цвет, поменяйте на свой */
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    user-select: none; /* Чтобы текст не выделялся при частых кликах */
+}
+
+.custom-file-button:hover {
+    background-color: #45a049; /* Цвет при наведении */
+}
+
+.custom-file-button:active {
+    transform: scale(0.98); /* Легкий эффект нажатия */
+}
+
+/* Стиль текста с именем файла */
+.file-name {
+    margin-left: 12px;
+    color: #666;
+    font-size: 14px;
+    vertical-align: middle;
+}

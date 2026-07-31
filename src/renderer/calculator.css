@@ -84,6 +84,10 @@ input[type="radio"] {
     box-sizing: border-box;
 }
 
+#wicket-width, #wicket-height, #gate-width, #gate-height {
+	width: 160px;
+}
+
 .calculator-field > span {
 	text-align: right;
 }
