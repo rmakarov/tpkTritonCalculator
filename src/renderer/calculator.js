@@ -10,8 +10,49 @@ function cloneCalculatorTemplate(templateId) {
 	return template.content.firstElementChild.cloneNode(true);
 }
 
-class WicketCalculatorView {
+class BaseCalculatorView {
 	constructor() {
+		this.element = null;
+		this.claddingInput = null;
+		this.stepSelect = null;
+		this.stepLabel = null;
+	}
+
+	// Универсальный метод, который подойдет и для Wicket, и для Gate
+	initCladdingToggle(claddingSelector, stepSelector) {
+		this.claddingInput = this.element.querySelector(claddingSelector);
+		this.stepSelect = this.element.querySelector(stepSelector);
+		this.stepLabel = this.stepSelect?.closest(".calculator-field");
+
+		if (this.claddingInput) {
+			this.claddingInput.addEventListener("input", () =>
+				this.toggleStepFieldState(),
+			);
+			this.claddingInput.addEventListener("change", () =>
+				this.toggleStepFieldState(),
+			);
+		}
+	}
+
+	toggleStepFieldState() {
+		if (!this.claddingInput || !this.stepSelect || !this.stepLabel) return;
+		const isWicket = this.claddingInput.value
+			.toLowerCase()
+			.includes("штакетник");
+
+		if (isWicket) {
+			this.stepLabel.classList.remove("calculator-field--inactive");
+			this.stepSelect.disabled = false;
+		} else {
+			this.stepLabel.classList.add("calculator-field--inactive");
+			this.stepSelect.disabled = true;
+		}
+	}
+}
+
+class WicketCalculatorView extends BaseCalculatorView {
+	constructor() {
+		super();
 		this.element = null;
 	}
 
@@ -27,44 +68,11 @@ class WicketCalculatorView {
 		return this.element;
 	}
 
-	// 2. Метод для проверки и переключения состояния (теперь это метод класса)
-	toggleStepFieldState() {
-		// Защита от ошибок, если элементы не найдены
-		if (!this.claddingInput || !this.stepSelect || !this.stepLabel) return;
-
-		// Приводим к нижнему регистру, чтобы не зависеть от заглавных букв
-		const isWicket = this.claddingInput.value
-			.toLowerCase()
-			.includes("штакетник");
-
-		if (isWicket) {
-			this.stepLabel.classList.remove("calculator-field--inactive");
-			this.stepSelect.disabled = false;
-		} else {
-			this.stepLabel.classList.add("calculator-field--inactive");
-			this.stepSelect.disabled = true;
-		}
-	}
-
-	// 3. Инициализируем данные (вызывается ПОСЛЕ вставки элемента в реальный DOM!)
+	// 2. Инициализируем данные (вызывается ПОСЛЕ вставки элемента в реальный DOM!)
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
 
-		this.claddingInput = this.element.querySelector("#wicket-cladding");
-		this.stepSelect = this.element.querySelector("#wicket-cladding-step");
-
-		if (this.stepSelect) {
-			this.stepLabel = this.stepSelect.closest(".calculator-field");
-		}
-
-		if (this.claddingInput) {
-			this.claddingInput.addEventListener("input", () =>
-				this.toggleStepFieldState(),
-			);
-			this.claddingInput.addEventListener("change", () =>
-				this.toggleStepFieldState(),
-			);
-		}
+		this.initCladdingToggle("#wicket-cladding", "#wicket-cladding-step");
 
 		priceManager.populateFilteredAutocomplete(
 			"wicket-frame-material",
@@ -102,8 +110,9 @@ class WicketCalculatorView {
 	}
 }
 
-class GateCalculatorView {
+class GateCalculatorView extends BaseCalculatorView {
 	constructor() {
+		super();
 		this.element = null;
 		this.openingInputs = [];
 		this.slidingRows = [];
@@ -136,44 +145,11 @@ class GateCalculatorView {
 		return this.element;
 	}
 
-	// 2. Метод для проверки и переключения состояния (теперь это метод класса)
-	toggleStepFieldState() {
-		// Защита от ошибок, если элементы не найдены
-		if (!this.claddingInput || !this.stepSelect || !this.stepLabel) return;
-
-		// Приводим к нижнему регистру, чтобы не зависеть от заглавных букв
-		const isWicket = this.claddingInput.value
-			.toLowerCase()
-			.includes("штакетник");
-
-		if (isWicket) {
-			this.stepLabel.classList.remove("calculator-field--inactive");
-			this.stepSelect.disabled = false;
-		} else {
-			this.stepLabel.classList.add("calculator-field--inactive");
-			this.stepSelect.disabled = true;
-		}
-	}
-
-	// 3. Инициализируем данные ПОСЛЕ вставки в DOM
+	// 2. Инициализируем данные ПОСЛЕ вставки в DOM
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
 
-		this.claddingInput = this.element.querySelector("#gate-cladding");
-		this.stepSelect = this.element.querySelector("#gate-cladding-step");
-
-		if (this.stepSelect) {
-			this.stepLabel = this.stepSelect.closest(".calculator-field");
-		}
-
-		if (this.claddingInput) {
-			this.claddingInput.addEventListener("input", () =>
-				this.toggleStepFieldState(),
-			);
-			this.claddingInput.addEventListener("change", () =>
-				this.toggleStepFieldState(),
-			);
-		}
+		this.initCladdingToggle("#gate-cladding", "#gate-cladding-step");
 
 		priceManager.populateFilteredAutocomplete("gate-posts", this.element, [
 			"профиль",
