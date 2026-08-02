@@ -17,6 +17,8 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
+		"build:exe": "npm run build && electron-builder --win",
+		"build:trial": "npm run build && electron-builder --win --config.appId=com.triton.calculator.trial --config.productName=\"Triton Calculator Trial\" --config.directories.output=release-trial --config.extraMetadata.name=tpktritoncalculator-trial --config.extraMetadata.trialBuild=true",
 		"preview": "vite preview",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
