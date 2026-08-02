@@ -2,3 +2,5 @@ node_modules/
 dist/
 dist-electron/
 release/
+release-trial/
+release-trial-test/

@@ -4,6 +4,11 @@ const { ipcMain } = require("electron");
 const XLSX = require("xlsx");
 const fs = require("fs").promises;
 const { registerPdfPreview } = require("./pdfPreview");
+const { ensureTrialAccess, scheduleTrialExpiration } = require("./trialLicense");
+const {
+	ensureTrialTestAccess,
+	scheduleTrialTestExpiration,
+} = require("./trialLicenseTest");
 
 // ==========================================
 // 1. КЛАСС МЕНЕДЖЕРА ПРАЙС-ЛИСТА
@@ -202,13 +207,24 @@ const createWindow = () => {
 	else {
 		// index.html лежит в КОРНЕ проекта, а main.js скомпилирован в dist-electron/
 		// Поэтому мы поднимаемся на одну папку вверх (../)
-		win.loadFile(path.join(__dirname, "../index.html"));
+		win.loadFile(path.join(__dirname, "../dist/index.html"));
 	}
 
 	win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
 };
 
 app.whenReady().then(async() => {
+	if (!(await ensureTrialAccess())) {
+		app.quit();
+		return;
+	}
+	if (!(await ensureTrialTestAccess())) {
+		app.quit();
+		return;
+	}
+	scheduleTrialExpiration();
+	scheduleTrialTestExpiration();
+
 	/*const userDataPath = app.getPath('userData'); //Информация о пути к папке с данными на диске
 console.log('📁 Папка данных пользователя:', userDataPath);
 console.log(' Файл базы будет здесь:', path.join(userDataPath, 'pricelist.json'));*/
