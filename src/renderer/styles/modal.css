@@ -1,0 +1,92 @@
+/* Базовые стили для модального окна */
+.modal {
+	border: none;
+	border-radius: 8px;
+	padding: 0;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	max-width: 640px;
+	width: 90%;
+}
+
+dialog,
+dialog form {
+	overflow: visible !important;
+}
+
+/* Затемняющий фон за модальным окном */
+.modal::backdrop {
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 20px;
+	border-bottom: 1px solid #ddd;
+	background-color: #f8f9fa;
+}
+
+.modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.close-btn {
+	background: none;
+	border: none;
+	font-size: 24px;
+	cursor: pointer;
+	color: #666;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.close-btn:hover {
+	color: #333;
+}
+
+.modal-body {
+	padding: 16px 20px;
+	max-height: 65vh;
+	overflow-y: auto;
+}
+
+.modal-body img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	margin: 12px auto 4px;
+	border: 1px solid #d0d0d0;
+	border-radius: 6px;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+	background: #fff;
+}
+
+.form-group {
+	margin-bottom: 16px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 500;
+	color: #333;
+}
+
+.form-group input {
+	width: 100%;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 16px 20px;
+	border-top: 1px solid #ddd;
+	background-color: #f8f9fa;
+}

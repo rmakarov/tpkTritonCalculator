@@ -12,11 +12,6 @@
 		/>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>TPK Triton Calculator</title>
-		<link rel="stylesheet" href="/src/renderer/styles.css" />
-		<link rel="stylesheet" href="/src/renderer/calculatorTemplates.css" />
-		<link rel="stylesheet" href="/src/renderer/print.css" />
-		<link rel="stylesheet" href="/src/renderer/customAutocomplete.css" />
-		<link rel="stylesheet" href="/src/renderer/notification.css" />
 	</head>
 	<body>
 		<header class="page-header">
@@ -40,21 +35,28 @@
 				<section class="tab-panel" id="home" aria-labelledby="home-title">
 					<h2 id="home-title">Главная</h2>
 					<p class="placeholder">Выберите файл с исходными данными.</p>
+					<div class="field-row">
+						<div class="import">
+							<h2>Импорт данных</h2>
+							<input
+								type="file"
+								name="xlfile"
+								id="xlf"
+								accept=".xlsx,.xls"
+								hidden
+							/>
+							<label for="xlf" class="custom-file-button"
+								>Загрузить прайс</label
+							>
+							<span id="file-name" class="file-name">Файл не выбран</span>
 
-					<div class="import">
-						<h2>Импорт данных</h2>
-
-						<input
-							type="file"
-							name="xlfile"
-							id="xlf"
-							accept=".xlsx,.xls"
-							hidden
-						/>
-						<label for="xlf" class="custom-file-button">Загрузить прайс</label>
-						<span id="file-name" class="file-name">Файл не выбран</span>
-
-						<pre id="output"></pre>
+							<pre id="output"></pre>
+						</div>
+						<div>
+							<button id="help-btn" class="iconButton">
+								<img src="/assets/help24dpGreen.svg" alt="Помощь" />
+							</button>
+						</div>
 					</div>
 				</section>
 
@@ -155,343 +157,8 @@
 				</section>
 			</main>
 		</div>
-
-		<dialog id="addItemDialog" class="modal">
-			<form method="dialog" id="addItemForm">
-				<div class="modal-header">
-					<h3>Добавить позицию</h3>
-					<button type="button" class="close-btn" id="closeModalBtn">✕</button>
-				</div>
-
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="itemName">Наименование:</label>
-						<input
-							type="search"
-							id="itemName"
-							class="text-input"
-							name="itemName"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</div>
-
-					<div class="form-group">
-						<label for="itemQuantity">Количество:</label>
-						<input
-							type="number"
-							id="itemQuantity"
-							class="text-input"
-							name="itemQuantity"
-							min="1"
-							value="1"
-							required
-						/>
-					</div>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" id="cancelBtn" class="btn btn-secondary">
-						Отмена
-					</button>
-					<button type="submit" id="addBtn" class="btn btn-primary">
-						Добавить
-					</button>
-				</div>
-			</form>
-		</dialog>
-
 		<div id="notification" class="notification hidden"></div>
 
-		<template id="wicket-calculator-template">
-			<div class="calculator-card" data-calculator="wicket">
-				<div class="calculator-card__switches">
-					<label class="calculator-card__radio">
-						<input
-							id="wicked-in-post"
-							type="radio"
-							name="wicket-installation"
-							value="posts"
-							checked
-						/>
-						<span>На столбах</span>
-					</label>
-					<label class="calculator-card__radio">
-						<input
-							id="wicked-in-frame"
-							type="radio"
-							name="wicket-installation"
-							value="frame"
-						/>
-						<span>В раме</span>
-					</label>
-				</div>
-
-				<div class="calculator-fields">
-					<label class="calculator-field calculator-field--short">
-						<span>Ширина (мм)</span>
-						<select id="wicket-width" class="text-input">
-							<option value="" disabled selected>Выберите ширину</option>
-							<option value="1000">1000</option>
-							<option value="1250">1250</option>
-							<option value="1500">1500</option>
-							<option value="1750">1750</option>
-							<option value="2000">2000</option>
-						</select>
-					</label>
-					<label class="calculator-field calculator-field--short">
-						<span>Высота (мм)</span>
-						<select id="wicket-height" class="text-input">
-							<option value="" disabled selected>Выберите высоту</option>
-							<option value="1030">1030</option>
-							<option value="1230">1230</option>
-							<option value="1530">1530</option>
-							<option value="1730">1730</option>
-							<option value="1930">1930</option>
-							<option value="2030">2030</option>
-							<option value="2230">2230</option>
-							<option value="2430">2430</option>
-						</select>
-					</label>
-					<label class="calculator-field">
-						<span>Материал каркаса</span>
-						<input
-							type="search"
-							id="wicket-frame-material"
-							class="text-input calculator-item-from-price"
-							name="wicket-frame-material"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field">
-						<span>Столбы (Рама)</span>
-						<input
-							type="search"
-							id="wicket-posts"
-							class="text-input calculator-item-from-price"
-							name="wicket-posts"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field">
-						<span>Обшивка</span>
-						<input
-							type="search"
-							id="wicket-cladding"
-							class="text-input calculator-item-from-price"
-							name="wicket-cladding"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field calculator-field--inactive">
-						<span>Шаг штакетника (мм)</span>
-						<select id="wicket-cladding-step" class="text-input" disabled>
-							<option value="10">10</option>
-							<option value="20">20</option>
-							<option value="30" selected>30</option>
-							<option value="40">40</option>
-							<option value="50">50</option>
-							<option value="60">60</option>
-							<option value="70">70</option>
-							<option value="80">80</option>
-							<option value="90">90</option>
-							<option value="100">100</option>
-						</select>
-					</label>
-					<label class="calculator-field">
-						<span>Покраска</span>
-						<input
-							type="search"
-							id="wicket-paint"
-							class="text-input calculator-item-from-price"
-							name="wicket-paint"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-				</div>
-
-				<button class="calculator-card__button" type="button" disabled>
-					Рассчитать
-				</button>
-			</div>
-		</template>
-
-		<template id="gate-calculator-template">
-			<div class="calculator-card" data-calculator="gate">
-				<div class="calculator-card__switches">
-					<label class="calculator-card__radio">
-						<input
-							id="swing-gate"
-							type="radio"
-							name="gate-opening"
-							value="swing"
-							checked
-						/>
-						<span>Распашные</span>
-					</label>
-					<label class="calculator-card__radio">
-						<input
-							id="sliding-gate"
-							type="radio"
-							name="gate-opening"
-							value="sliding"
-						/>
-						<span>Откатные</span>
-					</label>
-				</div>
-
-				<div class="calculator-fields">
-					<label class="calculator-field calculator-field--short">
-						<span>Ширина (мм)</span>
-						<select id="gate-width" class="text-input">
-							<option value="" disabled selected>Выберите ширину</option>
-							<option value="2000">2000</option>
-							<option value="2500">2500</option>
-							<option value="3000">3000</option>
-							<option value="3500">3500</option>
-							<option value="4000">4000</option>
-							<option value="4500">4500</option>
-							<option value="5000">5000</option>
-							<option value="5500">5500</option>
-							<option value="6000">6000</option>
-							<option value="6500">6500</option>
-							<option value="7000">7000</option>
-							<option value="7500">7500</option>
-							<option value="8000">8000</option>
-							<option value="8500">8500</option>
-							<option value="9000">9000</option>
-							<option value="9500">9500</option>
-							<option value="10000">10000</option>
-						</select>
-					</label>
-					<label class="calculator-field calculator-field--short">
-						<span>Высота (мм)</span>
-						<select id="gate-height" class="text-input">
-							<option value="" disabled selected>Выберите высоту</option>
-							<option value="1030">1030</option>
-							<option value="1230">1230</option>
-							<option value="1530">1530</option>
-							<option value="1730">1730</option>
-							<option value="1930">1930</option>
-							<option value="2030">2030</option>
-							<option value="2230">2230</option>
-							<option value="2430">2430</option>
-						</select>
-					</label>
-					<label class="calculator-field">
-						<span>Столбы</span>
-						<input
-							type="search"
-							id="gate-posts"
-							class="text-input calculator-item-from-price"
-							name="gate-posts"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field">
-						<span>Материал каркаса</span>
-						<input
-							type="search"
-							id="gate-frame-material"
-							class="text-input calculator-item-from-price"
-							name="gate-frame-material"
-							list="gate-frame-material-price-data"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field">
-						<span>Обшивка</span>
-						<input
-							type="search"
-							id="gate-cladding"
-							class="text-input calculator-item-from-price"
-							name="gate-cladding"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field calculator-field--inactive">
-						<span>Шаг штакетника (мм)</span>
-						<select id="gate-cladding-step" class="text-input" disabled>
-							<option value="10">10</option>
-							<option value="20">20</option>
-							<option value="30" selected>30</option>
-							<option value="40">40</option>
-							<option value="50">50</option>
-							<option value="60">60</option>
-							<option value="70">70</option>
-							<option value="80">80</option>
-							<option value="90">90</option>
-							<option value="100">100</option>
-						</select>
-					</label>
-					<label class="calculator-field">
-						<span>Покраска</span>
-						<input
-							type="search"
-							id="gate-paint"
-							class="text-input calculator-item-from-price"
-							name="gate-paint"
-							placeholder="Поиск товара..."
-							required
-						/>
-					</label>
-					<label class="calculator-field calculator-field--sliding">
-						<span>Комплект роликов</span>
-						<input
-							type="search"
-							id="gate-rollers"
-							class="text-input calculator-item-from-price"
-							name="gate-rollers"
-							placeholder="Поиск товара..."
-							required
-						/>
-						<small>(Только в откатных)</small>
-					</label>
-					<label class="calculator-field calculator-field--sliding">
-						<span>Рейка</span>
-						<input
-							type="search"
-							id="gate-rack"
-							class="text-input calculator-item-from-price"
-							name="gate-rack"
-							placeholder="Поиск товара..."
-							required
-						/>
-						<small>(Только в откатных)</small>
-					</label>
-					<label class="calculator-field calculator-field--sliding">
-						<span>Привод</span>
-						<input
-							type="search"
-							id="gate-drive"
-							class="text-input calculator-item-from-price"
-							name="gate-drive"
-							placeholder="Поиск товара..."
-							required
-						/>
-						<small>(Только в откатных)</small>
-					</label>
-				</div>
-
-				<button class="calculator-card__button" type="button" disabled>
-					Рассчитать
-				</button>
-			</div>
-		</template>
-
 		<script type="module" src="/src/renderer/renderer.js"></script>
-		<script type="module" src="/src/renderer/customAutocomplete.js"></script>
-		<script type="module" src="/src/renderer/priceManager.js"></script>
-		<script type="module" src="/src/renderer/addItemModal.js"></script>
-		<script type="module" src="/src/renderer/tabs.js"></script>
-		<script type="module" src="/src/renderer/calculatorTemplates.js"></script>
-		<script type="module" src="/src/renderer/pdfPreview.js"></script>
 	</body>
 </html>

@@ -6,7 +6,7 @@ import {
 import {
 	WicketCalculator,
 	GateCalculator,
-} from "./wickedAndGateCalculation.js";
+} from "./calculators/wickedAndGateCalculation.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
