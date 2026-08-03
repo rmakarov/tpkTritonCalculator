@@ -1,253 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="X-Content-Security-Policy"
+			content="default-src 'self'; script-src 'self'; style-src 'self'"
+		/>
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* ws://localhost:*; style-src 'self' 'unsafe-inline';"
+		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>TPK Triton Calculator</title>
+	</head>
+	<body>
+		<header class="page-header">
+			<h1>TPK Triton Calculator</h1>
+		</header>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* ws://localhost:*; style-src 'self' 'unsafe-inline';" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>TPK Triton Calculator</title>
-    <link rel="stylesheet" href="/src/renderer/styles.css" />
-    <link rel="stylesheet" href="/src/renderer/calculator.css" />
-    <link rel="stylesheet" href="/src/renderer/print.css" />
-    <link rel="stylesheet" href="/src/renderer/customAutocomplete.css" />
-</head>
-<body>
-    <header class="page-header">
-        <h1>TPK Triton Calculator</h1>
-    </header>
+		<div class="layout">
+			<div class="tab-bar">
+				<nav class="tabs" aria-label="Разделы">
+					<button class="tab is-active" type="button" data-tab="home">
+						Главная
+					</button>
+					<button class="tab" type="button" data-tab="gate">
+						Расчёт калитки / ворот
+					</button>
+				</nav>
+			</div>
 
-    <div class="layout">
-        <div class="tab-bar">
-            <nav class="tabs" aria-label="Разделы">
-                <button class="tab is-active" type="button" data-tab="home">
-                    Главная
-                </button>
-                <button class="tab" type="button" data-tab="gate">
-                    Расчёт калитки / ворот
-                </button>
-            </nav>
-        </div>
+			<main class="content">
+				<p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
+				<section class="tab-panel" id="home" aria-labelledby="home-title">
+					<h2 id="home-title">Главная</h2>
+					<p class="placeholder">Выберите файл с исходными данными.</p>
+					<div class="field-row">
+						<div class="import">
+							<h2>Импорт данных</h2>
+							<input
+								type="file"
+								name="xlfile"
+								id="xlf"
+								accept=".xlsx,.xls"
+								hidden
+							/>
+							<label for="xlf" class="custom-file-button"
+								>Загрузить прайс</label
+							>
+							<span id="file-name" class="file-name">Файл не выбран</span>
 
-        <main class="content">
-            <p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
-            <section class="tab-panel" id="home" aria-labelledby="home-title">
-                <h2 id="home-title">Главная</h2>
-                <p class="placeholder">Выберите файл с исходными данными.</p>
+							<pre id="output"></pre>
+						</div>
+						<div>
+							<button id="help-btn" class="iconButton">
+								<img src="/assets/help24dpGreen.svg" alt="Помощь" />
+							</button>
+						</div>
+					</div>
+				</section>
 
-                <div class="import">
-                    <h2>Импорт данных</h2>
-                    <input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" />
-                    <pre id="output"></pre>
-                </div>
-            </section>
+				<section
+					class="tab-panel"
+					id="gate"
+					aria-labelledby="gate-title"
+					hidden
+				>
+					<h2 id="gate-title">Расчёт калитки</h2>
 
-        <section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
-        <h2 id="gate-title">Расчёт калитки</h2>
+					<div class="calculator-choice">
+						<label class="calculator-choice__option">
+							<input
+								type="radio"
+								name="calculator-type"
+								value="wicket"
+								checked
+							/>
+							<span>Расчет калитки</span>
+						</label>
 
-        <div class="calculator-choice">
-            <label class="calculator-choice__option">
-                <input type="radio" name="calculator-type" value="wicket" checked/>
-                <span>Расчет калитки</span>
-            </label>
+						<label class="calculator-choice__option">
+							<input type="radio" name="calculator-type" value="gate" />
+							<span>Расчет ворот</span>
+						</label>
 
-            <label class="calculator-choice__option">
-                <input type="radio" name="calculator-type" value="gate"/>
-                <span>Расчет ворот</span>
-            </label>
+						<label class="calculator-choice__markup">
+							<input
+								id="calculator-markup"
+								class="text-input"
+								type="number"
+								min="1"
+								max="1000"
+								step="1"
+								placeholder="0"
+							/>
+							<span>Наценка (от 1 до 1000 %)</span>
+						</label>
+					</div>
 
-            <label class="calculator-choice__markup">
-            <input class="text-input" type="number"/>
-            <span>Наценка (%)</span>
-            </label>
-        </div>
+					<div
+						class="calculator-mount"
+						id="calculator-mount"
+						aria-live="polite"
+					></div>
 
-        <div class="calculator-mount" id="calculator-mount" aria-live="polite"></div>
+					<div id="materials-section">
+						<div class="space-between grey-panel" id="addItemAndPrintSection">
+							<div class="field-row">
+								<label for="addItemButton">Добавить позицию</label>
+								<button class="iconButton" id="addItemButton" type="button">
+									<img src="/assets/addIcon.svg" alt="Добавить позицию" />
+								</button>
+							</div>
+							<div class="field-row">
+								<label for="printButton">Печать</label>
+								<button class="iconButton" id="printButton" type="button">
+									<img src="/assets/pdfIcon.svg" alt="Печать" />
+								</button>
+							</div>
+						</div>
+						<div class="grey-panel" id="containerTableOfMaterials">
+							<table class="mainTable">
+								<thead>
+									<tr>
+										<th>П.н</th>
+										<th>Наименование</th>
+										<th>Количество</th>
+										<th>Цена, руб</th>
+										<th>Сумма, руб</th>
+										<th class="delete-item-column">Удалить позицию</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+							<div><p id="totalSumm">Итого:</p></div>
+							<div class="form-details">
+								<div class="field-row">
+									<label for="deliveryAddress">Адрес объекта / доставки:</label>
+									<input id="deliveryAddress" class="text-input" type="text" />
+								</div>
+								<div class="field-row">
+									<label for="customerName"
+										>Заказчик (ФИО / Организация):</label
+									>
+									<input id="customerName" class="text-input" type="text" />
+								</div>
+								<div class="field-row">
+									<label for="deliveryDeadline"
+										>Срок выполнения / доставки:</label
+									>
+									<input id="deliveryDeadline" class="text-input" type="text" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+		<div id="notification" class="notification hidden"></div>
 
-        <div id="materials-section">
-            <div class="space-between grey-panel" id="addItemAndPrintSection">
-                <div class="field-row">
-                    <label for="addItemButton">Добавить позицию</label>
-                    <button class="iconButton" id="addItemButton" type="button">
-                        <img src="/assets/addIcon.svg" alt="Добавить позицию" />
-                    </button>
-                </div>
-                <div class="field-row">
-                    <label for="printButton">Печать</label>
-                    <button class="iconButton" id="printButton" type="button">
-                        <img src="/assets/pdfIcon.svg" alt="Печать" />
-                    </button>
-                </div>
-            </div>
-            <div class="grey-panel" id="containerTableOfMaterials">
-                <table class="mainTable">
-                        <thead>
-                            <tr>
-                                <th>П.н</th>
-                                <th>Наименование</th>
-                                <th>Количество</th>
-                                <th>Цена, руб</th>
-                                <th>Сумма, руб</th>
-                                <th class="delete-item-column">Удалить позицию</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                </table>
-                <div class="form-details">
-                    <div class="field-row">
-                        <label for="deliveryAddress">Адрес объекта / доставки:</label>
-                        <input id="deliveryAddress" class="text-input" type="text"/>
-                    </div>
-                    <div class="field-row">
-                        <label for="customerName">Заказчик (ФИО / Организация):</label>
-                        <input id="customerName" class="text-input" type="text"/>
-                    </div>
-                    <div class="field-row">
-                        <label for="deliveryDeadline">Срок выполнения / доставки:</label>
-                        <input id="deliveryDeadline" class="text-input" type="text"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </section>
-        </main>
-    </div>
-
-    <dialog id="addItemDialog" class="modal">
-        <form method="dialog" id="addItemForm">
-            <div class="modal-header">
-                <h3>Добавить позицию</h3>
-                <button type="button" class="close-btn" id="closeModalBtn">✕</button>
-            </div>
-                
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="itemName">Наименование:</label>
-                    <input type="search" id="itemName" class="text-input" name="itemName" placeholder="Поиск товара..." required>
-                </div>
-                    
-                <div class="form-group">
-                    <label for="itemQuantity">Количество:</label>
-                    <input type="number" id="itemQuantity" class="text-input" name="itemQuantity" min="1" value="1" required>
-                </div>
-            </div>
-                
-            <div class="modal-footer">
-                <button type="button" id="cancelBtn" class="btn btn-secondary">Отмена</button>
-                <button type="submit" id="addBtn" class="btn btn-primary">Добавить</button>
-            </div>
-        </form>
-    </dialog>
-
-    <template id="wicket-calculator-template">
-        <div class="calculator-card" data-calculator="wicket">
-            <div class="calculator-card__switches">
-                <label class="calculator-card__radio">
-                    <input type="radio" name="wicket-installation" value="posts" checked/>
-                    <span>На столбах</span>
-                </label>
-                <label class="calculator-card__radio">
-                    <input type="radio" name="wicket-installation" value="frame"/>
-                    <span>В раме</span>
-                </label>
-            </div>
-
-            <div class="calculator-fields">
-                <label class="calculator-field calculator-field--short">
-                    <span>Ширина</span>
-                    <input id="wicket-width" class="text-input" type="number" min="0" />
-                </label>
-                <label class="calculator-field calculator-field--short">
-                    <span>Высота</span>
-                    <input id="wicket-height" class="text-input" type="number" min="0" />
-                </label>
-                <label class="calculator-field">
-                    <span>Материал каркаса</span>
-                    <input type="search" id="wicket-frame-material" class="text-input calculator-item-from-price" name="wicket-frame-material" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Столбы (Рама)</span>
-                    <input type="search" id="wicket-posts" class="text-input calculator-item-from-price" name="wicket-posts" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Обшивка</span>
-                    <input type="search" id="wicket-cladding" class="text-input calculator-item-from-price" name="wicket-cladding" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Покраска</span>
-                    <input type="search" id="wicket-paint" class="text-input calculator-item-from-price" name="wicket-paint" placeholder="Поиск товара..." required>
-                </label>
-            </div>
-
-            <button class="calculator-card__button" type="button">Рассчитать</button>
-        </div>
-    </template>
-
-    <template id="gate-calculator-template">
-        <div class="calculator-card" data-calculator="gate">
-            <div class="calculator-card__switches">
-                <label class="calculator-card__radio">
-                    <input type="radio" name="gate-opening" value="swing" checked/>
-                    <span>Распашные</span>
-                </label>
-                <label class="calculator-card__radio">
-                    <input type="radio" name="gate-opening" value="sliding"/>
-                    <span>Откатные</span>
-                </label>
-            </div>
-
-            <div class="calculator-fields">
-                <label class="calculator-field calculator-field--short">
-                    <span>Ширина</span>
-                    <input id="gate-width" class="text-input" type="number" min="0" />
-                </label>
-                <label class="calculator-field calculator-field--short">
-                    <span>Высота</span>
-                    <input id="gate-height" class="text-input" type="number" min="0" />
-                </label>
-                <label class="calculator-field">
-                    <span>Столбы</span>
-                    <input type="search" id="gate-posts" class="text-input calculator-item-from-price" name="gate-posts" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Материал каркаса</span>
-                    <input type="search" id="gate-frame-material" class="text-input calculator-item-from-price" name="gate-frame-material" list="gate-frame-material-price-data" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Обшивка</span>
-                    <input type="search" id="gate-cladding" class="text-input calculator-item-from-price" name="gate-cladding" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field">
-                    <span>Покраска</span>
-                    <input type="search" id="gate-paint" class="text-input calculator-item-from-price" name="gate-paint" placeholder="Поиск товара..." required>
-                </label>
-                <label class="calculator-field calculator-field--sliding">
-                    <span>Комплект роликов</span>
-                    <input type="search" id="gate-rollers" class="text-input calculator-item-from-price" name="gate-rollers" placeholder="Поиск товара..." required>
-                    <small>(Только в откатных)</small>
-                </label>
-                <label class="calculator-field calculator-field--sliding">
-                    <span>Рейка</span>
-                    <input type="search" id="gate-rack" class="text-input calculator-item-from-price" name="gate-rack" placeholder="Поиск товара..." required>
-                    <small>(Только в откатных)</small>
-                </label>
-                <label class="calculator-field calculator-field--sliding">
-                    <span>Привод</span>
-                    <input type="search" id="gate-drive" class="text-input calculator-item-from-price" name="gate-drive" placeholder="Поиск товара..." required>
-                    <small>(Только в откатных)</small>
-                </label>
-            </div>
-
-            <button class="calculator-card__button" type="button">Рассчитать</button>
-        </div>
-    </template>
-
-    <script type="module" src="/src/renderer/renderer.js"></script>
-    <script type="module" src="/src/renderer/customAutocomplete.js"></script>
-    <script type="module" src="/src/renderer/priceManager.js"></script>
-    <script type="module" src="/src/renderer/addItemModal.js"></script>
-    <script type="module" src="/src/renderer/tabs.js"></script>
-    <script type="module" src="/src/renderer/calculator.js"></script>
-    <script type="module" src="/src/renderer/pdfPreview.js"></script>
-</body>
+		<script type="module" src="/src/renderer/renderer.js"></script>
+	</body>
 </html>

@@ -1,0 +1,165 @@
+<template id="gate-calculator-template">
+	<div class="calculator-card" data-calculator="gate">
+		<div class="calculator-card__switches">
+			<label class="calculator-card__radio">
+				<input
+					id="swing-gate"
+					type="radio"
+					name="gate-opening"
+					value="swing"
+					checked
+				/>
+				<span>Распашные</span>
+			</label>
+			<label class="calculator-card__radio">
+				<input
+					id="sliding-gate"
+					type="radio"
+					name="gate-opening"
+					value="sliding"
+				/>
+				<span>Откатные</span>
+			</label>
+		</div>
+
+		<div class="calculator-fields">
+			<label class="calculator-field calculator-field--short">
+				<span>Ширина (мм)</span>
+				<select id="gate-width" class="text-input">
+					<option value="" disabled selected>Выберите ширину</option>
+					<option value="2000">2000</option>
+					<option value="2500">2500</option>
+					<option value="3000">3000</option>
+					<option value="3500">3500</option>
+					<option value="4000">4000</option>
+					<option value="4500">4500</option>
+					<option value="5000">5000</option>
+					<option value="5500">5500</option>
+					<option value="6000">6000</option>
+					<option value="6500">6500</option>
+					<option value="7000">7000</option>
+					<option value="7500">7500</option>
+					<option value="8000">8000</option>
+					<option value="8500">8500</option>
+					<option value="9000">9000</option>
+					<option value="9500">9500</option>
+					<option value="10000">10000</option>
+				</select>
+			</label>
+			<label class="calculator-field calculator-field--short">
+				<span>Высота (мм)</span>
+				<select id="gate-height" class="text-input">
+					<option value="" disabled selected>Выберите высоту</option>
+					<option value="1030">1030</option>
+					<option value="1230">1230</option>
+					<option value="1530">1530</option>
+					<option value="1730">1730</option>
+					<option value="1930">1930</option>
+					<option value="2030">2030</option>
+					<option value="2230">2230</option>
+					<option value="2430">2430</option>
+				</select>
+			</label>
+			<label class="calculator-field">
+				<span>Столбы</span>
+				<input
+					type="search"
+					id="gate-posts"
+					class="text-input calculator-item-from-price"
+					name="gate-posts"
+					placeholder="Поиск товара..."
+					required
+				/>
+			</label>
+			<label class="calculator-field">
+				<span>Материал каркаса</span>
+				<input
+					type="search"
+					id="gate-frame-material"
+					class="text-input calculator-item-from-price"
+					name="gate-frame-material"
+					list="gate-frame-material-price-data"
+					placeholder="Поиск товара..."
+					required
+				/>
+			</label>
+			<label class="calculator-field">
+				<span>Обшивка</span>
+				<input
+					type="search"
+					id="gate-cladding"
+					class="text-input calculator-item-from-price"
+					name="gate-cladding"
+					placeholder="Поиск товара..."
+					required
+				/>
+			</label>
+			<label class="calculator-field calculator-field--inactive">
+				<span>Шаг штакетника (мм)</span>
+				<select id="gate-cladding-step" class="text-input" disabled>
+					<option value="10">10</option>
+					<option value="20">20</option>
+					<option value="30" selected>30</option>
+					<option value="40">40</option>
+					<option value="50">50</option>
+					<option value="60">60</option>
+					<option value="70">70</option>
+					<option value="80">80</option>
+					<option value="90">90</option>
+					<option value="100">100</option>
+				</select>
+			</label>
+			<label class="calculator-field">
+				<span>Покраска</span>
+				<input
+					type="search"
+					id="gate-paint"
+					class="text-input calculator-item-from-price"
+					name="gate-paint"
+					placeholder="Поиск товара..."
+					required
+				/>
+			</label>
+			<label class="calculator-field calculator-field--sliding">
+				<span>Комплект роликов</span>
+				<input
+					type="search"
+					id="gate-rollers"
+					class="text-input calculator-item-from-price"
+					name="gate-rollers"
+					placeholder="Поиск товара..."
+					required
+				/>
+				<small>(Только в откатных)</small>
+			</label>
+			<label class="calculator-field calculator-field--sliding">
+				<span>Рейка</span>
+				<input
+					type="search"
+					id="gate-rack"
+					class="text-input calculator-item-from-price"
+					name="gate-rack"
+					placeholder="Поиск товара..."
+					required
+				/>
+				<small>(Только в откатных)</small>
+			</label>
+			<label class="calculator-field calculator-field--sliding">
+				<span>Привод</span>
+				<input
+					type="search"
+					id="gate-drive"
+					class="text-input calculator-item-from-price"
+					name="gate-drive"
+					placeholder="Поиск товара..."
+					required
+				/>
+				<small>(Только в откатных)</small>
+			</label>
+		</div>
+
+		<button class="calculator-card__button" type="button" disabled>
+			Рассчитать
+		</button>
+	</div>
+</template>

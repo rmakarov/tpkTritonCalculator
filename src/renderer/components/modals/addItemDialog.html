@@ -1,0 +1,44 @@
+<dialog id="addItemDialog" class="modal">
+	<form method="dialog" id="addItemForm">
+		<div class="modal-header">
+			<h3>Добавить позицию</h3>
+			<button type="button" class="close-btn modal-close">✕</button>
+		</div>
+
+		<div class="modal-body">
+			<div class="form-group">
+				<label for="itemName">Наименование:</label>
+				<input
+					type="search"
+					id="itemName"
+					class="text-input"
+					name="itemName"
+					placeholder="Поиск товара..."
+					required
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="itemQuantity">Количество:</label>
+				<input
+					type="number"
+					id="itemQuantity"
+					class="text-input"
+					name="itemQuantity"
+					min="1"
+					value="1"
+					required
+				/>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary modal-close">
+				Отмена
+			</button>
+			<button type="submit" id="addBtn" class="btn btn-primary">
+				Добавить
+			</button>
+		</div>
+	</form>
+</dialog>
