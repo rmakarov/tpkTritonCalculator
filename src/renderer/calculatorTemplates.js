@@ -1,5 +1,8 @@
 import { priceManager } from "./priceManager.js";
-import { addMaterialToTable } from "./tableManager.js";
+import {
+	addMaterialToTable,
+	removeAllMaterialsFromTable,
+} from "./tableManager.js";
 import {
 	WicketCalculator,
 	GateCalculator,
@@ -48,6 +51,49 @@ class BaseCalculatorView {
 			this.stepSelect.disabled = true;
 		}
 	}
+
+	initCalcButtonState(
+		widthSelector,
+		heightSelector,
+		buttonSelector = ".calculator-card__button",
+	) {
+		this.widthSelect = this.element.querySelector(widthSelector);
+		this.heightSelect = this.element.querySelector(heightSelector);
+		this.calcButton = this.element.querySelector(buttonSelector);
+
+		if (!this.calcButton) {
+			console.warn("Кнопка расчёта не найдена:", buttonSelector);
+			return;
+		}
+
+		const handleUpdate = () => this.toggleCalcButtonState();
+
+		if (this.widthSelect) {
+			this.widthSelect.addEventListener("input", handleUpdate);
+			this.widthSelect.addEventListener("change", handleUpdate);
+		}
+
+		if (this.heightSelect) {
+			this.heightSelect.addEventListener("input", handleUpdate);
+			this.heightSelect.addEventListener("change", handleUpdate);
+		}
+
+		// Вызываем при инициализации, чтобы учесть состояние при перезагрузке страницы
+		this.toggleCalcButtonState();
+	}
+
+	toggleCalcButtonState() {
+		if (!this.calcButton) return;
+
+		const widthSelected =
+			this.widthSelect && this.widthSelect.value.trim() !== "";
+		const heightSelected =
+			this.heightSelect && this.heightSelect.value.trim() !== "";
+
+		const isReady = widthSelected && heightSelected;
+
+		this.calcButton.disabled = !isReady;
+	}
 }
 
 class WicketCalculatorView extends BaseCalculatorView {
@@ -73,6 +119,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 		await priceManager.ensureLoaded();
 
 		this.initCladdingToggle("#wicket-cladding", "#wicket-cladding-step");
+		this.initCalcButtonState("#wicket-width", "#wicket-height");
 
 		priceManager.populateFilteredAutocomplete(
 			"wicket-frame-material",
@@ -101,6 +148,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 			let calculator = new WicketCalculator(this.element, priceManager);
 			const calculatedItems = calculator.calculate();
 
+			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
 				addMaterialToTable(item.name, item.price, item.quantity);
 			});
@@ -150,6 +198,7 @@ class GateCalculatorView extends BaseCalculatorView {
 		await priceManager.ensureLoaded();
 
 		this.initCladdingToggle("#gate-cladding", "#gate-cladding-step");
+		this.initCalcButtonState("#gate-width", "#gate-height");
 
 		priceManager.populateFilteredAutocomplete("gate-posts", this.element, [
 			"профиль",
@@ -180,7 +229,7 @@ class GateCalculatorView extends BaseCalculatorView {
 			"мотор",
 		]);
 
-		toggleStepFieldState();
+		this.toggleStepFieldState();
 	}
 
 	updateSlidingFields() {
@@ -201,6 +250,7 @@ class GateCalculatorView extends BaseCalculatorView {
 			let calculator = new GateCalculator(this.element, priceManager);
 			const calculatedItems = calculator.calculate();
 
+			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
 				addMaterialToTable(item.name, item.price, item.quantity);
 			});

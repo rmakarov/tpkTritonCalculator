@@ -13,7 +13,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>TPK Triton Calculator</title>
 		<link rel="stylesheet" href="/src/renderer/styles.css" />
-		<link rel="stylesheet" href="/src/renderer/calculator.css" />
+		<link rel="stylesheet" href="/src/renderer/calculatorTemplates.css" />
 		<link rel="stylesheet" href="/src/renderer/print.css" />
 		<link rel="stylesheet" href="/src/renderer/customAutocomplete.css" />
 		<link rel="stylesheet" href="/src/renderer/notification.css" />
@@ -92,7 +92,7 @@
 								step="1"
 								placeholder="0"
 							/>
-							<span>Наценка (от1 до 1000 %)</span>
+							<span>Наценка (от 1 до 1000 %)</span>
 						</label>
 					</div>
 
@@ -314,7 +314,7 @@
 					</label>
 				</div>
 
-				<button class="calculator-card__button" type="button">
+				<button class="calculator-card__button" type="button" disabled>
 					Рассчитать
 				</button>
 			</div>
@@ -480,7 +480,7 @@
 					</label>
 				</div>
 
-				<button class="calculator-card__button" type="button">
+				<button class="calculator-card__button" type="button" disabled>
 					Рассчитать
 				</button>
 			</div>
@@ -491,7 +491,7 @@
 		<script type="module" src="/src/renderer/priceManager.js"></script>
 		<script type="module" src="/src/renderer/addItemModal.js"></script>
 		<script type="module" src="/src/renderer/tabs.js"></script>
-		<script type="module" src="/src/renderer/calculator.js"></script>
+		<script type="module" src="/src/renderer/calculatorTemplates.js"></script>
 		<script type="module" src="/src/renderer/pdfPreview.js"></script>
 	</body>
 </html>
