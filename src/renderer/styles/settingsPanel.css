@@ -1,0 +1,224 @@
+/* Кнопка-переключатель */
+.settings-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: #f0f4f8;
+	border: 1px solid #d0d7de;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 0.95rem;
+	font-weight: 500;
+	transition:
+		background 0.2s,
+		border-color 0.2s;
+}
+
+.settings-toggle-btn:hover {
+	background: #e2e8f0;
+	border-color: #b0bac4;
+}
+
+.settings-toggle-btn--active {
+	background: #dbeafe;
+	border-color: #93c5fd;
+}
+
+.settings-toggle-btn__icon {
+	font-size: 1.1rem;
+}
+
+/* Аккордеон */
+.settings-accordion {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.4s ease-in-out;
+}
+
+.settings-accordion--open {
+	max-height: 600px; /* достаточно большой, чтобы вместить контент */
+}
+
+.settings-accordion__content {
+	padding: 20px;
+	margin-top: 12px;
+	background: #fafbfc;
+	border: 1px solid #e0e4e8;
+	border-radius: 8px;
+}
+
+.settings-placeholder {
+	margin: 0;
+	color: #666;
+	font-style: italic;
+}
+
+/* Загрузка / ошибки */
+.settings-loading,
+.settings-empty,
+.settings-error {
+	color: #666;
+	font-style: italic;
+	margin: 0;
+}
+
+.settings-error {
+	color: #dc3545;
+}
+
+/* Раздел настроек */
+.settings-section {
+	margin-bottom: 24px;
+}
+
+.settings-section:last-child {
+	margin-bottom: 0;
+}
+
+.settings-section__title {
+	margin: 0 0 12px 0;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #333;
+	padding-bottom: 8px;
+	border-bottom: 2px solid #e0e4e8;
+}
+
+/* Поля раздела */
+.settings-section__fields {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.settings-field {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.settings-field__label {
+	flex: 0 0 220px;
+	font-size: 0.9rem;
+	color: #555;
+}
+
+.settings-field__input {
+	flex: 1;
+	max-width: 300px;
+	padding: 8px 12px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	transition: border-color 0.2s;
+}
+
+.settings-field__input:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+/* Чекбокс */
+.settings-field__input[type="checkbox"] {
+	max-width: auto;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+/* Футер аккордеона */
+.settings-accordion__footer {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid #e0e4e8;
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* Кнопки в заголовке раздела */
+.settings-section__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.settings-section__actions {
+	display: flex;
+	gap: 6px;
+}
+
+/* Кнопка удаления поля */
+.settings-field {
+	position: relative;
+}
+
+.settings-field__delete {
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background: transparent;
+	color: #999;
+	font-size: 1rem;
+	cursor: pointer;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+
+.settings-field__delete:hover {
+	background: #fee;
+	color: #dc3545;
+}
+
+/* Общие стили кнопок */
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.85rem;
+	transition:
+		background 0.2s,
+		opacity 0.2s;
+}
+
+.btn--small {
+	padding: 6px 12px;
+	font-size: 0.8rem;
+}
+
+.btn--danger {
+	background: #dc3545;
+	color: #fff;
+}
+
+.btn--danger:hover {
+	background: #c82333;
+}
+
+.btn--secondary {
+	background: #6c757d;
+	color: #fff;
+}
+
+.btn--secondary:hover {
+	background: #545b62;
+}
+
+.btn--icon {
+	padding: 4px 8px;
+	background: transparent;
+	border: 1px solid #ddd;
+	color: #666;
+}
+
+.btn--icon:hover {
+	background: #f5f5f5;
+}
