@@ -15,6 +15,10 @@ import "./styles/notification.css";
 
 import { priceManager } from "./js/priceManager.js";
 import { settingsManager } from "./js/settingsManager.js";
+import {
+	populateSelectsFromSettings,
+	populateLiveSelectsFromSettings,
+} from "./js/populateSelects.js";
 
 // ============================================
 // Функции инициализации
@@ -42,10 +46,6 @@ async function loadJSModules() {
 		import("./js/pdfPreview.js"),
 		import("./js/customAutocomplete.js"),
 	]);
-}
-
-async function settingsIsLoaded() {
-	await settingsManager.ensureLoaded();
 }
 
 function initFileImport() {
@@ -120,8 +120,10 @@ function initFileImport() {
 
 async function bootstrap() {
 	mountComponents(); // HTML в DOM
+	await settingsManager.ensureLoaded();
+	populateSelectsFromSettings();
 	await loadJSModules(); // JS модули находят элементы и работают
-	settingsIsLoaded();
+	populateLiveSelectsFromSettings();
 	initFileImport();
 }
 

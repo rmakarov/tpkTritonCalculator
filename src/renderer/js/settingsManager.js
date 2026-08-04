@@ -58,6 +58,10 @@ class SettingsManager {
 	getValue(sectionKey, fieldKey) {
 		return this.settings?.sections?.[sectionKey]?.fields?.[fieldKey]?.value;
 	}
+
+	getField(sectionKey, fieldKey) {
+		return this.settings?.sections?.[sectionKey]?.fields?.[fieldKey];
+	}
 }
 
 export const settingsManager = new SettingsManager();
