@@ -7,6 +7,7 @@ import gateTemplateHTML from "./components/templates/gateCalculator.html?raw";
 // Импортируем стили (Vite обработает их автоматически)
 import "./styles/variables.css";
 import "./styles/styles.css";
+import "./styles/settingsPanel.css";
 import "./styles/modal.css";
 import "./styles/calculatorTemplates.css";
 import "./styles/print.css";
@@ -45,6 +46,7 @@ async function loadJSModules() {
 		import("./js/calculatorTemplates.js"),
 		import("./js/pdfPreview.js"),
 		import("./js/customAutocomplete.js"),
+		import("./js/settingsAccordion.js").then((m) => m.initSettingsAccordion()),
 	]);
 }
 

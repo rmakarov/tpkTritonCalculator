@@ -60,6 +60,13 @@ ipcMain.handle("settings:canCalculate", async () =>
 	settingsManager.canCalculate(),
 );
 
+ipcMain.handle("settings:removeSection", async (_e, key) =>
+	settingsManager.removeSection(key),
+);
+ipcMain.handle("settings:removeField", async (_e, s, f) =>
+	settingsManager.removeField(s, f),
+);
+
 const createWindow = () => {
 	const iconPath = path.join(__dirname, "../public/assets", "icon.ico");
 	const win = new BrowserWindow({
@@ -93,8 +100,6 @@ const createWindow = () => {
 		// Поэтому мы поднимаемся на одну папку вверх (../)
 		win.loadFile(path.join(__dirname, "../dist/index.html"));
 	}
-
-	//win.webContents.openDevTools(); // REMOVE FOR BUILDING !!!
 };
 
 app.whenReady().then(async () => {

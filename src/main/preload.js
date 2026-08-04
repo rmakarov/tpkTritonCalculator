@@ -27,4 +27,7 @@ contextBridge.exposeInMainWorld("settings", {
 		ipcRenderer.invoke("settings:setValue", sectionKey, fieldKey, value),
 	reset: () => ipcRenderer.invoke("settings:reset"),
 	canCalculate: () => ipcRenderer.invoke("settings:canCalculate"),
+
+	removeSection: (key) => ipcRenderer.invoke("settings:removeSection", key),
+	removeField: (s, f) => ipcRenderer.invoke("settings:removeField", s, f),
 });

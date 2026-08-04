@@ -31,7 +31,6 @@
 			</div>
 
 			<main class="content">
-				<p class="empty-search" id="empty-search" hidden>Ничего не найдено</p>
 				<section class="tab-panel" id="home" aria-labelledby="home-title">
 					<h2 id="home-title">Главная</h2>
 					<p class="placeholder">Выберите файл с исходными данными.</p>
@@ -58,6 +57,44 @@
 							</button>
 						</div>
 					</div>
+					<div
+						class="settings-panel"
+						id="home-settings"
+						aria-labelledby="home-settings-title"
+					>
+						<h3 id="home-settings-title">Настройки</h3>
+
+						<div class="field-row">
+							<button
+								id="settings-toggle-btn"
+								type="button"
+								class="settings-toggle-btn"
+							>
+								<span class="settings-toggle-btn__icon">⚙️</span>
+								<span class="settings-toggle-btn__text"
+									>Показать настройки</span
+								>
+							</button>
+						</div>
+
+						<!-- Выезжающая область -->
+						<div class="settings-accordion" id="settings-accordion">
+							<div class="settings-accordion__content">
+								<p class="settings-placeholder">
+									Здесь будут настройки из settings.json
+								</p>
+							</div>
+							<div class="settings-accordion__footer">
+								<button
+									id="settings-reset-btn"
+									type="button"
+									class="btn btn--danger btn--small"
+								>
+									Сбросить к значениям по умолчанию
+								</button>
+							</div>
+						</div>
+					</div>
 				</section>
 
 				<section
@@ -66,7 +103,7 @@
 					aria-labelledby="gate-title"
 					hidden
 				>
-					<h2 id="gate-title">Расчёт калитки</h2>
+					<h2 id="gate-title">Расчёт калитки / ворот</h2>
 
 					<div class="calculator-choice">
 						<label class="calculator-choice__option">
