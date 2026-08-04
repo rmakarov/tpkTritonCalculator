@@ -143,4 +143,6 @@ export function populateLiveSelectsFromSettings() {
 			fillSelectFromSettings(selectElement, section, field);
 		}
 	}
+
+	console.log("✅ Select'ы в активном DOM заполнены из настроек");
 }
