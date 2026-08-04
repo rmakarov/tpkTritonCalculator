@@ -1,11 +1,37 @@
-// src\renderer\baseCalculator.js
+import { settingsManager } from "../settingsManager";
 
 export default class BaseCalculator {
-	static MATERIAL_WIDTHS = {
-		corrugatedSheet: 1.1, // профлист
-		threeDmesh: 2.5, // 3D сетка
-		fence: 0.11, // штакетник
+	static DEFAULT_CALCULATOR_CONSTANTS = {
+		corrugatedSheetWidth: 1.1, // профлист
+		threeDmeshWidth: 2.5, // 3D сетка
+		fenceWidth: 0.11, // штакетник
+		wicketPostDepth: 1.2, //заглубление столба калитки
+		gatePostDepth: 1.5, //заглубление столба ворот
 	};
+
+	// Getter: возвращает актуальные значения из настроек, конвертируя мм → м
+	static get CALCULATOR_CONSTANTS() {
+		const get = (fieldKey) =>
+			settingsManager.getValue("calculatorConstants", fieldKey);
+
+		const D = BaseCalculator.DEFAULT_CALCULATOR_CONSTANTS;
+
+		// Хелпер: получает значение в мм, возвращает в м (или дефолт)
+		const mmToMeters = (mmValue, defaultMeters) =>
+			mmValue != null ? mmValue / 1000 : defaultMeters;
+
+		return {
+			corrugatedSheetWidth: mmToMeters(
+				get("corrugatedSheetWidth"),
+				D.corrugatedSheetWidth,
+			),
+			threeDmeshWidth: mmToMeters(get("threeDmeshWidth"), D.threeDmeshWidth),
+			fenceWidth: mmToMeters(get("fenceWidth"), D.fenceWidth),
+			wicketPostDepth: mmToMeters(get("wicketPostDepth"), D.wicketPostDepth),
+			gatePostDepth: mmToMeters(get("gatePostDepth"), D.gatePostDepth),
+		};
+	}
+
 	/**
 	 * @param {HTMLElement} rootElement - Корневой элемент формы калькулятора
 	 * @param {Object} priceManager - Объект для получения базовых цен
@@ -13,9 +39,10 @@ export default class BaseCalculator {
 	constructor(rootElement, priceManager) {
 		this.element = rootElement;
 		this.priceManager = priceManager;
-		this.corrugatedSheetWidth = 1.1;
-		this.threeDmeshWidth = 2.5;
-		this.fenceWidth = 0.11;
+	}
+
+	async init() {
+		await settingsManager.ensureLoaded();
 	}
 
 	/**
@@ -29,12 +56,12 @@ export default class BaseCalculator {
 	getMaterialWidth(materialName, fenceStep) {
 		if (materialName.includes("штакет")) {
 			const fenceStepInMeter = fenceStep ? fenceStep / 1000 : 0;
-			return BaseCalculator.MATERIAL_WIDTHS.fence + fenceStepInMeter;
+			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepInMeter;
 		}
 		if (materialName.includes("3D") || materialName.includes("сетк")) {
-			return BaseCalculator.MATERIAL_WIDTHS.threeDmesh;
+			return BaseCalculator.CALCULATOR_CONSTANTS.threeDmeshWidth;
 		}
-		return BaseCalculator.MATERIAL_WIDTHS.corrugatedSheet;
+		return BaseCalculator.CALCULATOR_CONSTANTS.corrugatedSheetWidth;
 	}
 
 	/**

@@ -14,6 +14,7 @@ import "./styles/customAutocomplete.css";
 import "./styles/notification.css";
 
 import { priceManager } from "./js/priceManager.js";
+import { settingsManager } from "./js/settingsManager.js";
 
 // ============================================
 // Функции инициализации
@@ -41,6 +42,10 @@ async function loadJSModules() {
 		import("./js/pdfPreview.js"),
 		import("./js/customAutocomplete.js"),
 	]);
+}
+
+async function settingsIsLoaded() {
+	await settingsManager.ensureLoaded();
 }
 
 function initFileImport() {
@@ -87,16 +92,16 @@ function initFileImport() {
 
 				if (outputEl) {
 					outputEl.textContent = `
-✅ Прайс успешно обновлен!
------------------------------------
-Добавлено: ${result.stats.added}
-Обновлено: ${result.stats.updated}
-Без изменений: ${result.stats.unchanged}
-Ошибок: ${result.stats.errors}
------------------------------------
-Всего позиций: ${result.totalItems}
-Последнее обновление: ${new Date(result.lastUpdate).toLocaleString("ru-RU")}
-                `.trim();
+					✅ Прайс успешно обновлен!
+					-----------------------------------
+					Добавлено: ${result.stats.added}
+					Обновлено: ${result.stats.updated}
+					Без изменений: ${result.stats.unchanged}
+					Ошибок: ${result.stats.errors}
+					-----------------------------------
+					Всего позиций: ${result.totalItems}
+					Последнее обновление: ${new Date(result.lastUpdate).toLocaleString("ru-RU")}
+									`.trim();
 				}
 			} catch (err) {
 				console.error("[RENDERER] Ошибка:", err);
@@ -116,7 +121,8 @@ function initFileImport() {
 async function bootstrap() {
 	mountComponents(); // HTML в DOM
 	await loadJSModules(); // JS модули находят элементы и работают
-	initFileImport(); // Остальная логика
+	settingsIsLoaded();
+	initFileImport();
 }
 
 if (document.readyState === "loading") {

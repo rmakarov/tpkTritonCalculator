@@ -146,6 +146,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 	handleCalculate() {
 		try {
 			let calculator = new WicketCalculator(this.element, priceManager);
+			calculator.init();
 			const calculatedItems = calculator.calculate();
 
 			removeAllMaterialsFromTable();
@@ -248,6 +249,7 @@ class GateCalculatorView extends BaseCalculatorView {
 	handleCalculate() {
 		try {
 			let calculator = new GateCalculator(this.element, priceManager);
+			calculator.init();
 			const calculatedItems = calculator.calculate();
 
 			removeAllMaterialsFromTable();
