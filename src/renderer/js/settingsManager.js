@@ -2,6 +2,29 @@ class SettingsManager {
 	constructor() {
 		this.settings = {};
 		this.isLoaded = false;
+		this.loadPromise = null;
+		this._changeHandlers = []; // ⬅️ массив вместо одной функции
+	}
+
+	/**
+	 * Зарегистрировать обработчик изменений.
+	 * @returns {Function} функция отписки
+	 */
+	onChange(handler) {
+		this._changeHandlers.push(handler);
+		return () => {
+			this._changeHandlers = this._changeHandlers.filter((h) => h !== handler);
+		};
+	}
+
+	_notifyUI(payload) {
+		for (const handler of this._changeHandlers) {
+			try {
+				handler(payload);
+			} catch (err) {
+				console.error("[SettingsManager] Ошибка в обработчике onChange:", err);
+			}
+		}
 	}
 
 	_isSettingsValid(settings) {
@@ -61,6 +84,107 @@ class SettingsManager {
 
 	getField(sectionKey, fieldKey) {
 		return this.settings?.sections?.[sectionKey]?.fields?.[fieldKey];
+	}
+
+	/**
+	 * Установить значение поля и сразу обновить локальный кеш.
+	 */
+	async setValue(sectionKey, fieldKey, value) {
+		// IPC-вызов в main, возвращает обновлённые данные
+		const updatedData = await window.settings.setValue(
+			sectionKey,
+			fieldKey,
+			value,
+		);
+
+		// ⬇️ защита от затирания кеша
+		if (this._isSettingsValid(updatedData)) {
+			this.settings = updatedData;
+		} else {
+			console.warn(
+				"[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён",
+			);
+			// При желании можно сделать reload:
+			// this.isLoaded = false;
+			// await this.ensureLoaded();
+		}
+
+		// Обновляем кеш сразу из ответа main-процесса
+		this._notifyUI({ type: "value", sectionKey, fieldKey, value });
+		this.isLoaded = true;
+		this.loadPromise = null;
+
+		console.log(
+			`[SettingsManager] ✅ Кеш обновлён после setValue: ${sectionKey}.${fieldKey}`,
+		);
+		return this.settings;
+	}
+
+	/**
+	 * Установить элемент options и сразу обновить локальный кеш.
+	 */
+	async setOptionValue(sectionKey, fieldKey, optionIndex, value) {
+		const updatedData = await window.settings.setOptionValue(
+			sectionKey,
+			fieldKey,
+			optionIndex,
+			value,
+		);
+
+		// ⬇️ защита от затирания кеша
+		if (this._isSettingsValid(updatedData)) {
+			this.settings = updatedData;
+		} else {
+			console.warn(
+				"[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён",
+			);
+			// При желании можно сделать reload:
+			// this.isLoaded = false;
+			// await this.ensureLoaded();
+		}
+
+		this._notifyUI({
+			type: "option",
+			sectionKey,
+			fieldKey,
+			optionIndex,
+			value,
+		});
+		this.isLoaded = true;
+		this.loadPromise = null;
+
+		console.log(
+			`[SettingsManager] ✅ Кеш обновлён после setOptionValue: ${sectionKey}.${fieldKey}[${optionIndex}]`,
+		);
+		return this.settings;
+	}
+
+	/**
+	 * Сбросить все настройки и обновить кеш.
+	 */
+	async reset() {
+		const updatedData = await window.settings.reset();
+
+		if (this._isSettingsValid(updatedData)) {
+			this.settings = updatedData;
+		}
+		this.isLoaded = true;
+		this.loadPromise = null;
+		this._notifyUI({ type: "reset" });
+
+		console.log("[SettingsManager] ✅ Кеш обновлён после reset");
+		return this.settings;
+	}
+
+	/**
+	 * Принудительно инвалидировать кеш (на случай, если что-то пошло не так).
+	 */
+	invalidateCache() {
+		this.isLoaded = false;
+		this.settings = {};
+		this.loadPromise = null;
+		this._notifyUI({ type: "invalidate" });
+		console.log("[SettingsManager] 🗑️ Кеш инвалидирован");
 	}
 }
 

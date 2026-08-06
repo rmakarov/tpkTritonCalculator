@@ -1,4 +1,3 @@
-// src/renderer/js/settingsAccordion.js
 import { settingsManager } from "./settingsManager.js";
 
 export function initSettingsAccordion() {
@@ -13,11 +12,8 @@ export function initSettingsAccordion() {
 		return;
 	}
 
-	// Рендерим настройки при инициализации
-	renderSettingsContent(content);
-
 	// Toggle аккордеона
-	toggleBtn.addEventListener("click", () => {
+	toggleBtn.addEventListener("click", async () => {
 		const isOpen = accordion.classList.toggle("settings-accordion--open");
 		toggleBtn.classList.toggle("settings-toggle-btn--active", isOpen);
 
@@ -26,15 +22,22 @@ export function initSettingsAccordion() {
 				? "Скрыть настройки"
 				: "Показать настройки";
 		}
+
+		if (isOpen && !accordion.dataset.rendered) {
+			await renderSettings(content);
+			accordion.dataset.rendered = "true";
+		}
 	});
 
 	// Кнопка сброса
 	resetBtn?.addEventListener("click", async () => {
 		if (confirm("Сбросить все настройки к значениям по умолчанию?")) {
 			try {
-				await window.settings.reset();
-				await renderSettingsContent(content);
+				await settingsManager.reset();
 				console.log("✅ Настройки сброшены");
+				delete accordion.dataset.rendered;
+				await renderSettings(content);
+				accordion.dataset.rendered = "true";
 			} catch (error) {
 				console.error("Ошибка сброса настроек:", error);
 				alert(`Ошибка: ${error.message}`);
@@ -44,195 +47,347 @@ export function initSettingsAccordion() {
 }
 
 // ==========================================
-// Рендеринг настроек
+// Рендер
 // ==========================================
-
-async function renderSettingsContent(container) {
-	container.innerHTML = '<p class="settings-loading">Загрузка настроек...</p>';
-
+async function renderSettings(container) {
 	try {
-		const settings = await settingsManager.ensureLoaded();
+		const settings = await window.settings.get(); // ⬅️ get()
 		container.innerHTML = "";
 
-		if (!settings.sections || Object.keys(settings.sections).length === 0) {
+		const sections = settings?.sections;
+		if (!sections) {
 			container.innerHTML =
-				'<p class="settings-empty">Настройки не найдены</p>';
+				'<p class="settings-placeholder">Настройки пусты</p>';
 			return;
 		}
 
-		for (const [sectionKey, section] of Object.entries(settings.sections)) {
-			container.appendChild(renderSection(sectionKey, section, container));
+		for (const [sectionKey, section] of Object.entries(sections)) {
+			container.appendChild(createSectionElement(sectionKey, section));
 		}
 	} catch (error) {
-		console.error("[SettingsAccordion] Ошибка загрузки настроек:", error);
-		container.innerHTML = `<p class="settings-error">Ошибка: ${error.message}</p>`;
+		console.error("Ошибка загрузки настроек:", error);
+		container.innerHTML = `<p class="settings-placeholder">Ошибка: ${error.message}</p>`;
 	}
 }
 
-function renderSection(sectionKey, section, container) {
-	const sectionEl = document.createElement("div");
-	sectionEl.className = "settings-section";
-
-	// Заголовок раздела с кнопками
-	const header = document.createElement("div");
-	header.className = "settings-section__header";
+function createSectionElement(sectionKey, section) {
+	const wrapper = document.createElement("section");
+	wrapper.className = "settings-section";
 
 	const title = document.createElement("h4");
 	title.className = "settings-section__title";
-	title.textContent = section.title;
+	title.textContent = section.title || sectionKey;
+	wrapper.appendChild(title);
 
-	const actions = document.createElement("div");
-	actions.className = "settings-section__actions";
-
-	// Кнопка удаления раздела
-	const deleteSectionBtn = document.createElement("button");
-	deleteSectionBtn.className = "btn btn--small btn--icon";
-	deleteSectionBtn.textContent = "Удалить раздел";
-	deleteSectionBtn.title = "Удалить раздел";
-	deleteSectionBtn.addEventListener("click", async () => {
-		if (confirm(`Удалить раздел "${section.title}" и все его поля?`)) {
-			try {
-				await window.settings.removeSection(sectionKey);
-				await renderSettingsContent(container);
-			} catch (error) {
-				alert(`Ошибка: ${error.message}`);
-			}
-		}
-	});
-
-	actions.appendChild(deleteSectionBtn);
-	header.append(title, actions);
-	sectionEl.appendChild(header);
-
-	// Поля раздела
-	const fieldsContainer = document.createElement("div");
-	fieldsContainer.className = "settings-section__fields";
+	const list = document.createElement("ul");
+	list.className = "settings-section__list";
 
 	for (const [fieldKey, field] of Object.entries(section.fields)) {
-		fieldsContainer.appendChild(
-			renderField(sectionKey, fieldKey, field, container),
-		);
+		list.appendChild(createFieldElement(sectionKey, fieldKey, field));
 	}
 
-	sectionEl.appendChild(fieldsContainer);
-	return sectionEl;
+	wrapper.appendChild(list);
+	return wrapper;
 }
 
-function renderField(sectionKey, fieldKey, field, container) {
-	const fieldEl = document.createElement("div");
-	fieldEl.className = "settings-field";
+// ==========================================
+// Создание строки поля
+// ==========================================
+function createFieldElement(sectionKey, fieldKey, field) {
+	const li = document.createElement("li");
+	li.className = "settings-field";
 
-	// Label
-	const label = document.createElement("label");
+	// Заголовок поля
+	const label = document.createElement("span");
 	label.className = "settings-field__label";
-	label.textContent = field.title;
-	label.htmlFor = `settings-${sectionKey}-${fieldKey}`;
+	label.textContent = field.title || fieldKey;
 
-	// Input
-	const input = createInput(sectionKey, fieldKey, field);
-	input.id = `settings-${sectionKey}-${fieldKey}`;
-	input.className = "settings-field__input";
+	// Если есть текущее значение (не null), показываем его
+	if (
+		field.value !== null &&
+		field.value !== undefined &&
+		field.type !== "select"
+	) {
+		const valueWrap = document.createElement("span");
+		valueWrap.className = "settings-field__value";
+		const valueText = document.createElement("span");
+		valueText.className = "settings-field__text";
+		valueText.textContent = formatValue(field.value, field);
 
-	// Кнопка удаления поля
-	const deleteBtn = document.createElement("button");
-	deleteBtn.className = "settings-field__delete";
-	deleteBtn.textContent = "×";
-	deleteBtn.title = "Удалить поле";
-	deleteBtn.addEventListener("click", async () => {
-		if (confirm(`Удалить поле "${field.title}"?`)) {
-			try {
-				await window.settings.removeField(sectionKey, fieldKey);
-				await renderSettingsContent(container);
-			} catch (error) {
-				alert(`Ошибка: ${error.message}`);
-			}
+		const editBtn = createEditButton(field.title);
+		editBtn.addEventListener("click", () => {
+			enterEditMode(sectionKey, fieldKey, field, valueWrap, valueText, editBtn);
+		});
+
+		valueWrap.appendChild(valueText);
+		valueWrap.appendChild(editBtn);
+
+		li.appendChild(label);
+		li.appendChild(valueWrap);
+		return li;
+	}
+
+	// ===== Для select: показываем все options отдельными строками =====
+	if (field.type === "select" && Array.isArray(field.options)) {
+		li.classList.add("settings-field--group");
+
+		const header = document.createElement("div");
+		header.className = "settings-field__header";
+		header.appendChild(label);
+
+		// Показываем текущее значение, если задано
+		if (field.value !== null && field.value !== undefined) {
+			const currentBadge = document.createElement("span");
+			currentBadge.className = "settings-field__current";
+			currentBadge.textContent = `Активно: ${field.value}`;
+			header.appendChild(currentBadge);
 		}
-	});
 
-	fieldEl.append(label, input, deleteBtn);
-	return fieldEl;
+		li.appendChild(header);
+
+		// Контейнер для всех вариантов
+		const optionsContainer = document.createElement("div");
+		optionsContainer.className = "settings-field__options";
+
+		field.options.forEach((optionValue, index) => {
+			const optionRow = createOptionRow(
+				sectionKey,
+				fieldKey,
+				field,
+				optionValue,
+				index,
+				li,
+			);
+			optionsContainer.appendChild(optionRow);
+		});
+
+		li.appendChild(optionsContainer);
+		return li;
+	}
+
+	// Простое поле без значения
+	li.appendChild(label);
+	const emptyText = document.createElement("span");
+	emptyText.className = "settings-field__text settings-field__text--empty";
+	emptyText.textContent = "— не задано —";
+	li.appendChild(emptyText);
+
+	return li;
 }
 
-function createInput(sectionKey, fieldKey, field) {
-	// SELECT
-	if (field.type === "select") {
-		const select = document.createElement("select");
+// Создаёт строку для одного элемента options (select-поля)
+function createOptionRow(
+	sectionKey,
+	fieldKey,
+	field,
+	optionValue,
+	index,
+	fieldLi,
+) {
+	const row = document.createElement("div");
+	row.className = "settings-field__option-row";
 
-		if (field.value == null) {
-			const placeholder = document.createElement("option");
-			placeholder.value = "";
-			placeholder.disabled = true;
-			placeholder.selected = true;
-			placeholder.textContent = "Выберите значение";
-			select.appendChild(placeholder);
-		}
+	const valueWrap = document.createElement("span");
+	valueWrap.className = "settings-field__value";
 
-		for (const opt of field.options || []) {
-			const option = document.createElement("option");
-			option.value = opt;
-			option.textContent = opt;
-			if (String(opt) === String(field.value)) {
-				option.selected = true;
-			}
-			select.appendChild(option);
-		}
+	const valueText = document.createElement("span");
+	valueText.className = "settings-field__text";
+	valueText.textContent = formatValue(optionValue, field);
 
-		select.addEventListener("change", () => {
-			const value = select.value === "" ? null : Number(select.value);
-			saveValue(sectionKey, fieldKey, value);
-		});
-
-		return select;
-	}
-
-	// NUMBER
-	if (field.type === "number") {
-		const input = document.createElement("input");
-		input.type = "number";
-		input.value = field.value ?? "";
-
-		input.addEventListener("change", () => {
-			const value = input.value === "" ? null : Number(input.value);
-			saveValue(sectionKey, fieldKey, value);
-		});
-
-		return input;
-	}
-
-	// BOOLEAN
-	if (field.type === "boolean") {
-		const input = document.createElement("input");
-		input.type = "checkbox";
-		input.checked = Boolean(field.value);
-
-		input.addEventListener("change", () => {
-			saveValue(sectionKey, fieldKey, input.checked);
-		});
-
-		return input;
-	}
-
-	// TEXT
-	const input = document.createElement("input");
-	input.type = "text";
-	input.value = field.value ?? "";
-
-	input.addEventListener("change", () => {
-		saveValue(sectionKey, fieldKey, input.value);
+	const editBtn = createEditButton(`Вариант ${index + 1}`);
+	editBtn.addEventListener("click", () => {
+		enterSelectOptionEditMode(
+			sectionKey,
+			fieldKey,
+			field,
+			index,
+			valueWrap,
+			valueText,
+			editBtn,
+			fieldLi,
+		);
 	});
 
-	return input;
+	valueWrap.appendChild(valueText);
+	valueWrap.appendChild(editBtn);
+	row.appendChild(valueWrap);
+
+	return row;
+}
+
+function createEditButton(title = "Редактировать") {
+	const btn = document.createElement("button");
+	btn.type = "button";
+	btn.className = "settings-field__edit";
+	btn.title = title;
+	btn.setAttribute("aria-label", title);
+	btn.innerHTML = "✏️";
+	return btn;
+}
+
+function formatValue(value, field) {
+	if (value === null || value === undefined || value === "") {
+		return "— не задано —";
+	}
+	return String(value);
+}
+
+// ==========================================
+// Редактирование обычных полей
+// ==========================================
+function enterEditMode(
+	sectionKey,
+	fieldKey,
+	field,
+	valueWrap,
+	valueText,
+	editBtn,
+) {
+	valueText.style.display = "none";
+	editBtn.style.display = "none";
+
+	const editor = document.createElement("input");
+	editor.type = field.type === "number" ? "number" : "text";
+	editor.className = "settings-field__input";
+	editor.value = field.value ?? "";
+
+	const exitEdit = async (save) => {
+		if (save) {
+			const newValue =
+				field.type === "number" ? Number(editor.value) : editor.value;
+			if (String(newValue) !== String(field.value)) {
+				field.value = newValue;
+				valueText.textContent = formatValue(field.value, field);
+				await saveValue(sectionKey, fieldKey, newValue);
+			}
+		}
+		editor.remove();
+		valueText.style.display = "";
+		editBtn.style.display = "";
+	};
+
+	editor.addEventListener("keydown", (e) => {
+		if (e.key === "Enter") exitEdit(true);
+		if (e.key === "Escape") exitEdit(false);
+	});
+	editor.addEventListener("blur", () => exitEdit(true));
+
+	valueWrap.insertBefore(editor, valueText);
+	editor.focus();
+	editor.select();
+}
+
+// ==========================================
+// Редактирование элемента options (для select-полей)
+// ==========================================
+function enterSelectOptionEditMode(
+	sectionKey,
+	fieldKey,
+	field,
+	optionIndex,
+	valueWrap,
+	valueText,
+	editBtn,
+	fieldLi,
+) {
+	valueText.style.display = "none";
+	editBtn.style.display = "none";
+
+	const editor = document.createElement("input");
+	editor.type = "number";
+	editor.className = "settings-field__input";
+	editor.value = field.options[optionIndex];
+
+	const exitEdit = async (save) => {
+		if (save) {
+			const newValue = Number(editor.value);
+
+			if (isNaN(newValue)) {
+				alert("Значение должно быть числом");
+			} else if (newValue !== field.options[optionIndex]) {
+				field.options[optionIndex] = newValue;
+				valueText.textContent = formatValue(newValue, field);
+
+				try {
+					await saveOptionValue(sectionKey, fieldKey, optionIndex, newValue);
+					console.log(
+						`✅ Вариант обновлён: ${fieldKey}[${optionIndex}] = ${newValue}`,
+					);
+
+					// ⬇️ Обновляем бейдж «Активно», если поле имеет текущее значение
+					if (field.value !== null && field.value !== undefined) {
+						updateActiveBadge(fieldLi, field);
+					}
+				} catch (error) {
+					console.error(`❌ Ошибка сохранения варианта:`, error);
+					valueText.textContent = formatValue(
+						field.options[optionIndex],
+						field,
+					);
+				}
+			}
+		}
+		editor.remove();
+		valueText.style.display = "";
+		editBtn.style.display = "";
+	};
+
+	editor.addEventListener("keydown", (e) => {
+		if (e.key === "Enter") exitEdit(true);
+		if (e.key === "Escape") exitEdit(false);
+	});
+	editor.addEventListener("blur", () => exitEdit(true));
+
+	valueWrap.insertBefore(editor, valueText);
+	editor.focus();
+	editor.select();
+}
+
+// Функция обновления бейджа «Активно: …»
+function updateActiveBadge(fieldLi, field) {
+	const header = fieldLi.querySelector(".settings-field__header");
+	if (!header) return;
+
+	let badge = header.querySelector(".settings-field__current");
+
+	if (field.value !== null && field.value !== undefined) {
+		if (!badge) {
+			badge = document.createElement("span");
+			badge.className = "settings-field__current";
+			header.appendChild(badge);
+		}
+		badge.textContent = `Активно: ${field.value}`;
+	} else if (badge) {
+		badge.remove();
+	}
 }
 
 // ==========================================
 // Сохранение
 // ==========================================
-
-async function saveValue(sectionKey, fieldKey, value) {
+// Сохранение обычного поля
+async function saveValue(sectionKey, fieldKey, newValue) {
 	try {
-		await window.settings.setValue(sectionKey, fieldKey, value);
-		console.log(`✅ Сохранено: ${sectionKey}.${fieldKey} = ${value}`);
+		await settingsManager.setValue(sectionKey, fieldKey, newValue);
+		console.log(`✅ Сохранено: ${sectionKey}.${fieldKey} = ${newValue}`);
 	} catch (error) {
 		console.error(`❌ Ошибка сохранения ${sectionKey}.${fieldKey}:`, error);
+	}
+}
+
+// Сохранение элемента options
+async function saveOptionValue(sectionKey, fieldKey, optionIndex, newValue) {
+	try {
+		await settingsManager.setOptionValue(
+			sectionKey,
+			fieldKey,
+			optionIndex,
+			newValue,
+		);
+		console.log(
+			`✅ Сохранён вариант: ${sectionKey}.${fieldKey}[${optionIndex}] = ${newValue}`,
+		);
+	} catch (error) {
+		console.error(`❌ Ошибка сохранения варианта:`, error);
 	}
 }

@@ -77,8 +77,8 @@ function createDefaultSettings() {
 						title: "Ширина ворот",
 						type: "select",
 						options: [
-							2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500,
-							6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000,
+							2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000,
+							7500, 8000, 8500, 9000, 9500, 10000,
 						],
 						value: null,
 					},
@@ -221,15 +221,56 @@ class SettingsManager {
 	 * Установить значение одного поля и сохранить на диск.
 	 */
 	async setValue(sectionKey, fieldKey, rawValue) {
+		console.log(
+			"setValue sectionKey: ",
+			sectionKey,
+			"  fieldKey: ",
+			fieldKey,
+			"  rawValue: ",
+			rawValue,
+		);
 		if (!this._initialised) await this.init();
 
 		const section = this.data.sections[sectionKey];
 		if (!section) throw new Error(`Раздел "${sectionKey}" не найден`);
 
 		const field = section.fields[fieldKey];
-		if (!field) throw new Error(`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`);
+		if (!field)
+			throw new Error(
+				`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`,
+			);
 
 		field.value = this._validateValue(field, rawValue);
+
+		await this._saveNow();
+		return this.data;
+	}
+
+	/**
+	 * Установить значение одного элемента массива options и сохранить на диск.
+	 */
+	async setOptionValue(sectionKey, fieldKey, optionIndex, rawValue) {
+		if (!this._initialised) await this.init();
+
+		const section = this.data.sections[sectionKey];
+		if (!section) throw new Error(`Раздел "${sectionKey}" не найден`);
+
+		const field = section.fields[fieldKey];
+		if (!field)
+			throw new Error(
+				`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`,
+			);
+
+		if (!Array.isArray(field.options)) {
+			throw new Error(`Поле "${fieldKey}" не имеет массива options`);
+		}
+		if (optionIndex < 0 || optionIndex >= field.options.length) {
+			throw new Error(`Неверный индекс варианта: ${optionIndex}`);
+		}
+
+		// Валидация как для основного значения
+		const validated = this._validateValue(field, rawValue, { skipOptionsCheck: true });
+		field.options[optionIndex] = validated;
 
 		await this._saveNow();
 		return this.data;
@@ -246,7 +287,8 @@ class SettingsManager {
 			for (const field of Object.values(section.fields)) {
 				// Если есть defaultValue — ставим его.
 				// Если нет (например, ширина ворот) — ставим null.
-				field.value = field.defaultValue !== undefined ? field.defaultValue : null;
+				field.value =
+					field.defaultValue !== undefined ? field.defaultValue : null;
 			}
 		}
 
@@ -262,7 +304,11 @@ class SettingsManager {
 	_isValidStructure(data) {
 		if (!data || typeof data !== "object") return false;
 		if (typeof data.version !== "number") return false;
-		if (!data.sections || typeof data.sections !== "object" || Array.isArray(data.sections)) {
+		if (
+			!data.sections ||
+			typeof data.sections !== "object" ||
+			Array.isArray(data.sections)
+		) {
 			return false;
 		}
 
@@ -270,7 +316,11 @@ class SettingsManager {
 		for (const section of Object.values(data.sections)) {
 			if (!section || typeof section !== "object") return false;
 			if (typeof section.title !== "string") return false;
-			if (!section.fields || typeof section.fields !== "object" || Array.isArray(section.fields)) {
+			if (
+				!section.fields ||
+				typeof section.fields !== "object" ||
+				Array.isArray(section.fields)
+			) {
 				return false;
 			}
 		}
@@ -278,10 +328,11 @@ class SettingsManager {
 		return true;
 	}
 
-	_validateValue(field, rawValue) {
+	_validateValue(field, rawValue, { skipOptionsCheck = false } = {}) {
 		switch (field.type) {
 			case "number": {
-				const value = typeof rawValue === "number" ? rawValue : Number(rawValue);
+				const value =
+					typeof rawValue === "number" ? rawValue : Number(rawValue);
 				if (!Number.isFinite(value)) {
 					throw new Error(`Поле "${field.title}" должно быть числом`);
 				}
@@ -302,7 +353,7 @@ class SettingsManager {
 						value = Number(rawValue);
 					}
 
-					if (!field.options.includes(value)) {
+					if (!field.options.includes(value) && !skipOptionsCheck) {
 						throw new Error(
 							`Поле "${field.title}": значение ${rawValue} отсутствует в списке доступных`,
 						);

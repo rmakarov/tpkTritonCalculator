@@ -38,6 +38,7 @@
 
 .settings-accordion--open {
 	max-height: 600px; /* достаточно большой, чтобы вместить контент */
+	overflow-y: auto;
 }
 
 .settings-accordion__content {
@@ -221,4 +222,69 @@
 
 .btn--icon:hover {
 	background: #f5f5f5;
+}
+
+.settings-field--group {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0.25rem;
+	padding: 0.4rem 0;
+}
+
+.settings-field__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding-bottom: 0.25rem;
+	border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.settings-field__current {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #2f7dff;
+	background: rgba(47, 125, 255, 0.1);
+	padding: 0.1rem 0.5rem;
+	border-radius: 10px;
+	white-space: nowrap;
+}
+
+.settings-field__options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	padding: 0.4rem 0 0.2rem 1rem;
+	margin-top: 0.25rem;
+}
+
+.settings-field__option-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	background: rgba(0, 0, 0, 0.03);
+	border-radius: 6px;
+	padding: 0.15rem 0.25rem 0.15rem 0.6rem;
+	transition: background 0.15s;
+}
+
+.settings-field__option-row:hover {
+	background: rgba(0, 0, 0, 0.06);
+}
+
+.settings-field__option-row .settings-field__text {
+	font-weight: 500;
+	min-width: 50px;
+	text-align: center;
+}
+
+.settings-field__option-row .settings-field__edit {
+	font-size: 0.75rem;
+	padding: 0.1rem 0.25rem;
+}
+
+.settings-field__option-row .settings-field__input {
+	width: 70px;
+	padding: 0.1rem 0.25rem;
+	font-size: 0.85rem;
 }

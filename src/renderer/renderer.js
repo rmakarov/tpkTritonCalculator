@@ -7,7 +7,7 @@ import gateTemplateHTML from "./components/templates/gateCalculator.html?raw";
 // Импортируем стили (Vite обработает их автоматически)
 import "./styles/variables.css";
 import "./styles/styles.css";
-import "./styles/settingsPanel.css";
+import "./styles/settingsAccordion.css";
 import "./styles/modal.css";
 import "./styles/calculatorTemplates.css";
 import "./styles/print.css";
@@ -123,6 +123,10 @@ function initFileImport() {
 async function bootstrap() {
 	mountComponents(); // HTML в DOM
 	await settingsManager.ensureLoaded();
+	settingsManager.onChange(() => {
+		populateSelectsFromSettings();
+		populateLiveSelectsFromSettings();
+	});
 	populateSelectsFromSettings();
 	await loadJSModules(); // JS модули находят элементы и работают
 	populateLiveSelectsFromSettings();

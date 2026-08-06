@@ -54,6 +54,18 @@ ipcMain.handle(
 	},
 );
 
+ipcMain.handle(
+	"settings:setOptionValue",
+	async (_, sectionKey, fieldKey, optionIndex, value) => {
+		return await settingsManager.setOptionValue(
+			sectionKey,
+			fieldKey,
+			optionIndex,
+			value,
+		);
+	},
+);
+
 ipcMain.handle("settings:reset", async () => settingsManager.resetToDefaults());
 
 ipcMain.handle("settings:canCalculate", async () =>

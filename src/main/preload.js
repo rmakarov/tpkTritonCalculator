@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld("settings", {
 		ipcRenderer.invoke("settings:getValue", sectionKey, fieldKey),
 	setValue: (sectionKey, fieldKey, value) =>
 		ipcRenderer.invoke("settings:setValue", sectionKey, fieldKey, value),
+	setOptionValue: (sectionKey, fieldKey, optionIndex, value) =>
+    ipcRenderer.invoke('settings:setOptionValue', sectionKey, fieldKey, optionIndex, value),
 	reset: () => ipcRenderer.invoke("settings:reset"),
 	canCalculate: () => ipcRenderer.invoke("settings:canCalculate"),
 
