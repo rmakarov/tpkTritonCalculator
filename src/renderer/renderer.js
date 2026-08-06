@@ -1,6 +1,7 @@
 // Импортируем HTML-фрагменты как строки (Vite magic ✨)
 import addItemDialogHTML from "./components/modals/addItemDialog.html?raw";
 import helpDialogHTML from "./components/modals/helpDialog.html?raw";
+import confirmDialogHTML from "./components/modals/confirmDialog.html?raw";
 import wicketTemplateHTML from "./components/templates/wicketCalculator.html?raw";
 import gateTemplateHTML from "./components/templates/gateCalculator.html?raw";
 
@@ -29,7 +30,7 @@ function mountComponents() {
 	// 1. HTML в DOM
 	document.body.insertAdjacentHTML(
 		"beforeend",
-		addItemDialogHTML + helpDialogHTML,
+		addItemDialogHTML + helpDialogHTML + confirmDialogHTML,
 	);
 	document.body.insertAdjacentHTML(
 		"beforeend",

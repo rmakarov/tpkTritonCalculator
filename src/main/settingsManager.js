@@ -269,7 +269,9 @@ class SettingsManager {
 		}
 
 		// Валидация как для основного значения
-		const validated = this._validateValue(field, rawValue, { skipOptionsCheck: true });
+		const validated = this._validateValue(field, rawValue, {
+			skipOptionsCheck: true,
+		});
 		field.options[optionIndex] = validated;
 
 		await this._saveNow();
@@ -283,18 +285,44 @@ class SettingsManager {
 	async resetToDefaults() {
 		if (!this._initialised) await this.init();
 
-		for (const section of Object.values(this.data.sections)) {
-			for (const field of Object.values(section.fields)) {
-				// Если есть defaultValue — ставим его.
-				// Если нет (например, ширина ворот) — ставим null.
-				field.value =
-					field.defaultValue !== undefined ? field.defaultValue : null;
+		// Получаем "чистые" дефолты из функции
+		const defaults = createDefaultSettings();
+
+		// Заменяем каждую секцию и каждое поле на дефолтное (глубокое копирование)
+		for (const sectionKey of Object.keys(defaults.sections)) {
+			const defaultSection = defaults.sections[sectionKey];
+			const currentSection = this.data.sections[sectionKey];
+
+			if (!currentSection) continue;
+
+			for (const fieldKey of Object.keys(defaultSection.fields)) {
+				const defaultField = defaultSection.fields[fieldKey];
+				const currentField = currentSection.fields[fieldKey];
+
+				if (!currentField) continue;
+
+				// ⬇️ Сбрасываем И value, И options, И любые другие поля
+				// Глубокое клонирование через JSON, чтобы не было ссылок
+				currentField.value = JSON.parse(
+					JSON.stringify(
+						defaultField.value ?? defaultField.defaultValue ?? null,
+					),
+				);
+
+				if (Array.isArray(defaultField.options)) {
+					currentField.options = JSON.parse(
+						JSON.stringify(defaultField.options),
+					);
+				}
 			}
 		}
 
 		await this._saveNow();
-		console.log("[Settings] 🔄 Настройки сброшены к значениям по умолчанию");
-		return this.data;
+		console.log(
+			"[Settings] 🔄 Настройки полностью сброшены к значениям по умолчанию",
+		);
+
+		return JSON.parse(JSON.stringify(this.data));
 	}
 
 	// ==========================================

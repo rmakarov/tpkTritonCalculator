@@ -1,4 +1,5 @@
 import { settingsManager } from "./settingsManager.js";
+import { confirmModal } from "./modal/modalManager.js";
 
 export function initSettingsAccordion() {
 	const toggleBtn = document.getElementById("settings-toggle-btn");
@@ -31,17 +32,24 @@ export function initSettingsAccordion() {
 
 	// Кнопка сброса
 	resetBtn?.addEventListener("click", async () => {
-		if (confirm("Сбросить все настройки к значениям по умолчанию?")) {
-			try {
-				await settingsManager.reset();
-				console.log("✅ Настройки сброшены");
-				delete accordion.dataset.rendered;
-				await renderSettings(content);
-				accordion.dataset.rendered = "true";
-			} catch (error) {
-				console.error("Ошибка сброса настроек:", error);
-				alert(`Ошибка: ${error.message}`);
-			}
+		const confirmed = await confirmModal({
+			title: "Сброс настроек",
+			message: "Сбросить все настройки к значениям по умолчанию?",
+			okText: "Сбросить",
+			cancelText: "Отмена",
+		});
+
+		if (!confirmed) return;
+
+		try {
+			await settingsManager.reset();
+			console.log("✅ Настройки сброшены");
+			delete accordion.dataset.rendered;
+			await renderSettings(content);
+			accordion.dataset.rendered = "true";
+		} catch (error) {
+			console.error("Ошибка сброса настроек:", error);
+			alert(`Ошибка: ${error.message}`);
 		}
 	});
 }
@@ -51,7 +59,7 @@ export function initSettingsAccordion() {
 // ==========================================
 async function renderSettings(container) {
 	try {
-		const settings = await window.settings.get(); // ⬅️ get()
+		const settings = settingsManager.getAllSettings();
 		container.innerHTML = "";
 
 		const sections = settings?.sections;
