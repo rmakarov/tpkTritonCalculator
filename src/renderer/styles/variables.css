@@ -1,0 +1,86 @@
+:root {
+	/* Прозрачность и базовые цвета */
+	--color-transparent: transparent;
+	--color-white: #ffffff;
+
+	/* Текст */
+	--color-text-main: #1f2937;
+	--color-text-muted: #6b7280;
+	--color-text-secondary: #666666;
+	--color-text-on-colored: var(--color-white);
+	/* Базовый чёрный (для печати) */
+	--color-black: #000000;
+
+	/* Фон */
+	--color-bg-page: var(--color-white);
+	--color-bg-active-tab: #eff6ff;
+	--color-bg-grey-panel: #f9f9f9;
+	--color-bg-table-head: #f4f4f4;
+
+	/* Акцент */
+	--color-accent: #2563eb;
+	--color-accent-bg: var(--color-bg-active-tab);
+
+	/* Рамки */
+	--color-border-header: #d1d5db;
+	--color-border-panel: #e5e7eb;
+	--color-border-input: #cccccc;
+	--color-border-grey-panel: #dddddd;
+	--color-border-table: #333333;
+
+	/* Primary */
+	--color-primary: #007bff;
+	--color-primary-rgb: 0, 123, 255;
+	--color-primary-hover: #0056b3;
+	--color-focus-shadow: rgba(var(--color-primary-rgb), 0.25);
+
+	/* Secondary */
+	--color-secondary: #6c757d;
+	--color-secondary-hover: #545b62;
+
+	/* Success */
+	--color-success: #4caf50;
+	--color-success-hover: #45a049;
+
+	/* Overlay */
+	--color-black-rgb: 0, 0, 0;
+	--color-hover-overlay: rgba(var(--color-black-rgb), 0.08);
+
+	/* Danger / Error */
+	--color-danger: #dc3545;
+	--color-danger-hover: #c82333;
+	--color-danger-bg-hover: #ffeeee;
+
+	/* Фоны для настроек */
+	--color-bg-toggle: #f0f4f8;
+	--color-bg-toggle-hover: #e2e8f0;
+	--color-bg-toggle-active: #dbeafe;
+	--color-bg-panel-light: #fafbfc;
+	--color-bg-hover-light: #f5f5f5;
+
+	/* Рамки для настроек */
+	--color-border-toggle: #d0d7de;
+	--color-border-toggle-hover: #b0bac4;
+	--color-border-toggle-active: #93c5fd;
+	--color-border-light: #e0e4e8;
+
+	/* Текст */
+	--color-text-heading: #333333;
+	--color-text-label: #555555;
+	--color-text-muted-light: #999999;
+
+	/* Badge */
+	--color-badge: #2f7dff;
+	--color-badge-bg: rgba(47, 125, 255, 0.1);
+
+	/* Оверлеи */
+	--color-overlay-light: rgba(0, 0, 0, 0.03);
+	--color-overlay-light-hover: rgba(0, 0, 0, 0.06);
+	--color-border-dashed-light: rgba(0, 0, 0, 0.1);
+
+	/* Фокус */
+	--color-focus-shadow-light: rgba(0, 123, 255, 0.15);
+
+	/* Тени */
+	--color-shadow: rgba(var(--color-black-rgb), 0.15);
+}
