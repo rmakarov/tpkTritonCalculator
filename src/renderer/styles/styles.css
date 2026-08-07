@@ -1,6 +1,6 @@
 :root {
-	color: #1f2937;
-	background: #ffffff;
+	color: var(--color-text-main);
+	background: var(--color-bg-page);
 	font-family: Arial, sans-serif;
 }
 
@@ -16,7 +16,7 @@ body {
 	display: flex;
 	align-items: center;
 	padding: 20px 28px;
-	border-bottom: 1px solid #d1d5db;
+	border-bottom: 1px solid var(--color-border-header);
 }
 
 h1 {
@@ -39,7 +39,7 @@ h1 {
 	justify-content: space-between;
 	gap: 24px;
 	padding: 0 28px;
-	border-bottom: 1px solid #d1d5db;
+	border-bottom: 1px solid var(--color-border-header);
 }
 
 .tab {
@@ -47,18 +47,18 @@ h1 {
 	margin: 0;
 	padding: 14px 18px 12px;
 	border: 0;
-	border-bottom: 3px solid transparent;
+	border-bottom: 3px solid var(--color-transparent);
 	border-radius: 0;
-	background: transparent;
+	background: var(--color-transparent);
 	color: inherit;
 	font-size: 14px;
 	cursor: pointer;
 }
 
 .tab.is-active {
-	color: #2563eb;
-	border-bottom-color: #2563eb;
-	background: #eff6ff;
+	color: var(--color-accent);
+	border-bottom-color: var(--color-accent);
+	background: var(--color-accent-bg);
 }
 
 .content {
@@ -72,7 +72,7 @@ h1 {
 .tab-panel,
 .import {
 	padding: 24px;
-	border: 1px solid #e5e7eb;
+	border: 1px solid var(--color-border-panel);
 	border-radius: 8px;
 }
 
@@ -81,16 +81,15 @@ h1 {
 	margin-top: 0;
 }
 
-.placeholder,
-.empty-search {
-	color: #6b7280;
+.placeholder {
+	color: var(--color-text-muted);
 }
 
 .import {
 	margin-top: 20px;
 	padding: 20px 0 0;
 	border: 0;
-	border-top: 1px solid #e5e7eb;
+	border-top: 1px solid var(--color-border-panel);
 	border-radius: 0;
 }
 
@@ -118,7 +117,7 @@ h1 {
 
 .text-input {
 	padding: 8px 12px;
-	border: 1px solid #ccc;
+	border: 1px solid var(--color-border-input);
 	border-radius: 4px;
 	font-size: 14px;
 	box-sizing: border-box;
@@ -126,17 +125,17 @@ h1 {
 
 .text-input:focus {
 	outline: none;
-	border-color: #007bff;
-	box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px var(--color-focus-shadow);
 }
 
 .grey-panel {
 	min-width: 820px;
 	margin-top: 10px;
 	padding: 10px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--color-border-grey-panel);
 	border-radius: 8px;
-	background: #f9f9f9;
+	background: var(--color-bg-grey-panel);
 }
 
 .mainTable {
@@ -148,10 +147,10 @@ h1 {
 
 .mainTable th,
 .mainTable td {
-	border: 1px solid #333;
+	border: 1px solid var(--color-border-table);
 	padding: 8px 12px;
 	text-align: left;
-	overflow: hidden; /* Скрывает вылезающий контент в узких колонках */
+	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
@@ -159,16 +158,16 @@ h1 {
 .mainTable th:nth-child(1),
 .mainTable td:nth-child(1) {
 	width: 60px;
-	text-align: center; /* Порядковые номера лучше смотрятся по центру */
-	white-space: nowrap; /* Запрещаем перенос текста */
+	text-align: center;
+	white-space: nowrap;
 }
 
 /* 2. Колонка "Наименование" - самая широкая, занимает всё оставшееся место */
 .mainTable th:nth-child(2),
 .mainTable td:nth-child(2) {
-	width: 100%; /* В режиме fixed это означает "забрать всё доступное пространство" */
-	white-space: normal; /* Разрешаем перенос строк для длинных названий */
-	word-wrap: break-word; /* На случай, если попадется одно очень длинное слово без пробелов */
+	width: 100%;
+	white-space: normal;
+	word-wrap: break-word;
 }
 
 /* 3. Колонки с числами (Количество, Цена, Сумма) */
@@ -178,21 +177,21 @@ h1 {
 .mainTable td:nth-child(3),
 .mainTable td:nth-child(4),
 .mainTable td:nth-child(5) {
-	width: auto; /* Ширина подстраивается под содержимое, но не больше доступного */
-	text-align: right; /* Числа и валюты принято выравнивать по правому краю */
-	white-space: nowrap; /* Запрещаем перенос строк, чтобы цифры не ломались */
+	width: auto;
+	text-align: right;
+	white-space: nowrap;
 }
 
 /* 4. Последняя колонка (Удалить позицию) - фиксированная, 60px */
 .mainTable th:nth-child(6),
 .mainTable td:nth-child(6) {
 	width: 60px;
-	text-align: center; /* Кнопку или иконку удаления лучше центрировать */
+	text-align: center;
 	white-space: nowrap;
 }
 
 .mainTable thead {
-	background-color: #f4f4f4;
+	background-color: var(--color-bg-table-head);
 }
 
 .form-details {
@@ -205,17 +204,17 @@ h1 {
 }
 
 .form-details .field-row {
-    display: contents;  /* ← "растворяет" обёртку, дети становятся grid-элементами */
+	display: contents;
 }
 
 .form-details .field-row p {
-    text-align: right;
-    margin: 0;
-    white-space: nowrap;
+	text-align: right;
+	margin: 0;
+	white-space: nowrap;
 }
 
 .iconButton {
-	background: transparent;
+	background: var(--color-transparent);
 	border: none;
 	padding: 4px;
 	cursor: pointer;
@@ -227,7 +226,7 @@ h1 {
 }
 
 .iconButton:hover {
-	background: rgba(0, 0, 0, 0.08);
+	background: var(--color-hover-overlay);
 }
 
 .iconButton:focus {
@@ -252,49 +251,47 @@ h1 {
 }
 
 .btn-primary {
-	background-color: #007bff;
-	color: white;
+	background-color: var(--color-primary);
+	color: var(--color-text-on-colored);
 }
 
 .btn-primary:hover {
-	background-color: #0056b3;
+	background-color: var(--color-primary-hover);
 }
 
 .btn-secondary {
-	background-color: #6c757d;
-	color: white;
+	background-color: var(--color-secondary);
+	color: var(--color-text-on-colored);
 }
 
 .btn-secondary:hover {
-	background-color: #545b62;
+	background-color: var(--color-secondary-hover);
 }
 
-/* Стиль кнопки загрузки */
 .custom-file-button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50; /* Зеленый цвет, поменяйте на свой */
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background-color 0.2s ease;
-    user-select: none; /* Чтобы текст не выделялся при частых кликах */
+	display: inline-block;
+	padding: 10px 20px;
+	background-color: var(--color-success);
+	color: var(--color-text-on-colored);
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+	user-select: none;
 }
 
 .custom-file-button:hover {
-    background-color: #45a049; /* Цвет при наведении */
+	background-color: var(--color-success-hover);
 }
 
 .custom-file-button:active {
-    transform: scale(0.98); /* Легкий эффект нажатия */
+	transform: scale(0.98);
 }
 
-/* Стиль текста с именем файла */
 .file-name {
-    margin-left: 12px;
-    color: #666;
-    font-size: 14px;
-    vertical-align: middle;
+	margin-left: 12px;
+	color: var(--color-text-secondary);
+	font-size: 14px;
+	vertical-align: middle;
 }

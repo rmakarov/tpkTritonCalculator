@@ -20,6 +20,7 @@
 		"build:exe": "npm run build && electron-builder --win",
 		"build:trial": "npm run build && electron-builder --win --config.appId=com.triton.calculator.trial --config.productName=\"Triton Calculator Trial\" --config.directories.output=release-trial --config.extraMetadata.name=tpktritoncalculator-trial --config.extraMetadata.trialBuild=true",
 		"preview": "vite preview",
+		"start:prod": "npm run build && electron .",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"build": {
@@ -54,6 +55,7 @@
 		"vite-plugin-electron-renderer": "^1.0.0"
 	},
 	"dependencies": {
+		"vite-plugin-purgecss": "^0.2.13",
 		"xlsx": "^0.18.5"
 	}
 }

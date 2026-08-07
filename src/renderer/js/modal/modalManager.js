@@ -75,6 +75,65 @@ export function closeModal(dialogEl) {
 }
 
 /**
+ * Открывает модальное окно подтверждения и возвращает Promise<boolean>.
+ * Использует единственный dialog #confirmDialog из DOM.
+ *
+ * @param {object} options
+ * @param {string} [options.title="Подтверждение"]
+ * @param {string} [options.message=""]
+ * @param {string} [options.okText="Подтвердить"]
+ * @param {string} [options.cancelText="Отмена"]
+ * @returns {Promise<boolean>} true — подтверждено, false — отменено
+ */
+export function confirmModal({
+	title = "Подтверждение",
+	message = "",
+	okText = "Подтвердить",
+	cancelText = "Отмена",
+} = {}) {
+	return new Promise((resolve) => {
+		const dialog = document.getElementById("confirmDialog");
+		if (!dialog) {
+			console.warn(
+				"[confirmModal] #confirmDialog не найден, использую window.confirm",
+			);
+			resolve(window.confirm(message));
+			return;
+		}
+
+		// Заполняем содержимое
+		dialog.querySelector(".modal-header h3").textContent = title;
+		dialog.querySelector(".modal-body p").textContent = message;
+
+		const cancelBtn = dialog.querySelector(".modal-footer .modal-close");
+		const okBtn = dialog.querySelector("#confirm-modal-ok");
+		if (cancelBtn) cancelBtn.textContent = cancelText;
+		if (okBtn) okBtn.textContent = okText;
+
+		// Флаг, чтобы не резолвить Promise дважды
+		let resolved = false;
+		const finish = (result) => {
+			if (resolved) return;
+			resolved = true;
+			okBtn?.removeEventListener("click", onOk);
+			resolve(result);
+		};
+
+		const onOk = () => {
+			finish(true);
+			closeModal(dialog);
+		};
+
+		okBtn?.addEventListener("click", onOk);
+
+		openModal(dialog, {
+			// onClose срабатывает при любом закрытии: крестик, фон, Escape, кнопка "Отмена"
+			onClose: () => finish(false),
+		});
+	});
+}
+
+/**
  * Закрывает все открытые модалки.
  */
 export function closeAllModals() {

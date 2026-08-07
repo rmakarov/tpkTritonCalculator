@@ -1,9 +1,8 @@
-/* Базовые стили для модального окна */
 .modal {
 	border: none;
 	border-radius: 8px;
 	padding: 0;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 4px 20px rgba(var(--color-black-rgb), 0.3);
 	max-width: 640px;
 	width: 90%;
 }
@@ -15,7 +14,7 @@ dialog form {
 
 /* Затемняющий фон за модальным окном */
 .modal::backdrop {
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgba(var(--color-black-rgb), 0.5);
 }
 
 .modal-header {
@@ -23,8 +22,8 @@ dialog form {
 	justify-content: space-between;
 	align-items: center;
 	padding: 16px 20px;
-	border-bottom: 1px solid #ddd;
-	background-color: #f8f9fa;
+	border-bottom: 1px solid var(--color-border-grey-panel);
+	background-color: var(--color-bg-grey-panel);
 }
 
 .modal-header h3 {
@@ -37,7 +36,7 @@ dialog form {
 	border: none;
 	font-size: 24px;
 	cursor: pointer;
-	color: #666;
+	color: var(--color-text-secondary);
 	padding: 0;
 	width: 30px;
 	height: 30px;
@@ -47,7 +46,7 @@ dialog form {
 }
 
 .close-btn:hover {
-	color: #333;
+	color: var(--color-text-heading);
 }
 
 .modal-body {
@@ -61,10 +60,10 @@ dialog form {
 	height: auto;
 	display: block;
 	margin: 12px auto 4px;
-	border: 1px solid #d0d0d0;
+	border: 1px solid var(--color-border-header);
 	border-radius: 6px;
-	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
-	background: #fff;
+	box-shadow: 0 1px 5px var(--color-shadow);
+	background: var(--color-white);
 }
 
 .form-group {
@@ -75,7 +74,7 @@ dialog form {
 	display: block;
 	margin-bottom: 6px;
 	font-weight: 500;
-	color: #333;
+	color: var(--color-text-heading);
 }
 
 .form-group input {
@@ -87,6 +86,6 @@ dialog form {
 	justify-content: flex-end;
 	gap: 10px;
 	padding: 16px 20px;
-	border-top: 1px solid #ddd;
-	background-color: #f8f9fa;
+	border-top: 1px solid var(--color-border-grey-panel); /* было #ddd → точное совпадение */
+	background-color: var(--color-bg-grey-panel);
 }

@@ -1,0 +1,304 @@
+/* Кнопка-переключатель */
+.settings-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: var(--color-bg-toggle);
+	border: 1px solid var(--color-border-toggle);
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 0.95rem;
+	font-weight: 500;
+	transition:
+		background 0.2s,
+		border-color 0.2s;
+}
+
+.settings-toggle-btn:hover {
+	background: var(--color-bg-toggle-hover);
+	border-color: var(--color-border-toggle-hover);
+}
+
+.settings-toggle-btn--active {
+	background: var(--color-bg-toggle-active);
+	border-color: var(--color-border-toggle-active);
+}
+
+.settings-toggle-btn__icon {
+	font-size: 1.1rem;
+}
+
+/* Аккордеон */
+.settings-accordion {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.4s ease-in-out;
+}
+
+.settings-accordion--open {
+	max-height: 600px;
+	overflow-y: auto;
+}
+
+.settings-accordion__content {
+	padding: 20px;
+	margin-top: 12px;
+	background: var(--color-bg-panel-light);
+	border: 1px solid var(--color-border-light);
+	border-radius: 8px;
+}
+
+.settings-placeholder {
+	margin: 0;
+	color: var(--color-text-secondary);
+	font-style: italic;
+}
+
+/* Загрузка / ошибки */
+.settings-loading,
+.settings-empty,
+.settings-error {
+	color: var(--color-text-secondary);
+	font-style: italic;
+	margin: 0;
+}
+
+.settings-error {
+	color: var(--color-danger);
+}
+
+/* Раздел настроек */
+.settings-section {
+	margin-bottom: 24px;
+}
+
+.settings-section:last-child {
+	margin-bottom: 0;
+}
+
+.settings-section__title {
+	margin: 0 0 12px 0;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--color-text-heading);
+	padding-bottom: 8px;
+	border-bottom: 2px solid var(--color-border-light);
+}
+
+/* Поля раздела */
+.settings-section__fields {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.settings-field {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 4px;
+}
+
+.settings-field__label {
+	flex: 0 0 220px;
+	font-size: 0.9rem;
+	color: var(--color-text-label);
+}
+
+.settings-field__input {
+	flex: 1;
+	max-width: 300px;
+	padding: 8px 12px;
+	border: 1px solid var(--color-border-input);
+	border-radius: 6px;
+	font-size: 0.9rem;
+	transition: border-color 0.2s;
+}
+
+.settings-field__input:focus {
+	outline: none;
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 2px var(--color-focus-shadow-light);
+}
+
+/* Чекбокс */
+.settings-field__input[type="checkbox"] {
+	max-width: auto;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+/* Футер аккордеона */
+.settings-accordion__footer {
+	margin-top: 20px;
+	margin-bottom: 8px;
+	padding-top: 12px;
+	padding-bottom: 4px;
+	border-top: 1px solid var(--color-border-light);
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* Кнопки в заголовке раздела */
+.settings-section__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.settings-section__actions {
+	display: flex;
+	gap: 6px;
+}
+
+/* Кнопка удаления поля */
+.settings-field {
+	position: relative;
+}
+
+.settings-field__delete {
+	flex-shrink: 0;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background: var(--color-transparent);
+	color: var(--color-text-muted-light);
+	font-size: 1rem;
+	cursor: pointer;
+	border-radius: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+
+.settings-field__delete:hover {
+	background: var(--color-danger-bg-hover);
+	color: var(--color-danger);
+}
+
+/* Общие стили кнопок */
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.85rem;
+	transition:
+		background 0.2s,
+		opacity 0.2s;
+}
+
+.btn--small {
+	padding: 6px 12px;
+	font-size: 0.8rem;
+}
+
+.btn--danger {
+	background: var(--color-danger);
+	color: var(--color-text-on-colored);
+}
+
+.btn--danger:hover {
+	background: var(--color-danger-hover);
+}
+
+.btn--secondary {
+	background: var(--color-secondary);
+	color: var(--color-text-on-colored);
+}
+
+.btn--secondary:hover {
+	background: var(--color-secondary-hover);
+}
+
+.btn--icon {
+	padding: 4px 8px;
+	background: var(--color-transparent);
+	border: 1px solid var(--color-border-grey-panel);
+	color: var(--color-text-secondary);
+}
+
+.btn--icon:hover {
+	background: var(--color-bg-hover-light);
+}
+
+.settings-field--group {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0.5rem;
+	padding: 0.6rem 0;
+}
+
+.settings-field__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding-bottom: 0.4rem;
+	margin-bottom: 0.25rem;
+	border-bottom: 1px dashed var(--color-border-dashed-light);
+}
+
+.settings-field__current {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--color-badge);
+	background: var(--color-badge-bg);
+	padding: 0.1rem 0.5rem;
+	border-radius: 10px;
+	white-space: nowrap;
+}
+
+.settings-field__options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	padding: 0.5rem 0 0.3rem 1rem;
+	margin-top: 0.35rem;
+}
+
+.settings-field__option-row {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	background: var(--color-overlay-light);
+	border-radius: 6px;
+	padding: 0.3rem 0.5rem 0.3rem 0.75rem;
+	transition: background 0.15s;
+}
+
+.settings-field__option-row:hover {
+	background: var(--color-overlay-light-hover);
+}
+
+.settings-field__option-row .settings-field__text {
+	font-weight: 500;
+	min-width: 50px;
+	text-align: center;
+}
+
+.settings-field__option-row .settings-field__edit {
+	font-size: 0.75rem;
+	padding: 0.1rem 0.25rem;
+}
+
+.settings-field__option-row .settings-field__input {
+	width: 70px;
+	padding: 0.1rem 0.25rem;
+	font-size: 0.85rem;
+}
+
+.settings-field__value button {
+	margin-left: 0.5rem;
+	cursor: pointer;
+}
+
+.settings-accordion__footer .btn {
+	margin-top: 0.5rem;
+	margin-right: 0.5rem;
+}

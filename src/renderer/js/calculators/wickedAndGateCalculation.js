@@ -46,14 +46,15 @@ class WicketCalculator extends BaseCalculator {
 			let postsLength;
 			if (inFrame.checked) {
 				// рама калитки + 10см на саму раму
-				postsLength = (width + 0, 1) * 2 + (height + 0, 1) * 2;
+				postsLength = (width + 0.1) * 2 + (height + 0.1) * 2;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postsLength),
 				});
 			} else {
 				// 2 столба по высоте + 1.2 м на заглубление
-				postsLength = (height + 1.2) * 2;
+				postsLength =
+					(height + BaseCalculator.CALCULATOR_CONSTANTS.wicketPostDepth) * 2;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postsLength),
@@ -149,14 +150,15 @@ class GateCalculator extends BaseCalculator {
 			let postLength;
 			if (slidingGate.checked) {
 				// 2 двойных столба выше высоты на 20см с перемычкой 20 см (не заглубляются)
-				((postLength = (height + 0, 2) * 4 + 0), 4);
+				((postLength = (height + 0.2) * 4 + 0), 4);
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),
 				});
 			} else {
 				// 2 столба по высоте + 1.5 м на заглубление
-				postLength = (height + 1.5) * 2;
+				postLength =
+					(height + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),

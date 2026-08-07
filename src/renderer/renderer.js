@@ -1,12 +1,14 @@
 // Импортируем HTML-фрагменты как строки (Vite magic ✨)
 import addItemDialogHTML from "./components/modals/addItemDialog.html?raw";
 import helpDialogHTML from "./components/modals/helpDialog.html?raw";
+import confirmDialogHTML from "./components/modals/confirmDialog.html?raw";
 import wicketTemplateHTML from "./components/templates/wicketCalculator.html?raw";
 import gateTemplateHTML from "./components/templates/gateCalculator.html?raw";
 
 // Импортируем стили (Vite обработает их автоматически)
 import "./styles/variables.css";
 import "./styles/styles.css";
+import "./styles/settingsAccordion.css";
 import "./styles/modal.css";
 import "./styles/calculatorTemplates.css";
 import "./styles/print.css";
@@ -14,6 +16,11 @@ import "./styles/customAutocomplete.css";
 import "./styles/notification.css";
 
 import { priceManager } from "./js/priceManager.js";
+import { settingsManager } from "./js/settingsManager.js";
+import {
+	populateSelectsFromSettings,
+	populateLiveSelectsFromSettings,
+} from "./js/populateSelects.js";
 
 // ============================================
 // Функции инициализации
@@ -23,7 +30,7 @@ function mountComponents() {
 	// 1. HTML в DOM
 	document.body.insertAdjacentHTML(
 		"beforeend",
-		addItemDialogHTML + helpDialogHTML,
+		addItemDialogHTML + helpDialogHTML + confirmDialogHTML,
 	);
 	document.body.insertAdjacentHTML(
 		"beforeend",
@@ -40,6 +47,7 @@ async function loadJSModules() {
 		import("./js/calculatorTemplates.js"),
 		import("./js/pdfPreview.js"),
 		import("./js/customAutocomplete.js"),
+		import("./js/settingsAccordion.js").then((m) => m.initSettingsAccordion()),
 	]);
 }
 
@@ -87,16 +95,16 @@ function initFileImport() {
 
 				if (outputEl) {
 					outputEl.textContent = `
-✅ Прайс успешно обновлен!
------------------------------------
-Добавлено: ${result.stats.added}
-Обновлено: ${result.stats.updated}
-Без изменений: ${result.stats.unchanged}
-Ошибок: ${result.stats.errors}
------------------------------------
-Всего позиций: ${result.totalItems}
-Последнее обновление: ${new Date(result.lastUpdate).toLocaleString("ru-RU")}
-                `.trim();
+					✅ Прайс успешно обновлен!
+					-----------------------------------
+					Добавлено: ${result.stats.added}
+					Обновлено: ${result.stats.updated}
+					Без изменений: ${result.stats.unchanged}
+					Ошибок: ${result.stats.errors}
+					-----------------------------------
+					Всего позиций: ${result.totalItems}
+					Последнее обновление: ${new Date(result.lastUpdate).toLocaleString("ru-RU")}
+									`.trim();
 				}
 			} catch (err) {
 				console.error("[RENDERER] Ошибка:", err);
@@ -115,8 +123,15 @@ function initFileImport() {
 
 async function bootstrap() {
 	mountComponents(); // HTML в DOM
+	await settingsManager.ensureLoaded();
+	settingsManager.onChange(() => {
+		populateSelectsFromSettings();
+		populateLiveSelectsFromSettings();
+	});
+	populateSelectsFromSettings();
 	await loadJSModules(); // JS модули находят элементы и работают
-	initFileImport(); // Остальная логика
+	populateLiveSelectsFromSettings();
+	initFileImport();
 }
 
 if (document.readyState === "loading") {
