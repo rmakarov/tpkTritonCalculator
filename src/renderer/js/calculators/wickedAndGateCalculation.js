@@ -150,7 +150,7 @@ class GateCalculator extends BaseCalculator {
 			let postLength;
 			if (slidingGate.checked) {
 				// 2 двойных столба выше высоты на 20см с перемычкой 20 см (не заглубляются)
-				((postLength = (height + 0.2) * 4 + 0), 4);
+				postLength = (height + 0.2) * 4 + 0.4;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),
