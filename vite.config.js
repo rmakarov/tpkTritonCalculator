@@ -21,5 +21,6 @@ export default defineConfig(({ mode }) => ({
 		outDir: "dist",
 		emptyOutDir: true,
 		minify: mode === "production",
+		sourcemap: false,
 	},
 }));

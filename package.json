@@ -40,7 +40,8 @@
 		],
 		"win": {
 			"target": "nsis",
-			"icon": "public/assets/icon.ico"
+			"icon": "public/assets/icon.ico",
+			"compression": "maximum"
 		},
 		"nsis": {
 			"oneClick": false,
