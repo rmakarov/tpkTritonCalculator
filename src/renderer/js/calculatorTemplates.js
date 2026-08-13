@@ -1,6 +1,7 @@
 import { priceManager } from "./priceManager.js";
 import { addMaterialToTable, removeAllMaterialsFromTable } from "./tableManager.js";
-import { WicketCalculator, GateCalculator } from "./calculators/wickedAndGateCalculation.js";
+import { WicketCalculator } from "./calculators/wicketCalculator.js";
+import { GateCalculator } from "./calculators/gateCalculator.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
