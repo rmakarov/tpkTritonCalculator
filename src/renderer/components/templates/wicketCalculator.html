@@ -2,22 +2,11 @@
 	<div class="calculator-card" data-calculator="wicket">
 		<div class="calculator-card__switches">
 			<label class="calculator-card__radio">
-				<input
-					id="wicked-in-post"
-					type="radio"
-					name="wicket-installation"
-					value="posts"
-					checked
-				/>
+				<input id="wicked-in-post" type="radio" name="wicket-installation" value="posts" checked />
 				<span>На столбах</span>
 			</label>
 			<label class="calculator-card__radio">
-				<input
-					id="wicked-in-frame"
-					type="radio"
-					name="wicket-installation"
-					value="frame"
-				/>
+				<input id="wicked-in-frame" type="radio" name="wicket-installation" value="frame" />
 				<span>В раме</span>
 			</label>
 		</div>
@@ -36,37 +25,81 @@
 				</select>
 			</label>
 			<label class="calculator-field">
+				<span>Тип калитки</span>
+				<div class="field-row radio-cards-box">
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type1" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type1.svg" alt="калитка тип 1" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type2" checked />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type2.svg" alt="калитка тип 2" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type3" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type3.svg" alt="калитка тип 3" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type4" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type4.svg" alt="калитка тип 4" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type5" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type5.svg" alt="калитка тип 5" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type6" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type6.svg" alt="калитка тип 6" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type7" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type7.svg" alt="калитка тип 7" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type8" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type8.svg" alt="калитка тип 8" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type9" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type9.svg" alt="калитка тип 9" />
+						</div>
+					</label>
+					<label class="radio-card">
+						<input class="hidden" type="radio" name="choice" value="wicket-type10" />
+						<div class="radio-card-box" type="button">
+							<img src="./assets/wicket/wicket-type10.svg" alt="калитка тип 10" />
+						</div>
+					</label>
+				</div>
+			</label>
+			<label class="calculator-field">
 				<span>Материал каркаса</span>
-				<input
-					type="search"
-					id="wicket-frame-material"
-					class="text-input calculator-item-from-price"
-					name="wicket-frame-material"
-					placeholder="Поиск товара..."
-					required
-				/>
+				<input type="search" id="wicket-frame-material" class="text-input calculator-item-from-price" name="wicket-frame-material" placeholder="Поиск товара..." required />
 			</label>
 			<label class="calculator-field">
 				<span>Столбы (Рама)</span>
-				<input
-					type="search"
-					id="wicket-posts"
-					class="text-input calculator-item-from-price"
-					name="wicket-posts"
-					placeholder="Поиск товара..."
-					required
-				/>
+				<input type="search" id="wicket-posts" class="text-input calculator-item-from-price" name="wicket-posts" placeholder="Поиск товара..." required />
 			</label>
 			<label class="calculator-field">
 				<span>Обшивка</span>
-				<input
-					type="search"
-					id="wicket-cladding"
-					class="text-input calculator-item-from-price"
-					name="wicket-cladding"
-					placeholder="Поиск товара..."
-					required
-				/>
+				<input type="search" id="wicket-cladding" class="text-input calculator-item-from-price" name="wicket-cladding" placeholder="Поиск товара..." required />
 			</label>
 			<label class="calculator-field calculator-field--inactive">
 				<span>Шаг штакетника (мм)</span>
@@ -74,19 +107,10 @@
 			</label>
 			<label class="calculator-field">
 				<span>Покраска</span>
-				<input
-					type="search"
-					id="wicket-paint"
-					class="text-input calculator-item-from-price"
-					name="wicket-paint"
-					placeholder="Поиск товара..."
-					required
-				/>
+				<input type="search" id="wicket-paint" class="text-input calculator-item-from-price" name="wicket-paint" placeholder="Поиск товара..." required />
 			</label>
 		</div>
 
-		<button class="calculator-card__button" type="button" disabled>
-			Рассчитать
-		</button>
+		<button class="calculator-card__button" type="button" disabled>Рассчитать</button>
 	</div>
 </template>
