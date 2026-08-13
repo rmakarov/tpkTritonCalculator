@@ -8,8 +8,18 @@ class WicketCalculator extends BaseCalculator {
 		super(rootElement, priceManager);
 	}
 
+	// метод для получения выбранного типа калитки
+	getSelectedType() {
+		const checkedInput = this.element.querySelector('input[name="wicket-type"]:checked');
+		return checkedInput ? checkedInput.value : null;
+	}
+
 	calculateRawMaterials() {
 		const materials = [];
+
+		// выбранный тип
+		this.selectedType = this.getSelectedType();
+		console.log("Выбран тип калитки:", this.selectedType);
 
 		// 1. Получаем размеры в миллиметрах из выпадающего списка
 		const widthMm = parseFloat(this.getVal("#wicket-width")) || 0;
@@ -53,8 +63,7 @@ class WicketCalculator extends BaseCalculator {
 				});
 			} else {
 				// 2 столба по высоте + 1.2 м на заглубление
-				postsLength =
-					(height + BaseCalculator.CALCULATOR_CONSTANTS.wicketPostDepth) * 2;
+				postsLength = (height + BaseCalculator.CALCULATOR_CONSTANTS.wicketPostDepth) * 2;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postsLength),
@@ -64,14 +73,8 @@ class WicketCalculator extends BaseCalculator {
 
 		if (claddingMaterial) {
 			// Количество материала обшивки
-			const materialWidth = this.getMaterialWidth(
-				claddingMaterial,
-				claddingMaterialStep,
-			);
-			const finalWidth =
-				claddingMaterial.includes("штакет") && claddingMaterialStep
-					? width + claddingMaterialStep / 1000
-					: width;
+			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep);
+			const finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width + claddingMaterialStep / 1000 : width;
 			const claddingCount = finalWidth / materialWidth;
 			// Количество  материала  округляем в  большую  сторону
 			materials.push({
@@ -97,8 +100,18 @@ class GateCalculator extends BaseCalculator {
 		super(rootElement, priceManager);
 	}
 
+	// метод для получения выбранного типа ворот
+	getSelectedType() {
+		const checkedInput = this.element.querySelector('input[name="gate-type"]:checked');
+		return checkedInput ? checkedInput.value : null;
+	}
+
 	calculateRawMaterials() {
 		const materials = [];
+
+		// выбранный тип
+		this.selectedType = this.getSelectedType();
+		console.log("Выбран тип ворот:", this.selectedType);
 
 		// 1. Получаем размеры в миллиметрах из выпадающего списка
 		const widthMm = parseFloat(this.getVal("#gate-width")) || 0;
@@ -130,8 +143,7 @@ class GateCalculator extends BaseCalculator {
 				// Периметр (в метрах) + вертикальная поперечина + хвостовая часть ворот для противовеса (50% от проема)
 				// + 3 диагонали + усилители хвостовой части (2  шт равны  как  раз высоте ворот)
 				const diagonal = Math.sqrt(height * height + (width / 2) * (width / 2));
-				frameLength =
-					width * 2 + height * 2 + height + width / 2 + diagonal * 3 + height;
+				frameLength = width * 2 + height * 2 + height + width / 2 + diagonal * 3 + height;
 				materials.push({
 					name: frameMaterial,
 					quantity: Math.ceil(frameLength),
@@ -157,8 +169,7 @@ class GateCalculator extends BaseCalculator {
 				});
 			} else {
 				// 2 столба по высоте + 1.5 м на заглубление
-				postLength =
-					(height + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
+				postLength = (height + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),
@@ -167,26 +178,17 @@ class GateCalculator extends BaseCalculator {
 		}
 
 		if (claddingMaterial) {
-			const materialWidth = this.getMaterialWidth(
-				claddingMaterial,
-				claddingMaterialStep,
-			);
+			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep);
 
 			let finalWidth;
 			let claddingCount;
 			if (slidingGate.checked) {
 				// расчет штакетника на всю ширину ворот
-				finalWidth =
-					claddingMaterial.includes("штакет") && claddingMaterialStep
-						? width + claddingMaterialStep / 1000
-						: width;
+				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width + claddingMaterialStep / 1000 : width;
 				claddingCount = Math.ceil(finalWidth / materialWidth);
 			} else {
 				// расчет штакетника на одну  створку ворот и * 2;
-				finalWidth =
-					claddingMaterial.includes("штакет") && claddingMaterialStep
-						? width / 2 + claddingMaterialStep / 1000
-						: width / 2;
+				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width / 2 + claddingMaterialStep / 1000 : width / 2;
 				claddingCount = Math.ceil(finalWidth / materialWidth) * 2;
 			}
 			// Количество  материала  округляем в  большую  сторону
