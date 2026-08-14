@@ -131,13 +131,16 @@ export default class BaseCalculator {
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
-	getPriceWithMarkup(materialName) {
+	getPriceWithMarkup(materialName, finalPrice) {
+		console.log("getPriceWithMarkup materialName: ", materialName);
+		console.log("getPriceWithMarkup finalPrice: ", finalPrice);
 		const basePrice = this.priceManager.getPrice(materialName);
 		if (!basePrice) return null;
 
 		const markup = this.getMarkup();
+		// Если finalPrice  - то наценку  не  добавляемж
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))
-		return parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
+		return finalPrice ? basePrice : parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
 	}
 
 	/**
@@ -160,7 +163,7 @@ export default class BaseCalculator {
 		}
 
 		return rawMaterials.map((mat) => {
-			const finalPrice = this.getPriceWithMarkup(mat.name);
+			const finalPrice = this.getPriceWithMarkup(mat.name, mat.finalPrice);
 
 			return {
 				name: mat.name,

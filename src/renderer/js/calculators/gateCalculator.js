@@ -93,7 +93,7 @@ class GateCalculator extends BaseCalculator {
 		}
 
 		if (paintMaterial) {
-			materials.push({ name: paintMaterial, quantity: 1 });
+			materials.push({ name: paintMaterial, quantity: 1, finalPrice: true });
 		}
 
 		// Ролики, зуб. рейка, привод обычно идут в штуках

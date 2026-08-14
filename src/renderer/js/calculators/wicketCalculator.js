@@ -86,7 +86,7 @@ class WicketCalculator extends BaseCalculator {
 		}
 
 		if (paintMaterial) {
-			materials.push({ name: paintMaterial, quantity: 1 });
+			materials.push({ name: paintMaterial, quantity: 1, finalPrice: true });
 		}
 
 		// Фильтруем материалы, у которых есть цена в прайсе
