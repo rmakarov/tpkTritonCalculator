@@ -99,16 +99,13 @@ class PriceManager {
 		console.log("[PriceManager] 🔄 Кэш очищен, автокомплиты опустошены");
 	}
 
-	/*resetCache() {
-		this.isLoaded = false;
-		this.loadPromise = null;
-		this.itemsArray = [];
-		this.itemsMap.clear();
-		// Также очищаем инстансы автокомплита при сбросе кэша
-		this.autocompletes.forEach((autocomplete) => autocomplete.destroy());
-		this.autocompletes.clear();
-		console.log("[PriceManager] 🔄 Кэш и автокомплиты очищены.");
-	}*/
+	clearAutocompleteInputs() {
+		this.autocompletes.forEach((autocomplete) => {
+			if (autocomplete.input) {
+				autocomplete.input.value = "";
+			}
+		});
+	}
 
 	// 🔥 НОВЫЙ МЕТОД: Мягкое обновление данных без уничтожения интерфейса
 	async refreshAll() {

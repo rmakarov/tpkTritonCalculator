@@ -43,6 +43,7 @@ export function initSettingsAccordion() {
 
 		try {
 			await priceManager.resetCache();
+			priceManager.clearAutocompleteInputs();
 			console.log("✅ Кэш прайс листа очищен");
 		} catch (error) {
 			console.error("Ошибка очистки кэша прайс листа:", error);
