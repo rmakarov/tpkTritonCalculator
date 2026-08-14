@@ -25,16 +25,12 @@ class PriceManager {
 		// 3. Иначе запускаем загрузку
 		this.loadPromise = (async () => {
 			try {
-				console.log(
-					"[PriceManager] 🔄 Запрос свежих данных из Main процесса...",
-				);
+				console.log("[PriceManager] 🔄 Запрос свежих данных из Main процесса...");
 				const rawItems = await window.excelAPI.getAllItems();
 
 				// 4. КРИТИЧЕСКИ ВАЖНО: Если данных нет, НЕ помечаем isLoaded как true
 				if (!rawItems || rawItems.length === 0) {
-					console.warn(
-						"[PriceManager] ⚠️ Прайс-лист пуст. Ожидаем загрузки Excel-файла пользователем.",
-					);
+					console.warn("[PriceManager] ⚠️ Прайс-лист пуст. Ожидаем загрузки Excel-файла пользователем.");
 					this.itemsArray = [];
 					this.itemsMap.clear();
 					this.isLoaded = false; // <-- Позволяет попробовать снова позже!
@@ -42,10 +38,7 @@ class PriceManager {
 				}
 
 				// Фильтрация битых строк
-				this.itemsArray = rawItems.filter(
-					(item) =>
-						item && typeof item.name === "string" && item.name.trim() !== "",
-				);
+				this.itemsArray = rawItems.filter((item) => item && typeof item.name === "string" && item.name.trim() !== "");
 
 				this.itemsMap.clear();
 				this.itemsArray.forEach((item) => {
@@ -53,9 +46,7 @@ class PriceManager {
 				});
 
 				this.isLoaded = true;
-				console.log(
-					`[PriceManager] ✅ Успешно загружено ${this.itemsArray.length} позиций.`,
-				);
+				console.log(`[PriceManager] ✅ Успешно загружено ${this.itemsArray.length} позиций.`);
 				return this.itemsArray;
 			} catch (error) {
 				console.error("[PriceManager] ❌ Ошибка загрузки прайса:", error);
@@ -80,29 +71,49 @@ class PriceManager {
 		return this.itemsArray;
 	}
 
-	resetCache() {
+	async resetCache() {
+		// 1. Удаляем файл с диска через бэкенд
+		try {
+			const result = await window.excelAPI.clearPriceList();
+			if (!result.success) {
+				console.error("[PriceManager] ❌ Ошибка удаления файла:", result.error);
+				throw new Error(result.error);
+			}
+			console.log("[PriceManager] ✅ Файл pricelist.json удалён с диска");
+		} catch (error) {
+			console.error("[PriceManager] ❌ Ошибка при очистке файла:", error);
+			throw error;
+		}
+
+		// 2. Очищаем кэш в памяти
 		this.isLoaded = false;
 		this.loadPromise = null;
 		this.itemsArray = [];
 		this.itemsMap.clear();
-		// Также очищаем инстансы автокомплита при сбросе кэша
-		this.autocompletes.forEach((autocomplete) => autocomplete.destroy());
-		this.autocompletes.clear();
-		console.log("[PriceManager] 🔄 Кэш и автокомплиты очищены.");
+
+		// 3. Очищаем автокомплиты, но НЕ уничтожаем их
+		for (const [inputId, autocomplete] of this.autocompletes.entries()) {
+			autocomplete.updateOptions([]); // Просто очищаем список опций
+		}
+
+		console.log("[PriceManager] 🔄 Кэш очищен, автокомплиты опустошены");
+	}
+
+	clearAutocompleteInputs() {
+		this.autocompletes.forEach((autocomplete) => {
+			if (autocomplete.input) {
+				autocomplete.input.value = "";
+			}
+		});
 	}
 
 	// 🔥 НОВЫЙ МЕТОД: Мягкое обновление данных без уничтожения интерфейса
 	async refreshAll() {
-		console.log(
-			"[PriceManager] 🔄 Загрузка свежих данных и обновление всех списков...",
-		);
+		console.log("[PriceManager] 🔄 Загрузка свежих данных и обновление всех списков...");
 		try {
 			const rawItems = await window.excelAPI.getAllItems();
 
-			this.itemsArray = rawItems.filter(
-				(item) =>
-					item && typeof item.name === "string" && item.name.trim() !== "",
-			);
+			this.itemsArray = rawItems.filter((item) => item && typeof item.name === "string" && item.name.trim() !== "");
 
 			this.itemsMap.clear();
 			this.itemsArray.forEach((item) => {
@@ -118,16 +129,12 @@ class PriceManager {
 				const filteredItems = this.itemsArray.filter((item) => {
 					if (autocomplete.filterParams.length === 0) return true;
 					const lowerName = item.name.toLowerCase();
-					return autocomplete.filterParams.some((param) =>
-						lowerName.includes(param),
-					);
+					return autocomplete.filterParams.some((param) => lowerName.includes(param));
 				});
 				autocomplete.updateOptions(filteredItems);
 			}
 
-			console.log(
-				`[PriceManager] ✅ Данные обновлены. Списки перестроены (${this.autocompletes.size} шт.)`,
-			);
+			console.log(`[PriceManager] ✅ Данные обновлены. Списки перестроены (${this.autocompletes.size} шт.)`);
 		} catch (error) {
 			console.error("[PriceManager] ❌ Ошибка при обновлении данных:", error);
 		}
@@ -148,12 +155,9 @@ class PriceManager {
 
 	// 🔥 ОБНОВЛЕННЫЙ МЕТОД: + сохранение filterParams
 	populateAutocomplete(inputId, context = document) {
-		const inputElement = context.getElementById
-			? context.getElementById(inputId)
-			: context.querySelector(`#${inputId}`);
+		const inputElement = context.getElementById ? context.getElementById(inputId) : context.querySelector(`#${inputId}`);
 
-		if (!inputElement)
-			return console.warn(`[PriceManager] ⚠️ Input "${inputId}" не найден`);
+		if (!inputElement) return console.warn(`[PriceManager] ⚠️ Input "${inputId}" не найден`);
 
 		// 1. Сначала очищаем зомби (ОЧЕНЬ ВАЖНО для переключения вкладок)
 		this._cleanupZombie(inputId);
@@ -164,31 +168,20 @@ class PriceManager {
 			ac.filterParams = []; // Сбрасываем фильтр, так как это полный список
 			ac.updateOptions(this.itemsArray);
 		} else {
-			const autocomplete = new CustomAutocomplete(
-				inputElement,
-				this.itemsArray,
-				[],
-			); // <-- передаем []
+			const autocomplete = new CustomAutocomplete(inputElement, this.itemsArray, []); // <-- передаем []
 			this.autocompletes.set(inputId, autocomplete);
 		}
 
-		console.log(
-			`[PriceManager] ✅ Autocomplete "${inputId}" инициализирован (${this.itemsArray.length} опций)`,
-		);
+		console.log(`[PriceManager] ✅ Autocomplete "${inputId}" инициализирован (${this.itemsArray.length} опций)`);
 	}
 
 	// 🔥 ОБНОВЛЕННЫЙ МЕТОД: + сохранение filterParams
 	populateFilteredAutocomplete(inputId, context = document, filterParams = []) {
-		const inputElement = context.getElementById
-			? context.getElementById(inputId)
-			: context.querySelector(`#${inputId}`);
+		const inputElement = context.getElementById ? context.getElementById(inputId) : context.querySelector(`#${inputId}`);
 
-		if (!inputElement)
-			return console.warn(`[PriceManager] ⚠️ Input "${inputId}" не найден`);
+		if (!inputElement) return console.warn(`[PriceManager] ⚠️ Input "${inputId}" не найден`);
 
-		const normalizedParams = Array.isArray(filterParams)
-			? filterParams.map((param) => param.toLowerCase())
-			: [];
+		const normalizedParams = Array.isArray(filterParams) ? filterParams.map((param) => param.toLowerCase()) : [];
 
 		const filteredItems = this.itemsArray.filter((item) => {
 			if (normalizedParams.length === 0) return true;
@@ -205,17 +198,11 @@ class PriceManager {
 			ac.filterParams = normalizedParams; // 🔥 СОХРАНЯЕМ для будущего refreshAll()
 			ac.updateOptions(filteredItems);
 		} else {
-			const autocomplete = new CustomAutocomplete(
-				inputElement,
-				filteredItems,
-				normalizedParams,
-			); // <-- передаем
+			const autocomplete = new CustomAutocomplete(inputElement, filteredItems, normalizedParams); // <-- передаем
 			this.autocompletes.set(inputId, autocomplete);
 		}
 
-		console.log(
-			`[PriceManager] ✅ Autocomplete "${inputId}" обновлен (отфильтровано: ${filteredItems.length} из ${this.itemsArray.length})`,
-		);
+		console.log(`[PriceManager] ✅ Autocomplete "${inputId}" обновлен (отфильтровано: ${filteredItems.length} из ${this.itemsArray.length})`);
 	}
 
 	destroyAutocomplete(inputId) {

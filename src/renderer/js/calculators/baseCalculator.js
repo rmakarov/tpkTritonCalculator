@@ -11,20 +11,15 @@ export default class BaseCalculator {
 
 	// Getter: возвращает актуальные значения из настроек, конвертируя мм → м
 	static get CALCULATOR_CONSTANTS() {
-		const get = (fieldKey) =>
-			settingsManager.getValue("calculatorConstants", fieldKey);
+		const get = (fieldKey) => settingsManager.getValue("calculatorConstants", fieldKey);
 
 		const D = BaseCalculator.DEFAULT_CALCULATOR_CONSTANTS;
 
 		// Хелпер: получает значение в мм, возвращает в м (или дефолт)
-		const mmToMeters = (mmValue, defaultMeters) =>
-			mmValue != null ? mmValue / 1000 : defaultMeters;
+		const mmToMeters = (mmValue, defaultMeters) => (mmValue != null ? mmValue / 1000 : defaultMeters);
 
 		return {
-			corrugatedSheetWidth: mmToMeters(
-				get("corrugatedSheetWidth"),
-				D.corrugatedSheetWidth,
-			),
+			corrugatedSheetWidth: mmToMeters(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
 			threeDmeshWidth: mmToMeters(get("threeDmeshWidth"), D.threeDmeshWidth),
 			fenceWidth: mmToMeters(get("fenceWidth"), D.fenceWidth),
 			wicketPostDepth: mmToMeters(get("wicketPostDepth"), D.wicketPostDepth),
@@ -71,10 +66,8 @@ export default class BaseCalculator {
 	 */
 	getMarkup() {
 		// Ищем поле в текущей форме, если нет - ищем во всем документе (на случай глобального расположения)
-		const markupInput =
-			this.element.querySelector("#calculator-markup") ||
-			document.querySelector("#calculator-markup");
-		console.log("markupInput: ", markupInput);
+		const markupInput = this.element.querySelector("#calculator-markup") || document.querySelector("#calculator-markup");
+
 		if (markupInput) {
 			markupInput.addEventListener("input", function () {
 				// Если поле очистили полностью - ничего не делаем, пусть будет пустым
@@ -138,13 +131,16 @@ export default class BaseCalculator {
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
-	getPriceWithMarkup(materialName) {
+	getPriceWithMarkup(materialName, finalPrice) {
+		console.log("getPriceWithMarkup materialName: ", materialName);
+		console.log("getPriceWithMarkup finalPrice: ", finalPrice);
 		const basePrice = this.priceManager.getPrice(materialName);
 		if (!basePrice) return null;
 
 		const markup = this.getMarkup();
+		// Если finalPrice  - то наценку  не  добавляемж
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))
-		return parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
+		return finalPrice ? basePrice : parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
 	}
 
 	/**
@@ -152,9 +148,7 @@ export default class BaseCalculator {
 	 * @returns {Array<{name: string, quantity: number}>}
 	 */
 	calculateRawMaterials() {
-		this.showNotification(
-			"Метод calculateRawMaterials() должен быть реализован в классе-наследнике",
-		);
+		this.showNotification("Метод calculateRawMaterials() должен быть реализован в классе-наследнике");
 	}
 
 	/**
@@ -169,7 +163,7 @@ export default class BaseCalculator {
 		}
 
 		return rawMaterials.map((mat) => {
-			const finalPrice = this.getPriceWithMarkup(mat.name);
+			const finalPrice = this.getPriceWithMarkup(mat.name, mat.finalPrice);
 
 			return {
 				name: mat.name,

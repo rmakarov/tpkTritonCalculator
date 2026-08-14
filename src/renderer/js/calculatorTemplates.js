@@ -1,12 +1,7 @@
 import { priceManager } from "./priceManager.js";
-import {
-	addMaterialToTable,
-	removeAllMaterialsFromTable,
-} from "./tableManager.js";
-import {
-	WicketCalculator,
-	GateCalculator,
-} from "./calculators/wickedAndGateCalculation.js";
+import { addMaterialToTable, removeAllMaterialsFromTable } from "./tableManager.js";
+import { WicketCalculator } from "./calculators/wicketCalculator.js";
+import { GateCalculator } from "./calculators/gateCalculator.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -28,20 +23,14 @@ class BaseCalculatorView {
 		this.stepLabel = this.stepSelect?.closest(".calculator-field");
 
 		if (this.claddingInput) {
-			this.claddingInput.addEventListener("input", () =>
-				this.toggleStepFieldState(),
-			);
-			this.claddingInput.addEventListener("change", () =>
-				this.toggleStepFieldState(),
-			);
+			this.claddingInput.addEventListener("input", () => this.toggleStepFieldState());
+			this.claddingInput.addEventListener("change", () => this.toggleStepFieldState());
 		}
 	}
 
 	toggleStepFieldState() {
 		if (!this.claddingInput || !this.stepSelect || !this.stepLabel) return;
-		const isWicket = this.claddingInput.value
-			.toLowerCase()
-			.includes("штакетник");
+		const isWicket = this.claddingInput.value.toLowerCase().includes("штакетник");
 
 		if (isWicket) {
 			this.stepLabel.classList.remove("calculator-field--inactive");
@@ -52,11 +41,7 @@ class BaseCalculatorView {
 		}
 	}
 
-	initCalcButtonState(
-		widthSelector,
-		heightSelector,
-		buttonSelector = ".calculator-card__button",
-	) {
+	initCalcButtonState(widthSelector, heightSelector, buttonSelector = ".calculator-card__button") {
 		this.widthSelect = this.element.querySelector(widthSelector);
 		this.heightSelect = this.element.querySelector(heightSelector);
 		this.calcButton = this.element.querySelector(buttonSelector);
@@ -85,10 +70,8 @@ class BaseCalculatorView {
 	toggleCalcButtonState() {
 		if (!this.calcButton) return;
 
-		const widthSelected =
-			this.widthSelect && this.widthSelect.value.trim() !== "";
-		const heightSelected =
-			this.heightSelect && this.heightSelect.value.trim() !== "";
+		const widthSelected = this.widthSelect && this.widthSelect.value.trim() !== "";
+		const heightSelected = this.heightSelect && this.heightSelect.value.trim() !== "";
 
 		const isReady = widthSelected && heightSelected;
 
@@ -121,24 +104,10 @@ class WicketCalculatorView extends BaseCalculatorView {
 		this.initCladdingToggle("#wicket-cladding", "#wicket-cladding-step");
 		this.initCalcButtonState("#wicket-width", "#wicket-height");
 
-		priceManager.populateFilteredAutocomplete(
-			"wicket-frame-material",
-			this.element,
-			["профиль"],
-		);
-		priceManager.populateFilteredAutocomplete("wicket-posts", this.element, [
-			"профиль",
-		]);
-		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, [
-			"сетка",
-			"штакетник",
-			"панель",
-			"профнастил",
-			"профлист",
-		]);
-		priceManager.populateFilteredAutocomplete("wicket-paint", this.element, [
-			"краска",
-		]);
+		priceManager.populateFilteredAutocomplete("wicket-frame-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("wicket-posts", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("wicket-paint", this.element, ["краска"]);
 
 		this.toggleStepFieldState();
 	}
@@ -165,18 +134,25 @@ class GateCalculatorView extends BaseCalculatorView {
 		this.element = null;
 		this.openingInputs = [];
 		this.slidingRows = [];
+
+		this.swingGateTypeCards = []; // обёртки для распашных
+		this.slidingGateTypeCards = []; // обёртки для откатных
+		this.swingGateTypeInputs = [];
+		this.slidingGateTypeInputs = [];
 	}
 
 	// 1. Только создаем и настраиваем DOM
 	createDOM() {
 		this.element = cloneCalculatorTemplate("gate-calculator-template");
 
-		this.openingInputs = [
-			...this.element.querySelectorAll('input[name="gate-opening"]'),
-		];
-		this.slidingRows = [
-			...this.element.querySelectorAll(".calculator-field--sliding"),
-		];
+		this.openingInputs = [...this.element.querySelectorAll('input[name="gate-opening"]')];
+		this.slidingRows = [...this.element.querySelectorAll(".calculator-field--sliding")];
+
+		this.swingGateTypeInputs = [...this.element.querySelectorAll('input[name="gate-type"][value^="gate-type"]')];
+		this.slidingGateTypeInputs = [...this.element.querySelectorAll('input[name="gate-type"][value^="sliding-gate-type"]')];
+
+		this.swingGateTypeCards = this.swingGateTypeInputs.map((input) => input.closest(".radio-card"));
+		this.slidingGateTypeCards = this.slidingGateTypeInputs.map((input) => input.closest(".radio-card"));
 
 		this.openingInputs.forEach((input) => {
 			input.addEventListener("change", () => {
@@ -201,34 +177,13 @@ class GateCalculatorView extends BaseCalculatorView {
 		this.initCladdingToggle("#gate-cladding", "#gate-cladding-step");
 		this.initCalcButtonState("#gate-width", "#gate-height");
 
-		priceManager.populateFilteredAutocomplete("gate-posts", this.element, [
-			"профиль",
-		]);
-		priceManager.populateFilteredAutocomplete(
-			"gate-frame-material",
-			this.element,
-			["профиль"],
-		);
-		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, [
-			"сетка",
-			"штакетник",
-			"панель",
-			"профнастил",
-			"профлист",
-		]);
-		priceManager.populateFilteredAutocomplete("gate-paint", this.element, [
-			"краска",
-		]);
-		priceManager.populateFilteredAutocomplete("gate-rollers", this.element, [
-			"ролик",
-		]);
+		priceManager.populateFilteredAutocomplete("gate-posts", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("gate-frame-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("gate-paint", this.element, ["краска"]);
+		priceManager.populateFilteredAutocomplete("gate-rollers", this.element, ["ролик"]);
 		priceManager.populateAutocomplete("gate-rack", this.element);
-		priceManager.populateFilteredAutocomplete("gate-drive", this.element, [
-			"привод",
-			"механизм",
-			"двигатель",
-			"мотор",
-		]);
+		priceManager.populateFilteredAutocomplete("gate-drive", this.element, ["привод", "механизм", "двигатель", "мотор"]);
 
 		this.toggleStepFieldState();
 	}
@@ -244,6 +199,26 @@ class GateCalculatorView extends BaseCalculatorView {
 				inputElement.disabled = !isSliding;
 			}
 		});
+
+		this.swingGateTypeCards.forEach((card) => {
+			if (card) card.hidden = isSliding;
+		});
+		this.slidingGateTypeCards.forEach((card) => {
+			if (card) card.hidden = !isSliding;
+		});
+
+		const activeChoice = this.element.querySelector('input[name="gate-type"]:checked');
+		const needsReset = (isSliding && activeChoice && !activeChoice.value.startsWith("sliding-gate-type")) || (!isSliding && activeChoice && activeChoice.value.startsWith("sliding-gate-type"));
+
+		if (needsReset) {
+			const fallbackInput = isSliding ? this.slidingGateTypeInputs[0] : this.swingGateTypeInputs[0];
+
+			if (fallbackInput) {
+				fallbackInput.checked = true;
+				// Триггерим change, чтобы зависимые слушатели (если есть) отработали
+				fallbackInput.dispatchEvent(new Event("change", { bubbles: true }));
+			}
+		}
 	}
 
 	handleCalculate() {
@@ -266,9 +241,7 @@ class CalculatorViewSwitcher {
 	constructor() {
 		this.mount = document.getElementById("calculator-mount");
 		this.markupInput = document.getElementById("markup");
-		this.typeInputs = [
-			...document.querySelectorAll('input[name="calculator-type"]'),
-		];
+		this.typeInputs = [...document.querySelectorAll('input[name="calculator-type"]')];
 
 		this.calculators = {
 			wicket: WicketCalculatorView,

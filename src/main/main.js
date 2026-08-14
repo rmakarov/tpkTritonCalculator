@@ -4,14 +4,8 @@ const { ipcMain } = require("electron");
 const { PriceListManager } = require("./priceListManager");
 const { SettingsManager } = require("./settingsManager");
 const { registerPdfPreview } = require("./pdfPreview");
-const {
-	ensureTrialAccess,
-	scheduleTrialExpiration,
-} = require("./trialLicense");
-const {
-	ensureTrialTestAccess,
-	scheduleTrialTestExpiration,
-} = require("./trialLicenseTest");
+const { ensureTrialAccess, scheduleTrialExpiration } = require("./trialLicense");
+const { ensureTrialTestAccess, scheduleTrialTestExpiration } = require("./trialLicenseTest");
 
 // ==========================================
 // 1. СОЗДАНИЕ ЭКЗЕМПЛЯРА (ОДИН РАЗ НА ВСЁ ПРИЛОЖЕНИЕ)
@@ -33,10 +27,17 @@ ipcMain.handle("pricelist:import", async (event, buffer, options) => {
 
 ipcMain.handle("pricelist:getAll", async () => {
 	const items = priceManager.getAll();
-	console.log(
-		`[MAIN] pricelist:getAll вызван. Возвращаю ${items.length} позиций.`,
-	); // <-- ДОБАВИТЬ ЭТО
+	console.log(`[MAIN] pricelist:getAll вызван. Возвращаю ${items.length} позиций.`); // <-- ДОБАВИТЬ ЭТО
 	return items;
+});
+
+ipcMain.handle("pricelist:clear", async () => {
+	try {
+		await priceManager.clear();
+		return { success: true };
+	} catch (error) {
+		return { success: false, error: error.message };
+	}
 });
 
 ipcMain.handle("settings:get", async () => {
@@ -47,37 +48,20 @@ ipcMain.handle("settings:getValue", async (_event, sectionKey, fieldKey) => {
 	return settingsManager.getValue(sectionKey, fieldKey);
 });
 
-ipcMain.handle(
-	"settings:setValue",
-	async (_event, sectionId, fieldKey, value) => {
-		return await settingsManager.setValue(sectionId, fieldKey, value);
-	},
-);
+ipcMain.handle("settings:setValue", async (_event, sectionId, fieldKey, value) => {
+	return await settingsManager.setValue(sectionId, fieldKey, value);
+});
 
-ipcMain.handle(
-	"settings:setOptionValue",
-	async (_, sectionKey, fieldKey, optionIndex, value) => {
-		return await settingsManager.setOptionValue(
-			sectionKey,
-			fieldKey,
-			optionIndex,
-			value,
-		);
-	},
-);
+ipcMain.handle("settings:setOptionValue", async (_, sectionKey, fieldKey, optionIndex, value) => {
+	return await settingsManager.setOptionValue(sectionKey, fieldKey, optionIndex, value);
+});
 
 ipcMain.handle("settings:reset", async () => settingsManager.resetToDefaults());
 
-ipcMain.handle("settings:canCalculate", async () =>
-	settingsManager.canCalculate(),
-);
+ipcMain.handle("settings:canCalculate", async () => settingsManager.canCalculate());
 
-ipcMain.handle("settings:removeSection", async (_e, key) =>
-	settingsManager.removeSection(key),
-);
-ipcMain.handle("settings:removeField", async (_e, s, f) =>
-	settingsManager.removeField(s, f),
-);
+ipcMain.handle("settings:removeSection", async (_e, key) => settingsManager.removeSection(key));
+ipcMain.handle("settings:removeField", async (_e, s, f) => settingsManager.removeField(s, f));
 
 const createWindow = () => {
 	const iconPath = path.join(__dirname, "../public/assets", "icon.ico");
@@ -146,9 +130,7 @@ console.log(' Файл базы будет здесь:', path.join(userDataPath,
 		await priceManager.load();
 		console.log("[Main] ✅ Кэш прайс-листа успешно загружен с диска.");
 	} catch (err) {
-		console.log(
-			"[Main] ℹ️ Кэш не найден (это нормально при самом первом запуске).",
-		);
+		console.log("[Main] ℹ️ Кэш не найден (это нормально при самом первом запуске).");
 	}
 
 	createWindow();

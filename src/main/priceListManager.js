@@ -14,9 +14,7 @@ class PriceListManager {
 		try {
 			const fileData = await fs.readFile(this.dbPath, "utf-8");
 			this.data = JSON.parse(fileData);
-			console.log(
-				`[PriceList] ✅ Загружено ${Object.keys(this.data.items).length} позиций`,
-			);
+			console.log(`[PriceList] ✅ Загружено ${Object.keys(this.data.items).length} позиций`);
 		} catch (err) {
 			console.log("[PriceList] ⚠️ База не найдена, создаем новую");
 			this.data = { lastUpdate: null, items: {} };
@@ -26,11 +24,7 @@ class PriceListManager {
 
 	async save() {
 		await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
-		await fs.writeFile(
-			this.dbPath,
-			JSON.stringify(this.data, null, 2),
-			"utf-8",
-		);
+		await fs.writeFile(this.dbPath, JSON.stringify(this.data, null, 2), "utf-8");
 		console.log("[PriceList] 💾 Данные сохранены на диск");
 	}
 
@@ -53,16 +47,12 @@ class PriceListManager {
 			if (jsonData.length === 0) throw new Error("Файл пустой");
 
 			const headers = jsonData[0].map((h) => String(h).trim().toLowerCase());
-			const idIndex = headers.findIndex(
-				(h) => h.includes("п.н") || h === "п.н.",
-			);
+			const idIndex = headers.findIndex((h) => h.includes("п.н") || h === "п.н.");
 			const nameIndex = headers.findIndex((h) => h.includes("наименование"));
 			const priceIndex = headers.findIndex((h) => h.includes("цена"));
 
 			if (idIndex === -1 || nameIndex === -1 || priceIndex === -1) {
-				throw new Error(
-					`Не найдены колонки "п.н", "Наименование" или "цена". Найдено: ${headers.join(", ")}`,
-				);
+				throw new Error(`Не найдены колонки "п.н", "Наименование" или "цена". Найдено: ${headers.join(", ")}`);
 			}
 
 			const stats = { added: 0, updated: 0, unchanged: 0, errors: 0 };
@@ -75,12 +65,9 @@ class PriceListManager {
 				try {
 					const id = String(row[idIndex]).trim();
 					const name = String(row[nameIndex]).trim();
-					const price = parseFloat(
-						String(row[priceIndex]).replace(/,/g, ".").replace(/\s/g, ""),
-					);
+					const price = parseFloat(String(row[priceIndex]).replace(/,/g, ".").replace(/\s/g, ""));
 
-					if (!id || !name || isNaN(price))
-						throw new Error("Некорректные данные");
+					if (!id || !name || isNaN(price)) throw new Error("Некорректные данные");
 
 					const existingItem = this.data.items[id];
 					if (existingItem) {
@@ -142,6 +129,25 @@ class PriceListManager {
 
 	getById(id) {
 		return this.data.items[id] || null;
+	}
+
+	async clear() {
+		try {
+			// Удаляем файл с диска
+			await fs.unlink(this.dbPath);
+			console.log("[PriceList] 🗑️ Файл pricelist.json удалён с диска");
+		} catch (err) {
+			if (err.code === "ENOENT") {
+				console.log("[PriceList] ⚠️ Файл не найден, нечего удалять");
+			} else {
+				console.error("[PriceList] ❌ Ошибка удаления файла:", err);
+				throw err;
+			}
+		}
+
+		// Очищаем данные в памяти
+		this.data = { lastUpdate: null, items: {} };
+		console.log("[PriceList] 🧹 Данные в памяти очищены");
 	}
 }
 module.exports = { PriceListManager };

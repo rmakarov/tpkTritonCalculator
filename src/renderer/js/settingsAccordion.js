@@ -1,4 +1,5 @@
 import { settingsManager } from "./settingsManager.js";
+import { priceManager } from "./priceManager.js";
 import { confirmModal } from "./modal/modalManager.js";
 
 export function initSettingsAccordion() {
@@ -7,6 +8,7 @@ export function initSettingsAccordion() {
 	const content = accordion?.querySelector(".settings-accordion__content");
 	const toggleText = toggleBtn?.querySelector(".settings-toggle-btn__text");
 	const resetBtn = document.getElementById("settings-reset-btn");
+	const priceResetBtn = document.getElementById("price-reset-btn");
 
 	if (!toggleBtn || !accordion || !content) {
 		console.warn("[SettingsAccordion] Элементы не найдены");
@@ -19,14 +21,33 @@ export function initSettingsAccordion() {
 		toggleBtn.classList.toggle("settings-toggle-btn--active", isOpen);
 
 		if (toggleText) {
-			toggleText.textContent = isOpen
-				? "Скрыть настройки"
-				: "Показать настройки";
+			toggleText.textContent = isOpen ? "Скрыть настройки" : "Показать настройки";
 		}
 
 		if (isOpen && !accordion.dataset.rendered) {
 			await renderSettings(content);
 			accordion.dataset.rendered = "true";
+		}
+	});
+
+	// Кнопка сброса кэша прайса
+	priceResetBtn?.addEventListener("click", async () => {
+		const confirmed = await confirmModal({
+			title: "Очистка прайс листа",
+			message: "После данной операции необходимо загрузить новый прайс лист! \n Очистить кэш прайс листа?",
+			okText: "Очистить",
+			cancelText: "Отмена",
+		});
+
+		if (!confirmed) return;
+
+		try {
+			await priceManager.resetCache();
+			priceManager.clearAutocompleteInputs();
+			console.log("✅ Кэш прайс листа очищен");
+		} catch (error) {
+			console.error("Ошибка очистки кэша прайс листа:", error);
+			// alert(`Ошибка: ${error.message}`);
 		}
 	});
 
@@ -49,7 +70,7 @@ export function initSettingsAccordion() {
 			accordion.dataset.rendered = "true";
 		} catch (error) {
 			console.error("Ошибка сброса настроек:", error);
-			alert(`Ошибка: ${error.message}`);
+			// alert(`Ошибка: ${error.message}`);
 		}
 	});
 }
@@ -64,8 +85,7 @@ async function renderSettings(container) {
 
 		const sections = settings?.sections;
 		if (!sections) {
-			container.innerHTML =
-				'<p class="settings-placeholder">Настройки пусты</p>';
+			container.innerHTML = '<p class="settings-placeholder">Настройки пусты</p>';
 			return;
 		}
 
@@ -111,11 +131,7 @@ function createFieldElement(sectionKey, fieldKey, field) {
 	label.textContent = field.title || fieldKey;
 
 	// Если есть текущее значение (не null), показываем его
-	if (
-		field.value !== null &&
-		field.value !== undefined &&
-		field.type !== "select"
-	) {
+	if (field.value !== null && field.value !== undefined && field.type !== "select") {
 		const valueWrap = document.createElement("span");
 		valueWrap.className = "settings-field__value";
 		const valueText = document.createElement("span");
@@ -158,14 +174,7 @@ function createFieldElement(sectionKey, fieldKey, field) {
 		optionsContainer.className = "settings-field__options";
 
 		field.options.forEach((optionValue, index) => {
-			const optionRow = createOptionRow(
-				sectionKey,
-				fieldKey,
-				field,
-				optionValue,
-				index,
-				li,
-			);
+			const optionRow = createOptionRow(sectionKey, fieldKey, field, optionValue, index, li);
 			optionsContainer.appendChild(optionRow);
 		});
 
@@ -184,14 +193,7 @@ function createFieldElement(sectionKey, fieldKey, field) {
 }
 
 // Создаёт строку для одного элемента options (select-поля)
-function createOptionRow(
-	sectionKey,
-	fieldKey,
-	field,
-	optionValue,
-	index,
-	fieldLi,
-) {
+function createOptionRow(sectionKey, fieldKey, field, optionValue, index, fieldLi) {
 	const row = document.createElement("div");
 	row.className = "settings-field__option-row";
 
@@ -204,16 +206,7 @@ function createOptionRow(
 
 	const editBtn = createEditButton(`Вариант ${index + 1}`);
 	editBtn.addEventListener("click", () => {
-		enterSelectOptionEditMode(
-			sectionKey,
-			fieldKey,
-			field,
-			index,
-			valueWrap,
-			valueText,
-			editBtn,
-			fieldLi,
-		);
+		enterSelectOptionEditMode(sectionKey, fieldKey, field, index, valueWrap, valueText, editBtn, fieldLi);
 	});
 
 	valueWrap.appendChild(valueText);
@@ -243,14 +236,7 @@ function formatValue(value, field) {
 // ==========================================
 // Редактирование обычных полей
 // ==========================================
-function enterEditMode(
-	sectionKey,
-	fieldKey,
-	field,
-	valueWrap,
-	valueText,
-	editBtn,
-) {
+function enterEditMode(sectionKey, fieldKey, field, valueWrap, valueText, editBtn) {
 	valueText.style.display = "none";
 	editBtn.style.display = "none";
 
@@ -261,8 +247,7 @@ function enterEditMode(
 
 	const exitEdit = async (save) => {
 		if (save) {
-			const newValue =
-				field.type === "number" ? Number(editor.value) : editor.value;
+			const newValue = field.type === "number" ? Number(editor.value) : editor.value;
 			if (String(newValue) !== String(field.value)) {
 				field.value = newValue;
 				valueText.textContent = formatValue(field.value, field);
@@ -288,16 +273,7 @@ function enterEditMode(
 // ==========================================
 // Редактирование элемента options (для select-полей)
 // ==========================================
-function enterSelectOptionEditMode(
-	sectionKey,
-	fieldKey,
-	field,
-	optionIndex,
-	valueWrap,
-	valueText,
-	editBtn,
-	fieldLi,
-) {
+function enterSelectOptionEditMode(sectionKey, fieldKey, field, optionIndex, valueWrap, valueText, editBtn, fieldLi) {
 	valueText.style.display = "none";
 	editBtn.style.display = "none";
 
@@ -318,9 +294,7 @@ function enterSelectOptionEditMode(
 
 				try {
 					await saveOptionValue(sectionKey, fieldKey, optionIndex, newValue);
-					console.log(
-						`✅ Вариант обновлён: ${fieldKey}[${optionIndex}] = ${newValue}`,
-					);
+					console.log(`✅ Вариант обновлён: ${fieldKey}[${optionIndex}] = ${newValue}`);
 
 					// ⬇️ Обновляем бейдж «Активно», если поле имеет текущее значение
 					if (field.value !== null && field.value !== undefined) {
@@ -328,10 +302,7 @@ function enterSelectOptionEditMode(
 					}
 				} catch (error) {
 					console.error(`❌ Ошибка сохранения варианта:`, error);
-					valueText.textContent = formatValue(
-						field.options[optionIndex],
-						field,
-					);
+					valueText.textContent = formatValue(field.options[optionIndex], field);
 				}
 			}
 		}
@@ -386,15 +357,8 @@ async function saveValue(sectionKey, fieldKey, newValue) {
 // Сохранение элемента options
 async function saveOptionValue(sectionKey, fieldKey, optionIndex, newValue) {
 	try {
-		await settingsManager.setOptionValue(
-			sectionKey,
-			fieldKey,
-			optionIndex,
-			newValue,
-		);
-		console.log(
-			`✅ Сохранён вариант: ${sectionKey}.${fieldKey}[${optionIndex}] = ${newValue}`,
-		);
+		await settingsManager.setOptionValue(sectionKey, fieldKey, optionIndex, newValue);
+		console.log(`✅ Сохранён вариант: ${sectionKey}.${fieldKey}[${optionIndex}] = ${newValue}`);
 	} catch (error) {
 		console.error(`❌ Ошибка сохранения варианта:`, error);
 	}
