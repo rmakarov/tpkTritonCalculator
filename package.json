@@ -20,7 +20,7 @@
 		"build:prod": "npm run build && node scripts/purge-css.js",
 		"build:prod-test": "npm run build && node scripts/test-purge.js",
 		"build:exe": "npm run build && electron-builder --win",
-		"build:trial": "npm run build && electron-builder --win --config.appId=com.triton.calculator.trial --config.productName=\"Triton Calculator Trial\" --config.directories.output=release-trial --config.extraMetadata.name=tpktritoncalculator-trial --config.extraMetadata.trialBuild=true",
+		"build:trial": "npm run build && electron-builder --win --config.appId=com.triton.calculator.trial --config.productName=\"Triton Calculator Trial\" --config.directories.output=release-trial --config.extraMetadata.name=tpktritoncalculator-trial --config.extraMetadata.trialBuild=true --config.nsis.deleteAppDataOnUninstall=true",
 		"preview": "vite preview",
 		"start:prod": "npm run build && electron .",
 		"test": "echo \"Error: no test specified\" && exit 1"
