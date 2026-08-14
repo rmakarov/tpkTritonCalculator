@@ -1,4 +1,5 @@
 import { BaseCalculator } from "./baseCalculator.js";
+import { calculateGateFrameByType } from "./gateCalculatorUtils.js";
 
 class GateCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
@@ -43,24 +44,12 @@ class GateCalculator extends BaseCalculator {
 
 		// --- СПЕЦИФИКА ВОРОТ ---
 		if (frameMaterial) {
-			let frameLength;
-			if (slidingGate.checked) {
-				// Периметр (в метрах) + вертикальная поперечина + хвостовая часть ворот для противовеса (50% от проема)
-				// + 3 диагонали + усилители хвостовой части (2  шт равны  как  раз высоте ворот)
-				const diagonal = Math.sqrt(height * height + (width / 2) * (width / 2));
-				frameLength = width * 2 + height * 2 + height + width / 2 + diagonal * 3 + height;
-				materials.push({
-					name: frameMaterial,
-					quantity: Math.ceil(frameLength),
-				});
-			} else {
-				// Периметр (в метрах) + внутренняя перемычка
-				frameLength = width * 2 + height * 2 + width;
-				materials.push({
-					name: frameMaterial,
-					quantity: Math.ceil(frameLength),
-				});
-			}
+			const frameLength = calculateGateFrameByType(width, height, this.selectedType);
+
+			materials.push({
+				name: frameMaterial,
+				quantity: Math.ceil(frameLength),
+			});
 		}
 
 		if (postsMaterial) {

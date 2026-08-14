@@ -1,4 +1,5 @@
 import { BaseCalculator } from "./baseCalculator.js";
+import { calculateWicketFrameByType } from "./wicketCalculatorUtils.js";
 
 /**
  * Калькулятор калитки
@@ -45,7 +46,8 @@ class WicketCalculator extends BaseCalculator {
 		// 4. Считаем количества (Формулы теперь работают с метрами!)
 		if (frameMaterial) {
 			// Периметр (в метрах) + внутренняя 1 перемычка
-			const frameLength = width * 2 + height * 2 + width;
+			//const frameLength = width * 2 + height * 2 + width;
+			const frameLength = calculateWicketFrameByType(width, height, this.selectedType);
 			materials.push({
 				name: frameMaterial,
 				quantity: Math.ceil(frameLength),
