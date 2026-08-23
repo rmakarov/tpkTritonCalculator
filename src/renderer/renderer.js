@@ -1,5 +1,6 @@
 // Импортируем HTML-фрагменты как строки (Vite magic ✨)
 import addItemDialogHTML from "./components/modals/addItemDialog.html?raw";
+import wicketAndGateEditorHTML from "./components/modals/wicketAndGateEditor.html?raw";
 import helpDialogHTML from "./components/modals/helpDialog.html?raw";
 import confirmDialogHTML from "./components/modals/confirmDialog.html?raw";
 import wicketTemplateHTML from "./components/templates/wicketCalculator.html?raw";
@@ -14,13 +15,11 @@ import "./styles/calculatorTemplates.css";
 import "./styles/print.css";
 import "./styles/customAutocomplete.css";
 import "./styles/notification.css";
+import "./styles/wicketAndGateEditor.css";
 
 import { priceManager } from "./js/priceManager.js";
 import { settingsManager } from "./js/settingsManager.js";
-import {
-	populateSelectsFromSettings,
-	populateLiveSelectsFromSettings,
-} from "./js/populateSelects.js";
+import { populateSelectsFromSettings, populateLiveSelectsFromSettings } from "./js/populateSelects.js";
 
 // ============================================
 // Функции инициализации
@@ -28,14 +27,8 @@ import {
 
 function mountComponents() {
 	// 1. HTML в DOM
-	document.body.insertAdjacentHTML(
-		"beforeend",
-		addItemDialogHTML + helpDialogHTML + confirmDialogHTML,
-	);
-	document.body.insertAdjacentHTML(
-		"beforeend",
-		wicketTemplateHTML + gateTemplateHTML,
-	);
+	document.body.insertAdjacentHTML("beforeend", addItemDialogHTML + helpDialogHTML + confirmDialogHTML + wicketAndGateEditorHTML);
+	document.body.insertAdjacentHTML("beforeend", wicketTemplateHTML + gateTemplateHTML);
 }
 
 // 2. Динамические импорты JS — выполнятся ПОСЛЕ mountComponents
@@ -43,6 +36,7 @@ async function loadJSModules() {
 	await Promise.all([
 		import("./js/modal/addItemModal.js"),
 		import("./js/modal/helpModal.js"),
+		import("./js/modal/wicketAndGateEditor.js"),
 		import("./js/tabs.js"),
 		import("./js/calculatorTemplates.js"),
 		import("./js/pdfPreview.js"),

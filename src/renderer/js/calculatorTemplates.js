@@ -2,6 +2,7 @@ import { priceManager } from "./priceManager.js";
 import { addMaterialToTable, removeAllMaterialsFromTable } from "./tableManager.js";
 import { WicketCalculator } from "./calculators/wicketCalculator.js";
 import { GateCalculator } from "./calculators/gateCalculator.js";
+import { openModal } from "./modal/modalManager.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -14,6 +15,32 @@ class BaseCalculatorView {
 		this.claddingInput = null;
 		this.stepSelect = null;
 		this.stepLabel = null;
+	}
+
+	// 🔥 Инициализация открытия модалки для кастомного типа
+	initCustomTypeModal() {
+		const customTypeInputs = this.element.querySelectorAll('input[type="radio"][value$="custom-type"]');
+		const editorDialog = document.getElementById("wicketAndGateEditorDialog");
+
+		customTypeInputs.forEach((input) => {
+			input.addEventListener("change", (e) => {
+				if (e.target.checked) {
+					openModal(editorDialog, {
+						onOpen: () => {
+							console.log(`Открыта модалка ${editorDialog}. Тип:`, e.target.name);
+							// Здесь можно передать данные в модалку, если нужно.
+							// Например: document.getElementById('modal-context').dataset.type = e.target.name.includes('gate') ? 'gate' : 'wicket';
+						},
+						onClose: () => {
+							// Опционально: если модалка закрывается без сохранения,
+							// можно сбросить выбор на первый доступный тип, чтобы не зависать на "кастомном" без данных.
+							// const defaultInput = this.element.querySelector(`input[name="${e.target.name}"]:not([value$="custom-type"])`);
+							// if (defaultInput) defaultInput.checked = true;
+						},
+					});
+				}
+			});
+		});
 	}
 
 	// Универсальный метод, который подойдет и для Wicket, и для Gate
@@ -89,6 +116,8 @@ class WicketCalculatorView extends BaseCalculatorView {
 	createDOM() {
 		this.element = cloneCalculatorTemplate("wicket-calculator-template");
 
+		this.initCustomTypeModal();
+
 		this.calcButton = this.element.querySelector(".calculator-card__button");
 		if (this.calcButton) {
 			this.calcButton.addEventListener("click", () => this.handleCalculate());
@@ -145,6 +174,8 @@ class GateCalculatorView extends BaseCalculatorView {
 	// 1. Только создаем и настраиваем DOM
 	createDOM() {
 		this.element = cloneCalculatorTemplate("gate-calculator-template");
+
+		this.initCustomTypeModal();
 
 		this.openingInputs = [...this.element.querySelectorAll('input[name="gate-opening"]')];
 		this.slidingRows = [...this.element.querySelectorAll(".calculator-field--sliding")];
