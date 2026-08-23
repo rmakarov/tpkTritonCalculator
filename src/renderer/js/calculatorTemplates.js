@@ -3,6 +3,7 @@ import { addMaterialToTable, removeAllMaterialsFromTable } from "./tableManager.
 import { WicketCalculator } from "./calculators/wicketCalculator.js";
 import { GateCalculator } from "./calculators/gateCalculator.js";
 import { openModal } from "./modal/modalManager.js";
+import { initCustomEditor } from "./modal/wicketAndGateEditor.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -21,6 +22,7 @@ class BaseCalculatorView {
 	initCustomTypeModal() {
 		const customTypeInputs = this.element.querySelectorAll('input[type="radio"][value$="custom-type"]');
 		const editorDialog = document.getElementById("wicketAndGateEditorDialog");
+		initCustomEditor();
 
 		customTypeInputs.forEach((input) => {
 			input.addEventListener("change", (e) => {
