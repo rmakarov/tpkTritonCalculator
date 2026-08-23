@@ -75,7 +75,7 @@ input[type="radio"].hidden:checked + .radio-card-box {
 }
 
 .calculator-card {
-	width: min(100%, 900px);
+	width: min(100%, 1200px);
 	min-height: 340px;
 	padding: 10px 12px 12px;
 	border: 1px solid var(--color-text-main);
@@ -178,7 +178,52 @@ input[type="radio"].hidden:checked + .radio-card-box {
 	background: var(--color-success-hover);
 }
 
+/* Новые стили для поля с наценкой */
+.calculator-field--with-markup {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+.calculator-field--with-markup > span:first-child {
+	width: 150px;
+	text-align: right;
+	flex-shrink: 0;
+}
+
+.calculator-field--with-markup > .calculator-item-from-price {
+	flex: 1;
+	min-width: 200px;
+	max-width: 700px;
+	width: auto; /* переопределяем ширину из базового класса */
+}
+
+.calculator-field--with-markup > .calculator-markup {
+	width: 80px;
+	flex-shrink: 0;
+	height: 30px;
+	padding: 4px 8px;
+	border: 1px solid var(--color-border-input);
+	border-radius: 7px;
+	font: inherit;
+}
+
+.calculator-field--with-markup > span:last-child {
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+/* Адаптив для мобильных */
 @media (max-width: 720px) {
+	.calculator-field--with-markup > span:first-child {
+		width: 120px;
+	}
+
+	.calculator-field--with-markup > .calculator-item-from-price {
+		min-width: 150px;
+	}
+
 	.calculator-choice {
 		align-items: flex-start;
 		flex-direction: column;

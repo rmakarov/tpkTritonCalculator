@@ -101,11 +101,17 @@
 					<option value="" disabled selected>Выберите высоту</option>
 				</select>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field calculator-field--short">
+				<span>Наценка на обрезь</span>
+				<input id="gate-fmarkup-on-trimmings" class="text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+			</label>
+			<label class="calculator-field--with-markup">
 				<span>Столбы</span>
 				<input type="search" id="gate-posts" class="text-input calculator-item-from-price" name="gate-posts" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
 				<span>Материал каркаса</span>
 				<input
 					type="search"
@@ -116,34 +122,48 @@
 					placeholder="Поиск товара..."
 					required
 				/>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
+				<span>Материал перегородок</span>
+				<input type="search" id="gate-partitions-material" class="text-input calculator-item-from-price" name="gate-partitions-material" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
+			</label>
+			<label class="calculator-field--with-markup">
 				<span>Обшивка</span>
 				<input type="search" id="gate-cladding" class="text-input calculator-item-from-price" name="gate-cladding" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
 			<label class="calculator-field calculator-field--inactive">
 				<span>Шаг штакетника (мм)</span>
 				<select id="gate-cladding-step" class="text-input" disabled></select>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
 				<span>Покраска</span>
 				<input type="search" id="gate-paint" class="text-input calculator-item-from-price" name="gate-paint" placeholder="Поиск товара..." required />
-				<small><span class="text-red">Поле без наценки</span></small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" value="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Комплект роликов</span>
 				<input type="search" id="gate-rollers" class="text-input calculator-item-from-price" name="gate-rollers" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Рейка</span>
 				<input type="search" id="gate-rack" class="text-input calculator-item-from-price" name="gate-rack" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Привод</span>
 				<input type="search" id="gate-drive" class="text-input calculator-item-from-price" name="gate-drive" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка (от 1 до 1000 %)</span>
 			</label>
 		</div>
 

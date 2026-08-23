@@ -7,6 +7,7 @@ const dialog = document.getElementById("addItemDialog");
 const addItemButton = document.getElementById("addItemButton");
 const addItemForm = document.getElementById("addItemForm");
 const itemNameInput = document.getElementById("itemName");
+const itemMarkup = document.getElementById("itemMarkup");
 const itemQuantityInput = document.getElementById("itemQuantity");
 
 addItemButton.addEventListener("click", async () => {
@@ -30,8 +31,9 @@ addItemForm.addEventListener("submit", (e) => {
 	e.preventDefault();
 
 	const name = itemNameInput.value.trim();
+	const markup = itemMarkup ? itemMarkup.value.trim() : null;
 	const baseCalculator = new BaseCalculator(dialog, priceManager);
-	const finalPrice = baseCalculator.getPriceWithMarkup(name);
+	const finalPrice = baseCalculator.getPriceWithMarkup(name, markup);
 
 	if (!finalPrice) {
 		alert("Пожалуйста, выберите товар из выпадающего списка!");

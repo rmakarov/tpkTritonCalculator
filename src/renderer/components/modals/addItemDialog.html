@@ -8,37 +8,22 @@
 		<div class="modal-body">
 			<div class="form-group">
 				<label for="itemName">Наименование:</label>
-				<input
-					type="search"
-					id="itemName"
-					class="text-input"
-					name="itemName"
-					placeholder="Поиск товара..."
-					required
-				/>
+				<input type="search" id="itemName" class="text-input" name="itemName" placeholder="Поиск товара..." required />
 			</div>
 
 			<div class="form-group">
 				<label for="itemQuantity">Количество:</label>
-				<input
-					type="number"
-					id="itemQuantity"
-					class="text-input"
-					name="itemQuantity"
-					min="1"
-					value="1"
-					required
-				/>
+				<input type="number" id="itemQuantity" class="text-input" name="itemQuantity" min="1" value="1" required />
+			</div>
+			<div class="form-group">
+				<label for="itemMarkup">Наценка:</label>
+				<input id="itemMarkup" class="text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
 			</div>
 		</div>
 
 		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary modal-close">
-				Отмена
-			</button>
-			<button type="submit" id="addBtn" class="btn btn-primary">
-				Добавить
-			</button>
+			<button type="button" class="btn btn-secondary modal-close">Отмена</button>
+			<button type="submit" id="addBtn" class="btn btn-primary">Добавить</button>
 		</div>
 	</form>
 </dialog>

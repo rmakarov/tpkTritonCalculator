@@ -105,8 +105,9 @@ class WicketCalculatorView extends BaseCalculatorView {
 		this.initCalcButtonState("#wicket-width", "#wicket-height");
 
 		priceManager.populateFilteredAutocomplete("wicket-frame-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("wicket-partitions-material", this.element, ["профиль"]);
 		priceManager.populateFilteredAutocomplete("wicket-posts", this.element, ["профиль"]);
-		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист", "жалюзи", "сайдинг"]);
 		priceManager.populateFilteredAutocomplete("wicket-paint", this.element, ["краска"]);
 
 		this.toggleStepFieldState();
@@ -179,7 +180,8 @@ class GateCalculatorView extends BaseCalculatorView {
 
 		priceManager.populateFilteredAutocomplete("gate-posts", this.element, ["профиль"]);
 		priceManager.populateFilteredAutocomplete("gate-frame-material", this.element, ["профиль"]);
-		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("gate-partitions-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист", "жалюзи", "сайдинг"]);
 		priceManager.populateFilteredAutocomplete("gate-paint", this.element, ["краска"]);
 		priceManager.populateFilteredAutocomplete("gate-rollers", this.element, ["ролик"]);
 		priceManager.populateAutocomplete("gate-rack", this.element);

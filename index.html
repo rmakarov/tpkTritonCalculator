@@ -2,14 +2,8 @@
 <html lang="ru">
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			http-equiv="X-Content-Security-Policy"
-			content="default-src 'self'; script-src 'self'; style-src 'self'"
-		/>
-		<meta
-			http-equiv="Content-Security-Policy"
-			content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* ws://localhost:*; style-src 'self' 'unsafe-inline';"
-		/>
+		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' http://localhost:* ws://localhost:*; style-src 'self' 'unsafe-inline';" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>TPK Triton Calculator</title>
 	</head>
@@ -21,12 +15,8 @@
 		<div class="layout">
 			<div class="tab-bar">
 				<nav class="tabs" aria-label="Разделы">
-					<button class="tab is-active" type="button" data-tab="home">
-						Главная
-					</button>
-					<button class="tab" type="button" data-tab="gate">
-						Расчёт калитки / ворот
-					</button>
+					<button class="tab is-active" type="button" data-tab="home">Главная</button>
+					<button class="tab" type="button" data-tab="gate">Расчёт калитки / ворот</button>
 				</nav>
 			</div>
 
@@ -37,16 +27,8 @@
 					<div class="field-row">
 						<div class="import">
 							<h2>Импорт данных</h2>
-							<input
-								type="file"
-								name="xlfile"
-								id="xlf"
-								accept=".xlsx,.xls"
-								hidden
-							/>
-							<label for="xlf" class="custom-file-button"
-								>Загрузить прайс</label
-							>
+							<input type="file" name="xlfile" id="xlf" accept=".xlsx,.xls" hidden />
+							<label for="xlf" class="custom-file-button">Загрузить прайс</label>
 							<span id="file-name" class="file-name">Файл не выбран</span>
 
 							<pre id="output"></pre>
@@ -57,69 +39,35 @@
 							</button>
 						</div>
 					</div>
-					<div
-						class="settings-panel"
-						id="home-settings"
-						aria-labelledby="home-settings-title"
-					>
+					<div class="settings-panel" id="home-settings" aria-labelledby="home-settings-title">
 						<h3 id="home-settings-title">Настройки</h3>
 
 						<div class="field-row">
-							<button
-								id="settings-toggle-btn"
-								type="button"
-								class="settings-toggle-btn"
-							>
+							<button id="settings-toggle-btn" type="button" class="settings-toggle-btn">
 								<span class="settings-toggle-btn__icon">⚙️</span>
-								<span class="settings-toggle-btn__text"
-									>Показать настройки</span
-								>
+								<span class="settings-toggle-btn__text">Показать настройки</span>
 							</button>
 						</div>
 
 						<!-- Выезжающая область -->
 						<div class="settings-accordion" id="settings-accordion">
 							<div class="settings-accordion__content">
-								<p class="settings-placeholder">
-									Здесь будут настройки из settings.json
-								</p>
+								<p class="settings-placeholder">Здесь будут настройки из settings.json</p>
 							</div>
 							<div class="settings-accordion__footer">
-								<button
-									id="price-reset-btn"
-									type="button"
-									class="btn btn-primary"
-								>
-									Очистить кэш прайс листа
-								</button>
-								<button
-									id="settings-reset-btn"
-									type="button"
-									class="btn btn--danger btn--small"
-								>
-									Сбросить к значениям по умолчанию
-								</button>
+								<button id="price-reset-btn" type="button" class="btn btn-primary">Очистить кэш прайс листа</button>
+								<button id="settings-reset-btn" type="button" class="btn btn--danger btn--small">Сбросить к значениям по умолчанию</button>
 							</div>
 						</div>
 					</div>
 				</section>
 
-				<section
-					class="tab-panel"
-					id="gate"
-					aria-labelledby="gate-title"
-					hidden
-				>
+				<section class="tab-panel" id="gate" aria-labelledby="gate-title" hidden>
 					<h2 id="gate-title">Расчёт калитки / ворот</h2>
 
 					<div class="calculator-choice">
 						<label class="calculator-choice__option">
-							<input
-								type="radio"
-								name="calculator-type"
-								value="wicket"
-								checked
-							/>
+							<input type="radio" name="calculator-type" value="wicket" checked />
 							<span>Расчет калитки</span>
 						</label>
 
@@ -129,24 +77,12 @@
 						</label>
 
 						<label class="calculator-choice__markup">
-							<input
-								id="calculator-markup"
-								class="text-input"
-								type="number"
-								min="1"
-								max="1000"
-								step="1"
-								placeholder="0"
-							/>
-							<span>Наценка (от 1 до 1000 %)</span>
+							<input id="calculator-markup" class="text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+							<span>Общая наценка (от 1 до 1000 %)</span>
 						</label>
 					</div>
 
-					<div
-						class="calculator-mount"
-						id="calculator-mount"
-						aria-live="polite"
-					></div>
+					<div class="calculator-mount" id="calculator-mount" aria-live="polite"></div>
 
 					<div id="materials-section">
 						<div class="space-between grey-panel" id="addItemAndPrintSection">
@@ -184,15 +120,11 @@
 									<input id="deliveryAddress" class="text-input" type="text" />
 								</div>
 								<div class="field-row">
-									<label for="customerName"
-										>Заказчик (ФИО / Организация):</label
-									>
+									<label for="customerName">Заказчик (ФИО / Организация):</label>
 									<input id="customerName" class="text-input" type="text" />
 								</div>
 								<div class="field-row">
-									<label for="deliveryDeadline"
-										>Срок выполнения / доставки:</label
-									>
+									<label for="deliveryDeadline">Срок выполнения / доставки:</label>
 									<input id="deliveryDeadline" class="text-input" type="text" />
 								</div>
 							</div>

@@ -37,11 +37,18 @@ class WicketCalculator extends BaseCalculator {
 
 		// 3. Получаем выбранные материалы
 		const frameMaterial = this.getVal("#wicket-frame-material");
+		const frameMarkup = this.getMarkupByFieldId("#wicket-frame-material");
 		const postsMaterial = this.getVal("#wicket-posts");
+		const postsMarkup = this.getMarkupByFieldId("#wicket-posts");
 		const claddingMaterial = this.getVal("#wicket-cladding");
+		const caddingMarkup = this.getMarkupByFieldId("#wicket-cladding");
 		const claddingMaterialStep = this.getVal("#wicket-cladding-step");
 		const paintMaterial = this.getVal("#wicket-paint");
+		const paintMarkup = this.getMarkupByFieldId("#wicket-paint");
 		const inFrame = document.getElementById("wicked-in-frame");
+
+		console.log("frameMaterial: ", frameMaterial);
+		console.log("frameMarkup: ", frameMarkup);
 
 		// 4. Считаем количества (Формулы теперь работают с метрами!)
 		if (frameMaterial) {
@@ -51,6 +58,7 @@ class WicketCalculator extends BaseCalculator {
 			materials.push({
 				name: frameMaterial,
 				quantity: Math.ceil(frameLength),
+				markup: frameMarkup,
 			});
 		}
 
@@ -62,6 +70,7 @@ class WicketCalculator extends BaseCalculator {
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postsLength),
+					markup: postsMarkup,
 				});
 			} else {
 				// 2 столба по высоте + 1.2 м на заглубление
@@ -69,6 +78,7 @@ class WicketCalculator extends BaseCalculator {
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postsLength),
+					markup: postsMarkup,
 				});
 			}
 		}
@@ -82,11 +92,12 @@ class WicketCalculator extends BaseCalculator {
 			materials.push({
 				name: claddingMaterial,
 				quantity: Math.ceil(claddingCount),
+				markup: caddingMarkup,
 			});
 		}
 
 		if (paintMaterial) {
-			materials.push({ name: paintMaterial, quantity: 1, finalPrice: true });
+			materials.push({ name: paintMaterial, quantity: 1, markup: paintMarkup });
 		}
 
 		// Фильтруем материалы, у которых есть цена в прайсе

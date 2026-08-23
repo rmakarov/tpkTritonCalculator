@@ -47,6 +47,17 @@ export default class BaseCalculator {
 		return this.element.querySelector(selector)?.value?.trim() || null;
 	}
 
+	getMarkupByFieldId(fieldId) {
+		const materialInput = this.element.querySelector(`${fieldId}`);
+		if (!materialInput) return null;
+
+		const markupInput = materialInput.parentElement.querySelector(".calculator-markup");
+		if (!markupInput) return null;
+
+		const value = markupInput.value?.trim();
+		return value ? parseFloat(value) : null;
+	}
+
 	// расчет ширины материала
 	getMaterialWidth(materialName, fenceStep) {
 		if (materialName.includes("штакет")) {
@@ -131,16 +142,17 @@ export default class BaseCalculator {
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
-	getPriceWithMarkup(materialName, finalPrice) {
+	getPriceWithMarkup(materialName, markup) {
 		console.log("getPriceWithMarkup materialName: ", materialName);
-		console.log("getPriceWithMarkup finalPrice: ", finalPrice);
+		console.log("getPriceWithMarkup markup: ", markup);
 		const basePrice = this.priceManager.getPrice(materialName);
 		if (!basePrice) return null;
 
-		const markup = this.getMarkup();
-		// Если finalPrice  - то наценку  не  добавляемж
+		const baseMarkup = this.getMarkup();
+		// Если fieldPrice есть  - то наценку добавляем fieldPrice (даже если 0)
+		const finalMarkup = markup ?? baseMarkup;
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))
-		return finalPrice ? basePrice : parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
+		return parseFloat((basePrice * (1 + finalMarkup / 100)).toFixed(2));
 	}
 
 	/**
@@ -163,7 +175,7 @@ export default class BaseCalculator {
 		}
 
 		return rawMaterials.map((mat) => {
-			const finalPrice = this.getPriceWithMarkup(mat.name, mat.finalPrice);
+			const finalPrice = this.getPriceWithMarkup(mat.name, mat.markup);
 
 			return {
 				name: mat.name,

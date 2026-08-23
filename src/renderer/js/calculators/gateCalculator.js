@@ -33,14 +33,24 @@ class GateCalculator extends BaseCalculator {
 		const height = heightMm / 1000;
 
 		const postsMaterial = this.getVal("#gate-posts");
+		const postsMarkup = this.getMarkupByFieldId("#gate-posts");
 		const frameMaterial = this.getVal("#gate-frame-material");
+		const frameMarkup = this.getMarkupByFieldId("#gate-frame-material");
+		const partitionsMaterial = this.getVal("#gate-partitions-material");
+		const partitionsMarkup = this.getMarkupByFieldId("#gate-partitions-material");
 		const claddingMaterial = this.getVal("#gate-cladding");
+		const claddingMarkup = this.getMarkupByFieldId("#gate-cladding");
 		const claddingMaterialStep = this.getVal("#gate-cladding-step");
 		const paintMaterial = this.getVal("#gate-paint");
+		const paintMarkup = this.getMarkupByFieldId("#gate-paint");
 		const rollers = this.getVal("#gate-rollers");
+		const rollersMarkup = this.getMarkupByFieldId("#gate-rollers");
 		const rack = this.getVal("#gate-rack");
+		const rackMarkup = this.getMarkupByFieldId("#gate-rack");
 		const drive = this.getVal("#gate-drive");
+		const driveMarkup = this.getMarkupByFieldId("#gate-drive");
 		const slidingGate = document.getElementById("sliding-gate");
+		const sligingGateMarkup = this.getMarkupByFieldId("#sliding-gate");
 
 		// --- СПЕЦИФИКА ВОРОТ ---
 		if (frameMaterial) {
@@ -49,6 +59,7 @@ class GateCalculator extends BaseCalculator {
 			materials.push({
 				name: frameMaterial,
 				quantity: Math.ceil(frameLength),
+				markup: frameMarkup,
 			});
 		}
 
@@ -60,6 +71,7 @@ class GateCalculator extends BaseCalculator {
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),
+					markup: postsMarkup,
 				});
 			} else {
 				// 2 столба по высоте + 1.5 м на заглубление
@@ -67,6 +79,7 @@ class GateCalculator extends BaseCalculator {
 				materials.push({
 					name: postsMaterial,
 					quantity: Math.ceil(postLength),
+					markup: postsMarkup,
 				});
 			}
 		}
@@ -89,25 +102,26 @@ class GateCalculator extends BaseCalculator {
 			materials.push({
 				name: claddingMaterial,
 				quantity: Math.ceil(claddingCount),
+				markup: claddingMarkup,
 			});
 		}
 
 		if (paintMaterial) {
-			materials.push({ name: paintMaterial, quantity: 1, finalPrice: true });
+			materials.push({ name: paintMaterial, quantity: 1, markup: paintMarkup });
 		}
 
 		// Ролики, зуб. рейка, привод обычно идут в штуках
 		if (rollers) {
-			materials.push({ name: rollers, quantity: 2 }); // 2 роликовые тележки
+			materials.push({ name: rollers, quantity: 2, markup: rollersMarkup }); // 2 роликовые тележки
 		}
 
 		if (rack) {
 			const rackLength = width + 1; // Длина ворот +  метр запаса
-			materials.push({ name: rack, quantity: rackLength });
+			materials.push({ name: rack, quantity: rackLength, markup: rackMarkup });
 		}
 
 		if (drive) {
-			materials.push({ name: drive, quantity: 1 }); // 1 привод
+			materials.push({ name: drive, quantity: 1, markup: driveMarkup }); // 1 привод
 		}
 
 		return materials.filter((m) => this.priceManager.getPrice(m.name));
