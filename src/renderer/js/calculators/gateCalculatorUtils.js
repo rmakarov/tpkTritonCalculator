@@ -13,64 +13,63 @@ const GATE_TYPES = {
 	SLIDING_GATE_TYPE2: "sliding-gate-type2",
 };
 
-const getGateFrameType1 = (width, height) => {
-	return width * 2 + height * 4;
+const getGatePartitionsType1 = () => {
+	return 0;
 };
 
-const getGateFrameType2 = (width, height) => {
-	return width * 3 + height * 4;
+const getGatePartitionsType2 = ({ width }) => {
+	return width;
 };
 
-const getGateFrameType3 = (width, height) => {
-	return width * 4 + height * 4;
+const getGatePartitionsType3 = ({ width }) => {
+	return width * 2;
 };
 
-const getGateFrameType4 = (width, height) => {
+const getGatePartitionsType4 = ({ width, height }) => {
 	let diagonal = getDiagonal(width / 2, height / 2);
-	return width * 2 + height * 4 + width + diagonal * 4;
+	return width + diagonal * 4;
 };
 
-const getGateFrameType5 = (width, height) => {
+const getGatePartitionsType5 = ({ width, height }) => {
 	let diagonal = getDiagonal(width / 2, height / 2);
-	return width * 2 + height * 4 + width * 2 + diagonal * 4;
+	return width * 2 + diagonal * 4;
 };
 
-const getGateFrameType6 = (width, height) => {
-	return width * 2 + height * 6;
+const getGatePartitionsType6 = ({ height }) => {
+	return height * 2;
 };
 
-const getGateFrameType7 = (width, height) => {
-	return width * 3 + height * 6;
+const getGatePartitionsType7 = ({ width, height }) => {
+	return width + height * 2;
 };
 
-const getGateFrameType8 = (width, height) => {
-	return width * 3 + height * 8;
+const getGatePartitionsType8 = ({ width, height }) => {
+	return width + height * 4;
 };
 
-const getGateFrameType9 = (width, height) => {
+const getGatePartitionsType9 = ({ width, height }) => {
 	let diagonal = getDiagonal(width / 2, height);
-	return width * 2 + height * 4 + diagonal * 2;
+	return diagonal * 2;
 };
 
-const getGateFrameType10 = (width, height) => {
+const getGatePartitionsType10 = ({ width, height }) => {
 	let diagonal = getDiagonal(width / 2, height);
-	return width * 3 + height * 4 + diagonal * 2;
+	return width + diagonal * 2;
 };
 
-const getSlidingGateFrameType1 = (width, height) => {
-	// Периметр (в метрах) + вертикальная поперечина + хвостовая часть ворот для противовеса (50% от проема)
-	// + 3 диагонали (на потовину ворот) + усилители хвостовой части (2  шт равны  как  раз высоте ворот)
+const getSlidingGatePartitionsType1 = ({ width, height }) => {
+	//  вертикальная поперечина + 2 диагонали (на потовину ворот) + усилители хвостовой части (2  шт равны  как  раз высоте ворот)
 	let diagonal = getDiagonal(width / 2, height);
-	return width * 2 + height * 2 + height + width / 2 + diagonal * 3 + height;
+	return diagonal * 2 + height * 2;
 };
 
-const getSlidingGateFrameType2 = (width, height) => {
-	// 3 длины + 3 высоты + половина длины( хвостовая  часть)
-	// + 3  диагонали (на потовину ворот) + 3 диагонали (на потовину высоты и 1.4 ширины)
+const getSlidingGateFrameType2 = ({ width, height }) => {
+	// 1 длина + 1 высота
+	// + 2  диагонали (на потовину ворот) + 3 диагонали (на потовину высоты и 1.4 ширины)
 	// + 3 половины высоты (height + height/2)
 	let diagonal1 = getDiagonal(width / 2, height);
 	let diagonal2 = getDiagonal(width / 4, height / 2);
-	return width * 3 + height * 3 + diagonal1 * 3 + diagonal2 + 3 + height + height / 2;
+	return width + height + diagonal1 * 2 + diagonal2 * 3 + (height / 2) * 3;
 };
 
 export const getDiagonal = (width, height) => {
@@ -78,29 +77,42 @@ export const getDiagonal = (width, height) => {
 };
 
 const frameCalculators = {
-	[GATE_TYPES.GATE_TYPE1]: getGateFrameType1,
-	[GATE_TYPES.GATE_TYPE2]: getGateFrameType2,
-	[GATE_TYPES.GATE_TYPE3]: getGateFrameType3,
-	[GATE_TYPES.GATE_TYPE4]: getGateFrameType4,
-	[GATE_TYPES.GATE_TYPE5]: getGateFrameType5,
-	[GATE_TYPES.GATE_TYPE6]: getGateFrameType6,
-	[GATE_TYPES.GATE_TYPE7]: getGateFrameType7,
-	[GATE_TYPES.GATE_TYPE8]: getGateFrameType8,
-	[GATE_TYPES.GATE_TYPE9]: getGateFrameType9,
-	[GATE_TYPES.GATE_TYPE10]: getGateFrameType10,
-	[GATE_TYPES.SLIDING_GATE_TYPE1]: getSlidingGateFrameType1,
+	[GATE_TYPES.GATE_TYPE1]: getGatePartitionsType1,
+	[GATE_TYPES.GATE_TYPE2]: getGatePartitionsType2,
+	[GATE_TYPES.GATE_TYPE3]: getGatePartitionsType3,
+	[GATE_TYPES.GATE_TYPE4]: getGatePartitionsType4,
+	[GATE_TYPES.GATE_TYPE5]: getGatePartitionsType5,
+	[GATE_TYPES.GATE_TYPE6]: getGatePartitionsType6,
+	[GATE_TYPES.GATE_TYPE7]: getGatePartitionsType7,
+	[GATE_TYPES.GATE_TYPE8]: getGatePartitionsType8,
+	[GATE_TYPES.GATE_TYPE9]: getGatePartitionsType9,
+	[GATE_TYPES.GATE_TYPE10]: getGatePartitionsType10,
+	[GATE_TYPES.SLIDING_GATE_TYPE1]: getSlidingGatePartitionsType1,
 	[GATE_TYPES.SLIDING_GATE_TYPE2]: getSlidingGateFrameType2,
 };
 
 // Return by default frame lenght for wicket type2
-export const calculateGateFrameByType = (width, height, gateType) => {
+export const calculateGatePartitionsByType = (width, height, gateType, markupOnTrimmings) => {
 	const calculator = frameCalculators[gateType];
 
 	if (!calculator) {
 		console.warn(`⚠️ Неизвестный тип ворот: "${gateType}". Используется Type2 по умолчанию.`);
 		console.log("Доступные типы:", Object.keys(frameCalculators));
-		return getGateFrameType2(width, height);
+		return getGatePartitionsType2({ width, height });
 	}
 
-	return calculator(width, height);
+	return calculator({ width, height });
+};
+
+export const calculateGateFrameByType = (width, height, slidingGate, markupOnTrimmings) => {
+	const diagonal = getDiagonal(width / 2, height);
+	let frameLength;
+	if (slidingGate) {
+		frameLength = width * 2 + height * 2 + width / 2 + diagonal;
+	} else {
+		frameLength = width * 2 + height * 4;
+	}
+	const frameMarkupOnTrimmings = (frameLength / 100) * markupOnTrimmings;
+
+	return frameLength + frameMarkupOnTrimmings;
 };

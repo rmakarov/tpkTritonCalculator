@@ -24,7 +24,10 @@ const getWicketPartitionsType3 = ({ width }) => {
 };
 
 const getWicketPartitionsType4 = ({ width, height }) => {
+	console.log("getWicketPartitionsType4: ", width, height);
 	let diagonal = getDiagonal(width, height / 2);
+	console.log("getWicketPartitionsType4 diagonal: ", diagonal);
+	console.log("getWicketPartitionsType4  width + diagonal * 2: ", width + diagonal * 2);
 	return width + diagonal * 2;
 };
 
@@ -55,7 +58,7 @@ const getWicketPartitionsType10 = ({ width, height }) => {
 	return width + diagonal;
 };
 
-export const getDiagonal = ({ width, height }) => {
+export const getDiagonal = (width, height) => {
 	return Math.sqrt(height * height + width * width);
 };
 

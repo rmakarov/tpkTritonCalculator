@@ -1,5 +1,5 @@
 import { BaseCalculator } from "./baseCalculator.js";
-import { calculateGateFrameByType } from "./gateCalculatorUtils.js";
+import { calculateGateFrameByType, calculateGatePartitionsByType } from "./gateCalculatorUtils.js";
 import { showNotification } from "../utils/notification";
 
 class GateCalculator extends BaseCalculator {
@@ -11,6 +11,12 @@ class GateCalculator extends BaseCalculator {
 	getSelectedType() {
 		const checkedInput = this.element.querySelector('input[name="gate-type"]:checked');
 		return checkedInput ? checkedInput.value : null;
+	}
+
+	getBothSidesSheathing() {
+		const checkbox = document.querySelector('input[name="gate-both-sides-sheathing"]');
+
+		return checkbox?.checked ?? false;
 	}
 
 	getBothSidesSheathing() {
@@ -39,11 +45,19 @@ class GateCalculator extends BaseCalculator {
 		const width = widthMm / 1000;
 		const height = heightMm / 1000;
 
+		const bothSideSheathing = this.getBothSidesSheathing();
+
+		const isSliding = document.querySelector('input[id="sliding-gate"]');
+
+		const markupOnTrimmings = this.getVal("#gate-markup-on-trimmings");
 		const postsMaterial = this.getVal("#gate-posts");
+		const postsMaterialSubName = postsMaterial?.previousElementSibling?.textContent.trim();
 		const postsMarkup = this.getMarkupByFieldId("#gate-posts");
 		const frameMaterial = this.getVal("#gate-frame-material");
+		const frameMaterialSubName = frameMaterial?.previousElementSibling?.textContent.trim();
 		const frameMarkup = this.getMarkupByFieldId("#gate-frame-material");
 		const partitionsMaterial = this.getVal("#gate-partitions-material");
+		const partitionsMaterialSubName = partitionsMaterial?.previousElementSibling?.textContent.trim();
 		const partitionsMarkup = this.getMarkupByFieldId("#gate-partitions-material");
 		const claddingMaterial = this.getVal("#gate-cladding");
 		const claddingMarkup = this.getMarkupByFieldId("#gate-cladding");
@@ -61,12 +75,23 @@ class GateCalculator extends BaseCalculator {
 
 		// --- СПЕЦИФИКА ВОРОТ ---
 		if (frameMaterial) {
-			const frameLength = calculateGateFrameByType(width, height, this.selectedType);
+			const frameLength = calculateGateFrameByType(width, height, isSliding.checked, markupOnTrimmings);
 
 			materials.push({
 				name: frameMaterial,
+				subName: ` (${frameMaterialSubName})`,
 				quantity: Math.ceil(frameLength),
 				markup: frameMarkup,
+			});
+		}
+
+		if (partitionsMaterial) {
+			const partitionsLength = calculateGatePartitionsByType(width, height, this.selectedType, markupOnTrimmings);
+			materials.push({
+				name: partitionsMaterial,
+				subName: ` (${partitionsMaterialSubName})`,
+				quantity: Math.ceil(partitionsLength),
+				markup: partitionsMarkup,
 			});
 		}
 
@@ -75,17 +100,21 @@ class GateCalculator extends BaseCalculator {
 			if (slidingGate.checked) {
 				// 2 двойных столба выше высоты на 20см с перемычкой 20 см (не заглубляются)
 				postLength = (height + 0.2) * 4 + 0.4;
+				const finalPostsLength = postsLength + (postsLength / 100) * markupOnTrimmings;
 				materials.push({
 					name: postsMaterial,
-					quantity: Math.ceil(postLength),
+					subName: `( ${postsMaterialSubName})`,
+					quantity: Math.ceil(finalPostsLength),
 					markup: postsMarkup,
 				});
 			} else {
 				// 2 столба по высоте + 1.5 м на заглубление
 				postLength = (height + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
+				const finalPostsLength = postsLength + (postsLength / 100) * markupOnTrimmings;
 				materials.push({
 					name: postsMaterial,
-					quantity: Math.ceil(postLength),
+					subName: `( ${postsMaterialSubName})`,
+					quantity: Math.ceil(finalPostsLength),
 					markup: postsMarkup,
 				});
 			}
@@ -99,16 +128,19 @@ class GateCalculator extends BaseCalculator {
 			if (slidingGate.checked) {
 				// расчет штакетника на всю ширину ворот
 				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width + claddingMaterialStep / 1000 : width;
-				claddingCount = Math.ceil(finalWidth / materialWidth);
+				claddingCount = finalWidth / materialWidth;
 			} else {
 				// расчет штакетника на одну  створку ворот и * 2;
 				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width / 2 + claddingMaterialStep / 1000 : width / 2;
-				claddingCount = Math.ceil(finalWidth / materialWidth) * 2;
+				claddingCount = (finalWidth / materialWidth) * 2;
+			}
+			if (bothSideSheathing) {
+				claddingCount = claddingCount * 2;
 			}
 			// Количество  материала  округляем в  большую  сторону
 			materials.push({
 				name: claddingMaterial,
-				quantity: Math.ceil(claddingCount),
+				quantity: claddingMaterial.includes("3D") || claddingMaterial.includes("сетк") ? Math.ceil(claddingCount * 100) / 100 : Math.ceil(claddingCount),
 				markup: claddingMarkup,
 			});
 		}

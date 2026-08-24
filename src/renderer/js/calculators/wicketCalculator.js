@@ -91,7 +91,7 @@ class WicketCalculator extends BaseCalculator {
 			if (inFrame.checked) {
 				// рама калитки + 10см на саму раму
 				postsLength = (width + 0.1) * 2 + (height + 0.1) * 2;
-				const finalPostsLength = postsLength + (postsLength / 100) * partitionsMarkup;
+				const finalPostsLength = postsLength + (postsLength / 100) * markupOnTrimmings;
 				materials.push({
 					name: postsMaterial,
 					subName: `( ${postsMaterialSubName})`,
@@ -101,7 +101,7 @@ class WicketCalculator extends BaseCalculator {
 			} else {
 				// 2 столба по высоте + 1.2 м на заглубление
 				postsLength = (height + BaseCalculator.CALCULATOR_CONSTANTS.wicketPostDepth) * 2;
-				const finalPostsLength = postsLength + (postsLength / 100) * partitionsMarkup;
+				const finalPostsLength = postsLength + (postsLength / 100) * markupOnTrimmings;
 				materials.push({
 					name: postsMaterial,
 					subName: `( ${postsMaterialSubName})`,
