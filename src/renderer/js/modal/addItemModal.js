@@ -36,14 +36,14 @@ addItemForm.addEventListener("submit", (e) => {
 	const finalPrice = baseCalculator.getPriceWithMarkup(name, markup);
 
 	if (!finalPrice) {
-		alert("Пожалуйста, выберите товар из выпадающего списка!");
+		console.warn("Пожалуйста, выберите товар из выпадающего списка!");
 		return;
 	}
 
 	const quantity = parseInt(itemQuantityInput.value, 10);
 
 	if (isNaN(quantity) || quantity <= 0) {
-		alert("Пожалуйста, укажите корректное количество!");
+		console.warn("Пожалуйста, укажите корректное количество!");
 		return;
 	}
 

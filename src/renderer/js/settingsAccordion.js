@@ -287,7 +287,7 @@ function enterSelectOptionEditMode(sectionKey, fieldKey, field, optionIndex, val
 			const newValue = Number(editor.value);
 
 			if (isNaN(newValue)) {
-				alert("Значение должно быть числом");
+				console.warn("Значение должно быть числом");
 			} else if (newValue !== field.options[optionIndex]) {
 				field.options[optionIndex] = newValue;
 				valueText.textContent = formatValue(newValue, field);

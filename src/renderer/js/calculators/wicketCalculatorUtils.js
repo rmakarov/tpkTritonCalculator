@@ -11,76 +11,86 @@ const WICKET_TYPES = {
 	WICKET_TYPE10: "wicket-type10",
 };
 
-const getWicketFrameType1 = (width, height) => {
-	return width * 2 + height * 2;
+const getWicketPartitionsType1 = () => {
+	return 0;
 };
 
-const getWicketFrameType2 = (width, height) => {
-	return width * 2 + height * 2 + width;
+const getWicketPartitionsType2 = ({ width }) => {
+	return width;
 };
 
-const getWicketFrameType3 = (width, height) => {
-	return width * 2 + height * 2 + width * 2;
+const getWicketPartitionsType3 = ({ width }) => {
+	return width * 2;
 };
 
-const getWicketFrameType4 = (width, height) => {
+const getWicketPartitionsType4 = ({ width, height }) => {
 	let diagonal = getDiagonal(width, height / 2);
-	return width * 2 + height * 2 + width + diagonal * 2;
+	return width + diagonal * 2;
 };
 
-const getWicketFrameType5 = (width, height) => {
+const getWicketPartitionsType5 = ({ width, height }) => {
 	let diagonal = getDiagonal(width, height / 2);
-	return width * 2 + height * 2 + width * 2 + diagonal * 2;
+	return width * 2 + diagonal * 2;
 };
 
-const getWicketFrameType6 = (width, height) => {
-	return width * 2 + height * 2 + height;
+const getWicketPartitionsType6 = ({ height }) => {
+	return height;
 };
 
-const getWicketFrameType7 = (width, height) => {
-	return width * 2 + height * 2 + width + height;
+const getWicketPartitionsType7 = ({ width, height }) => {
+	return width + height;
 };
 
-const getWicketFrameType8 = (width, height) => {
-	return width * 2 + height * 2 + width + height * 2;
+const getWicketPartitionsType8 = ({ width, height }) => {
+	return width + height * 2;
 };
 
-const getWicketFrameType9 = (width, height) => {
+const getWicketPartitionsType9 = ({ width, height }) => {
 	let diagonal = getDiagonal(width, height);
-	return width * 2 + height * 2 + diagonal;
+	return diagonal;
 };
 
-const getWicketFrameType10 = (width, height) => {
+const getWicketPartitionsType10 = ({ width, height }) => {
 	let diagonal = getDiagonal(width, height);
-	return width * 2 + height * 2 + width + diagonal;
+	return width + diagonal;
 };
 
-export const getDiagonal = (width, height) => {
+export const getDiagonal = ({ width, height }) => {
 	return Math.sqrt(height * height + width * width);
 };
 
 const frameCalculators = {
-	[WICKET_TYPES.WICKET_TYPE1]: getWicketFrameType1,
-	[WICKET_TYPES.WICKET_TYPE2]: getWicketFrameType2,
-	[WICKET_TYPES.WICKET_TYPE3]: getWicketFrameType3,
-	[WICKET_TYPES.WICKET_TYPE4]: getWicketFrameType4,
-	[WICKET_TYPES.WICKET_TYPE5]: getWicketFrameType5,
-	[WICKET_TYPES.WICKET_TYPE6]: getWicketFrameType6,
-	[WICKET_TYPES.WICKET_TYPE7]: getWicketFrameType7,
-	[WICKET_TYPES.WICKET_TYPE8]: getWicketFrameType8,
-	[WICKET_TYPES.WICKET_TYPE9]: getWicketFrameType9,
-	[WICKET_TYPES.WICKET_TYPE10]: getWicketFrameType10,
+	[WICKET_TYPES.WICKET_TYPE1]: getWicketPartitionsType1,
+	[WICKET_TYPES.WICKET_TYPE2]: getWicketPartitionsType2,
+	[WICKET_TYPES.WICKET_TYPE3]: getWicketPartitionsType3,
+	[WICKET_TYPES.WICKET_TYPE4]: getWicketPartitionsType4,
+	[WICKET_TYPES.WICKET_TYPE5]: getWicketPartitionsType5,
+	[WICKET_TYPES.WICKET_TYPE6]: getWicketPartitionsType6,
+	[WICKET_TYPES.WICKET_TYPE7]: getWicketPartitionsType7,
+	[WICKET_TYPES.WICKET_TYPE8]: getWicketPartitionsType8,
+	[WICKET_TYPES.WICKET_TYPE9]: getWicketPartitionsType9,
+	[WICKET_TYPES.WICKET_TYPE10]: getWicketPartitionsType10,
 };
 
-// Return by default frame lenght for wicket type2
-export const calculateWicketFrameByType = (width, height, wicketType) => {
+// Return by default partitions lenght for wicket type2
+export const calculateWicketPartitionsByType = (width, height, wicketType, markupOnTrimmings) => {
 	const calculator = frameCalculators[wicketType];
 
 	if (!calculator) {
 		console.warn(`⚠️ Неизвестный тип калитки: "${wicketType}". Используется Type2 по умолчанию.`);
 		console.log("Доступные типы:", Object.keys(frameCalculators));
-		return getWicketFrameType2(width, height);
+		return getWicketPartitionsType2({ width, height });
 	}
 
-	return calculator(width, height);
+	const partitionsLength = calculator({ width, height });
+	const partitionsMarkupOnTrimmings = (partitionsLength / 100) * markupOnTrimmings;
+
+	return partitionsLength + partitionsMarkupOnTrimmings;
+};
+
+export const calculateWicketFrame = (width, height, markupOnTrimmings) => {
+	const frameLength = width * 2 + height * 2;
+	const frameMarkupOnTrimmings = (frameLength / 100) * markupOnTrimmings;
+
+	return frameLength + frameMarkupOnTrimmings;
 };

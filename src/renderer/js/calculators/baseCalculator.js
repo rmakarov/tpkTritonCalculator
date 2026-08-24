@@ -1,4 +1,5 @@
 import { settingsManager } from "../settingsManager";
+import { showNotification } from "../utils/notification";
 
 export default class BaseCalculator {
 	static DEFAULT_CALCULATOR_CONSTANTS = {
@@ -126,7 +127,7 @@ export default class BaseCalculator {
 		return value;
 	}
 
-	showNotification(message, type = "error", duration = 3000) {
+	/*showNotification(message, type = "error", duration = 3000) {
 		const notif = document.getElementById("notification");
 		if (!notif) return;
 
@@ -137,7 +138,7 @@ export default class BaseCalculator {
 		setTimeout(() => {
 			notif.classList.add("hidden");
 		}, duration);
-	}
+	}*/
 
 	/**
 	 * Возвращает цену материала с учетом наценки
@@ -160,7 +161,7 @@ export default class BaseCalculator {
 	 * @returns {Array<{name: string, quantity: number}>}
 	 */
 	calculateRawMaterials() {
-		this.showNotification("Метод calculateRawMaterials() должен быть реализован в классе-наследнике");
+		showNotification("Метод calculateRawMaterials() должен быть реализован в классе-наследнике");
 	}
 
 	/**
@@ -171,7 +172,7 @@ export default class BaseCalculator {
 		const rawMaterials = this.calculateRawMaterials();
 
 		if (rawMaterials.length === 0) {
-			this.showNotification("Пожалуйста, выберите хотя бы один материал!");
+			showNotification("Пожалуйста, выберите хотя бы один материал!");
 		}
 
 		return rawMaterials.map((mat) => {

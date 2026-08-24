@@ -19,14 +19,16 @@
 	cursor: pointer;
 }
 
-input[type="radio"] {
+input[type="radio"],
+input[type="checkbox"] {
 	width: 24px;
 	height: 24px;
 	margin: 0;
 	cursor: pointer;
 }
 
-input[type="radio"].hidden {
+input[type="radio"].hidden,
+input[type="checkbox"].hidden {
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -90,7 +92,8 @@ input[type="radio"].hidden:checked + .radio-card-box {
 	margin-bottom: 12px;
 }
 
-.calculator-card__radio {
+.calculator-card__radio,
+.calculator-card__checkbox {
 	display: flex;
 	align-items: center;
 	gap: 10px;

@@ -1,5 +1,6 @@
 import { BaseCalculator } from "./baseCalculator.js";
 import { calculateGateFrameByType } from "./gateCalculatorUtils.js";
+import { showNotification } from "../utils/notification";
 
 class GateCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
@@ -10,6 +11,12 @@ class GateCalculator extends BaseCalculator {
 	getSelectedType() {
 		const checkedInput = this.element.querySelector('input[name="gate-type"]:checked');
 		return checkedInput ? checkedInput.value : null;
+	}
+
+	getBothSidesSheathing() {
+		const checkbox = document.querySelector('input[name="gate-both-sides-sheathing"]');
+
+		return checkbox?.checked ?? false;
 	}
 
 	calculateRawMaterials() {
@@ -25,7 +32,7 @@ class GateCalculator extends BaseCalculator {
 
 		// ВАЖНО: Проверяем, выбрал ли пользователь размеры (защита от пустого placeholder)
 		if (widthMm === 0 || heightMm === 0) {
-			this.showNotification("Пожалуйста, выберите ширину и высоту ворот!");
+			showNotification("Пожалуйста, выберите ширину и высоту ворот!");
 		}
 
 		// 2. Конвертируем в метры для инженерных расчетов

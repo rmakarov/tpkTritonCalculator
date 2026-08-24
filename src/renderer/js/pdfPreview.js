@@ -1,3 +1,5 @@
+import { showNotification } from "./utils/notification";
+
 const previewPdfButton = document.getElementById("printButton");
 
 previewPdfButton?.addEventListener("click", async () => {
@@ -8,11 +10,12 @@ previewPdfButton?.addEventListener("click", async () => {
 		const result = await window.pdfAPI.openPreview();
 
 		if (!result.success) {
-			alert(`Не удалось открыть предпросмотр PDF:\n${result.message}`);
+			showNotification(`Не удалось открыть предпросмотр PDF:\n${result.message}`);
+			console.error(`Не удалось открыть предпросмотр PDF:\n${result.message}`);
 		}
 	} catch (error) {
+		showNotification("[PDF Preview] Непредвиденная ошибка:", error);
 		console.error("[PDF Preview] Непредвиденная ошибка:", error);
-		alert("Произошла непредвиденная ошибка при создании PDF.");
 	} finally {
 		previewPdfButton.disabled = false;
 		previewPdfButton.removeAttribute("aria-busy");

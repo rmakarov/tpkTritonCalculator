@@ -155,7 +155,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 				addMaterialToTable(item.name, item.price, item.quantity);
 			});
 		} catch (error) {
-			alert(error.message);
+			console.error(error.message);
 		}
 	}
 }
