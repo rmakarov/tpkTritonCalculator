@@ -1,3 +1,9 @@
+export const WICKET_CONSTANTS = {
+	GAP_BETWEEN_POSTS: 10,
+	GAP_IN_FRAME: 4,
+	GAP_BETWEEN_GROUND: 100,
+};
+
 const WICKET_TYPES = {
 	WICKET_TYPE1: "wicket-type1",
 	WICKET_TYPE2: "wicket-type2",
@@ -11,51 +17,187 @@ const WICKET_TYPES = {
 	WICKET_TYPE10: "wicket-type10",
 };
 
+/**
+ * Извлекает ширину и высоту профиля из текстового описания.
+ * Игнорирует толщину стенки и цвет.
+ *
+ * @param {string} materialString - Например: "Профиль 40 х 20 х 1.5 черный"
+ * @returns {Object|null} - { width: 40, height: 20 } или null, если не удалось распознать
+ */
+export const parseProfileDimensions = (materialString) => {
+	if (!materialString || typeof materialString !== "string") {
+		return null;
+	}
+
+	// Регулярное выражение:
+	// (\d+)       -> захватывает первое число (ширина)
+	// \s*         -> допускает любые пробелы (или их отсутствие)
+	// [xх*хХ]     -> допускает разделитель: латинскую x, кириллическую х, звездочку * (в любом регистре)
+	// \s*         -> снова допускает пробелы
+	// (\d+)       -> захватывает второе число (высота)
+	const regex = /(\d+)\s*[xх*хХ]\s*(\d+)/;
+
+	const match = materialString.match(regex);
+
+	if (match) {
+		return {
+			width: parseInt(match[1], 10), // Первое число (например, 40)
+			height: parseInt(match[2], 10), // Второе число (например, 20)
+		};
+	}
+
+	return null;
+};
+
 const getWicketPartitionsType1 = () => {
-	return 0;
+	return { parts: [], totalLengthMm: 0 };
 };
 
-const getWicketPartitionsType2 = ({ width }) => {
-	return width;
+const getWicketPartitionsType2 = ({ frameWidthMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 20;
+	const partitionLengthMm = frameWidthMm - profileWidth * 2;
+	const markupMm = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthMm = partitionLengthMm + markupMm;
+	return {
+		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 1 }],
+		totalLengthMm: totalLengthMm,
+	};
 };
 
-const getWicketPartitionsType3 = ({ width }) => {
-	return width * 2;
+const getWicketPartitionsType3 = ({ frameWidthMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionLengthMm = frameWidthMm - profileWidth * 2;
+	const markupMm = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = partitionLengthMm + markupMm * 2;
+	return {
+		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 2 }],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType4 = ({ width, height }) => {
-	console.log("getWicketPartitionsType4: ", width, height);
-	let diagonal = getDiagonal(width, height / 2);
-	console.log("getWicketPartitionsType4 diagonal: ", diagonal);
-	console.log("getWicketPartitionsType4  width + diagonal * 2: ", width + diagonal * 2);
-	return width + diagonal * 2;
+const getWicketPartitionsType4 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionLengthMm = frameWidthMm - profileWidth * 2;
+
+	let diagonal = getDiagonal(frameWidthMm, frameHeightMm / 2);
+	const totalPartitiosLength = partitionLengthMm + diagonal * 2;
+	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = totalPartitiosLength + markup;
+
+	return {
+		parts: [
+			{ name: materialName, lengthMm: partitionLengthMm, count: 1 },
+			{ name: materialName, lengthMm: diagonal, count: 2 },
+		],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType5 = ({ width, height }) => {
-	let diagonal = getDiagonal(width, height / 2);
-	return width * 2 + diagonal * 2;
+const getWicketPartitionsType5 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionLengthMm = frameWidthMm - profileWidth * 2;
+
+	let diagonal = getDiagonal(frameWidthMm, frameHeightMm / 2);
+	const totalPartitiosLength = partitionLengthMm * 2 + diagonal * 2;
+	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = totalPartitiosLength + markup;
+
+	return {
+		parts: [
+			{ name: materialName, lengthMm: partitionLengthMm, count: 2 },
+			{ name: materialName, lengthMm: diagonal, count: 2 },
+		],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType6 = ({ height }) => {
-	return height;
+const getWicketPartitionsType6 = ({ frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionLengthMm = frameHeightMm - profileWidth * 2;
+	const markup = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = partitionLengthMm + markup;
+
+	return {
+		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 1 }],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType7 = ({ width, height }) => {
-	return width + height;
+const getWicketPartitionsType7 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partition1 = frameWidthMm - profileWidth * 2;
+	const partition2 = frameHeightMm - profileWidth * 2;
+	const partitionLengthMm = partition1 + partition2;
+	const markup = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = partitionLengthMm + markup;
+
+	return {
+		parts: [
+			{ name: materialName, lengthMm: partition1, count: 1 },
+			{ name: materialName, lengthMm: partition2, count: 1 },
+		],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType8 = ({ width, height }) => {
-	return width + height * 2;
+const getWicketPartitionsType8 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partition1 = frameWidthMm - profileWidth * 2;
+	const partition2 = frameHeightMm - profileWidth * 2;
+	const partitionLengthMm = partition1 + partition2 + partition2;
+	const markup = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = partitionLengthMm + markup;
+
+	return {
+		parts: [
+			{ name: materialName, lengthMm: partition1, count: 1 },
+			{ name: materialName, lengthMm: partition2, count: 2 },
+		],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType9 = ({ width, height }) => {
-	let diagonal = getDiagonal(width, height);
-	return diagonal;
+const getWicketPartitionsType9 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionWidth = frameWidthMm - profileWidth * 2;
+	const partitionHeight = frameHeightMm - profileWidth * 2;
+
+	let diagonal = getDiagonal(partitionWidth, partitionHeight);
+	const markup = (diagonal / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = diagonal + markup;
+
+	return {
+		parts: [{ name: materialName, lengthMm: diagonal, count: 1 }],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
-const getWicketPartitionsType10 = ({ width, height }) => {
-	let diagonal = getDiagonal(width, height);
-	return width + diagonal;
+const getWicketPartitionsType10 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
+	const profile = parseProfileDimensions(materialFrameName);
+	const profileWidth = profile ? profile.width : 40;
+	const partitionWidth = frameWidthMm - profileWidth * 2;
+	const partitionHeight = frameHeightMm - profileWidth * 2;
+
+	let diagonal = getDiagonal(partitionWidth, partitionHeight);
+	const partitionLengthMm = partitionWidth + diagonal;
+	const markup = (partitionLengthMm / 100) * markupOnTrimmings;
+	const totalLengthWithMarkupMm = partitionLengthMm + markup;
+
+	return {
+		parts: [
+			{ name: materialName, lengthMm: partitionWidth, count: 1 },
+			{ name: materialName, lengthMm: diagonal, count: 2 },
+		],
+		totalLengthMm: totalLengthWithMarkupMm,
+	};
 };
 
 export const getDiagonal = (width, height) => {
@@ -76,24 +218,66 @@ const frameCalculators = {
 };
 
 // Return by default partitions lenght for wicket type2
-export const calculateWicketPartitionsByType = (width, height, wicketType, markupOnTrimmings) => {
+export const calculateWicketPartitionsByType = ({ widthMm, heightMm, wicketType, inFrame, markupOnTrimmings, materialName, materialFrameName }) => {
 	const calculator = frameCalculators[wicketType];
+	const frameWidthMm = inFrame ? widthMm - WICKET_CONSTANTS.GAP_IN_FRAME : widthMm - WICKET_CONSTANTS.GAP_BETWEEN_POSTS;
+	const frameHeightMm = inFrame ? heightMm - WICKET_CONSTANTS.GAP_IN_FRAME : heightMm - WICKET_CONSTANTS.GAP_BETWEEN_GROUND;
+
+	let result;
 
 	if (!calculator) {
 		console.warn(`⚠️ Неизвестный тип калитки: "${wicketType}". Используется Type2 по умолчанию.`);
 		console.log("Доступные типы:", Object.keys(frameCalculators));
-		return getWicketPartitionsType2({ width, height });
+		result = getWicketPartitionsType2({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName });
 	}
 
-	const partitionsLength = calculator({ width, height });
-	const partitionsMarkupOnTrimmings = (partitionsLength / 100) * markupOnTrimmings;
+	result = calculator({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName });
+	//const partitionsMarkupOnTrimmings = (partitionsLength / 100) * markupOnTrimmings;
 
-	return partitionsLength + partitionsMarkupOnTrimmings;
+	return result;
 };
 
-export const calculateWicketFrame = (width, height, markupOnTrimmings) => {
-	const frameLength = width * 2 + height * 2;
-	const frameMarkupOnTrimmings = (frameLength / 100) * markupOnTrimmings;
+export const calculateWicketFrame = ({ widthMm, heightMm, inFrame, markupOnTrimmings, materialName }) => {
+	// 1. Расчет чистых размеров
+	const frameWidthMm = inFrame ? widthMm - WICKET_CONSTANTS.GAP_IN_FRAME : widthMm - WICKET_CONSTANTS.GAP_BETWEEN_POSTS;
+	const frameHeightMm = inFrame ? heightMm - WICKET_CONSTANTS.GAP_IN_FRAME : heightMm - WICKET_CONSTANTS.GAP_BETWEEN_GROUND;
 
-	return frameLength + frameMarkupOnTrimmings;
+	// 2. Расчет длины с наценкой на подрезку
+	const rawLengthMm = frameWidthMm * 2 + frameHeightMm * 2;
+	const markupMm = (rawLengthMm / 100) * markupOnTrimmings;
+	const totalLengthMm = rawLengthMm + markupMm;
+
+	// 3. Возвращаем структурированный результат
+	return {
+		parts: [
+			{ name: materialName, lengthMm: frameWidthMm, count: 2 },
+			{ name: materialName, lengthMm: frameHeightMm, count: 2 },
+		],
+		totalLengthMm: totalLengthMm,
+	};
+};
+
+export const calculatePosts = ({ widthMm, heightMm, inFrame, wicketPostDepth, markupOnTrimmings, materialName }) => {
+	if (inFrame) {
+		const postsLength = widthMm * 2 + heightMm * 2;
+		const markupMm = (postsLength / 100) * markupOnTrimmings;
+		const totalLengthMm = postsLength + markupMm;
+		return {
+			parts: [
+				{ name: materialName, lengthMm: widthMm, count: 2 },
+				{ name: materialName, lengthMm: heightMm, count: 2 },
+			],
+			totalLengthMm: totalLengthMm,
+		};
+	} else {
+		const postLength = heightMm + wicketPostDepth;
+		const postsLength = postLength * 2;
+		const markupMm = (postsLength / 100) * markupOnTrimmings;
+		const totalLengthMm = postsLength + markupMm;
+
+		return {
+			parts: [{ name: materialName, lengthMm: postsLength, count: 2 }],
+			totalLengthMm: totalLengthMm,
+		};
+	}
 };

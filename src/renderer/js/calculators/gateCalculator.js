@@ -5,6 +5,20 @@ import { showNotification } from "../utils/notification";
 class GateCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
 		super(rootElement, priceManager);
+		this.gateFrameParts = {
+			frame: {
+				name: "Каркас рамы",
+				items: [],
+			},
+			partitions: {
+				name: " Перегородки",
+				items: [],
+			},
+			posts: {
+				name: "Столбы",
+				items: [],
+			},
+		};
 	}
 
 	// метод для получения выбранного типа ворот
@@ -25,8 +39,19 @@ class GateCalculator extends BaseCalculator {
 		return checkbox?.checked ?? false;
 	}
 
+	getRectangularTechPart() {
+		const checkbox = this.element.querySelector('input[name="gate-technological-part"]');
+		console.log('getRectangularTechPart checkbox' , checkbox)
+		console.log('getRectangularTechPart checkbox?.checked' , checkbox?.checked)
+
+		return checkbox?.checked ?? false;
+	}
+
 	calculateRawMaterials() {
 		const materials = [];
+		this.gateFrameParts.frame.items = [];
+		this.gateFrameParts.partitions.items = [];
+		this.gateFrameParts.posts.items = [];
 
 		// выбранный тип
 		this.selectedType = this.getSelectedType();
@@ -42,22 +67,23 @@ class GateCalculator extends BaseCalculator {
 		}
 
 		// 2. Конвертируем в метры для инженерных расчетов
-		const width = widthMm / 1000;
-		const height = heightMm / 1000;
+		// const width = widthMm / 1000;
+		// const height = heightMm / 1000;
 
 		const bothSideSheathing = this.getBothSidesSheathing();
+		const rectangularTechPart = this.getRectangularTechPart();
 
 		const isSliding = document.querySelector('input[id="sliding-gate"]');
 
 		const markupOnTrimmings = this.getVal("#gate-markup-on-trimmings");
 		const postsMaterial = this.getVal("#gate-posts");
-		const postsMaterialSubName = postsMaterial?.previousElementSibling?.textContent.trim();
+		const postsMaterialSubName = this.element.querySelector("#gate-posts").previousElementSibling?.textContent.trim();
 		const postsMarkup = this.getMarkupByFieldId("#gate-posts");
 		const frameMaterial = this.getVal("#gate-frame-material");
-		const frameMaterialSubName = frameMaterial?.previousElementSibling?.textContent.trim();
+		const frameMaterialSubName = this.element.querySelector("#gate-frame-material").previousElementSibling?.textContent.trim();
 		const frameMarkup = this.getMarkupByFieldId("#gate-frame-material");
 		const partitionsMaterial = this.getVal("#gate-partitions-material");
-		const partitionsMaterialSubName = partitionsMaterial?.previousElementSibling?.textContent.trim();
+		const partitionsMaterialSubName = this.element.querySelector("#gate-partitions-material").previousElementSibling?.textContent.trim();
 		const partitionsMarkup = this.getMarkupByFieldId("#gate-partitions-material");
 		const claddingMaterial = this.getVal("#gate-cladding");
 		const claddingMarkup = this.getMarkupByFieldId("#gate-cladding");
@@ -75,12 +101,23 @@ class GateCalculator extends BaseCalculator {
 
 		// --- СПЕЦИФИКА ВОРОТ ---
 		if (frameMaterial) {
-			const frameLength = calculateGateFrameByType(width, height, isSliding.checked, markupOnTrimmings);
+			const frameResult = calculateGateFrameByType({
+				widthMm,
+				heightMm,
+				slidingGate: isSliding.checked,
+				markupOnTrimmings,
+				materialName: `${frameMaterial} (${frameMaterialSubName})`,
+				rectangularTechPart: rectangularTechPart,
+			});
+
+			this.gateFrameParts.frame.items.push(...frameResult.parts);
+			console.log("GATE this.gateFrameParts:", this.gateFrameParts);
+			const frameInMeters = frameResult.totalLengthMm / 1000;
 
 			materials.push({
 				name: frameMaterial,
 				subName: ` (${frameMaterialSubName})`,
-				quantity: Math.ceil(frameLength),
+				quantity: Math.ceil(frameInMeters * 10) / 10,
 				markup: frameMarkup,
 			});
 		}

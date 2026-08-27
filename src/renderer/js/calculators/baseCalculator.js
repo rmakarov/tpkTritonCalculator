@@ -3,11 +3,11 @@ import { showNotification } from "../utils/notification";
 
 export default class BaseCalculator {
 	static DEFAULT_CALCULATOR_CONSTANTS = {
-		corrugatedSheetWidth: 1.1, // профлист
-		threeDmeshWidth: 2.5, // 3D сетка
-		fenceWidth: 0.11, // штакетник
-		wicketPostDepth: 1.2, //заглубление столба калитки
-		gatePostDepth: 1.5, //заглубление столба ворот
+		corrugatedSheetWidth: 1100, // профлист
+		threeDmeshWidth: 2500, // 3D сетка
+		fenceWidth: 110, // штакетник
+		wicketPostDepth: 1200, //заглубление столба калитки
+		gatePostDepth: 1500, //заглубление столба ворот
 	};
 
 	// Getter: возвращает актуальные значения из настроек, конвертируя мм → м
@@ -17,7 +17,7 @@ export default class BaseCalculator {
 		const D = BaseCalculator.DEFAULT_CALCULATOR_CONSTANTS;
 
 		// Хелпер: получает значение в мм, возвращает в м (или дефолт)
-		const mmToMeters = (mmValue, defaultMeters) => (mmValue != null ? mmValue / 1000 : defaultMeters);
+		const mmToMeters = (mmValue, defaultMeters) => (mmValue != null ? mmValue : defaultMeters);
 
 		return {
 			corrugatedSheetWidth: mmToMeters(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
@@ -62,8 +62,8 @@ export default class BaseCalculator {
 	// расчет ширины материала
 	getMaterialWidth(materialName, fenceStep) {
 		if (materialName.includes("штакет")) {
-			const fenceStepInMeter = fenceStep ? fenceStep / 1000 : 0;
-			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepInMeter;
+			const fenceStepFinal = fenceStep ? fenceStep : 0;
+			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepFinal;
 		}
 		if (materialName.includes("3D") || materialName.includes("сетк")) {
 			return BaseCalculator.CALCULATOR_CONSTANTS.threeDmeshWidth;
@@ -127,19 +127,6 @@ export default class BaseCalculator {
 		return value;
 	}
 
-	/*showNotification(message, type = "error", duration = 3000) {
-		const notif = document.getElementById("notification");
-		if (!notif) return;
-
-		notif.textContent = message;
-		notif.className = `notification ${type}`;
-
-		// Автоскрытие через duration мс
-		setTimeout(() => {
-			notif.classList.add("hidden");
-		}, duration);
-	}*/
-
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
@@ -180,6 +167,7 @@ export default class BaseCalculator {
 
 			return {
 				name: mat.name,
+				subName: mat.subName,
 				price: finalPrice,
 				quantity: mat.quantity,
 			};

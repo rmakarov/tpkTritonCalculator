@@ -152,7 +152,8 @@ class WicketCalculatorView extends BaseCalculatorView {
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
-				addMaterialToTable(item.name, item.price, item.quantity);
+				const itemFullName = item.subName ? item.name + item.subName : item.name;
+				addMaterialToTable(itemFullName, item.price, item.quantity);
 			});
 		} catch (error) {
 			console.error(error.message);
@@ -191,10 +192,12 @@ class GateCalculatorView extends BaseCalculatorView {
 		this.openingInputs.forEach((input) => {
 			input.addEventListener("change", () => {
 				this.updateSlidingFields();
+				this.updateTechPart();
 			});
 		});
 
 		this.updateSlidingFields();
+		this.updateTechPart();
 
 		this.calcButton = this.element.querySelector(".calculator-card__button");
 		if (this.calcButton) {
@@ -256,6 +259,16 @@ class GateCalculatorView extends BaseCalculatorView {
 		}
 	}
 
+	updateTechPart() {
+		const selectedType = this.openingInputs.find((input) => input.checked);
+		const isSliding = selectedType.value === "sliding";
+		const techPart = this.element.querySelector("#gate-technological-part-label");
+
+		if (techPart) {
+			techPart.style.display = isSliding ? "flex" : "none";
+		}
+	}
+
 	handleCalculate() {
 		try {
 			let calculator = new GateCalculator(this.element, priceManager);
@@ -264,7 +277,8 @@ class GateCalculatorView extends BaseCalculatorView {
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
-				addMaterialToTable(item.name, item.price, item.quantity);
+				const itemFullName = item.subName ? item.name + item.subName : item.name;
+				addMaterialToTable(itemFullName, item.price, item.quantity);
 			});
 		} catch (error) {
 			console.log(error.message);
