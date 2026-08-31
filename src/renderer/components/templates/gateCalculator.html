@@ -23,14 +23,14 @@
 			<label class="calculator-field">
 				<span>Тип ворот</span>
 				<div class="field-row radio-cards-box">
-					<label class="radio-card">
+					<!--<label-- class="radio-card">
 						<input class="hidden" type="radio" name="gate-type" value="gate-type1" checked />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type1.svg" alt="ворота тип 1" />
 						</div>
-					</label>
+					</label-->
 					<label class="radio-card">
-						<input class="hidden" type="radio" name="gate-type" value="gate-type2" />
+						<input class="hidden" type="radio" name="gate-type" value="gate-type2" checked />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type2.svg" alt="ворота тип 2" />
 						</div>
@@ -53,7 +53,7 @@
 							<img src="./assets/gate/gate-type5.svg" alt="ворота тип 5" />
 						</div>
 					</label>
-					<label class="radio-card">
+					<!--<label class="radio-card">
 						<input class="hidden" type="radio" name="gate-type" value="gate-type6" />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type6.svg" alt="ворота тип 6" />
@@ -94,30 +94,25 @@
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/sliding-gate-type2.svg" alt="откатные ворота тип 2" />
 						</div>
-					</label>
-					<!-- Будущая фича для  рисования произвольного чертежа -  уже есть  функционал по нажатию - открытие  модального окна -->
-					<!--<label class="radio-card">
-						<input class="hidden" type="radio" name="gate-type" value="wicket-custom-type" />
-						<div class="radio-card-box" type="button">
-							<img src="./assets/wicket/wicket-gate-manual.svg" alt="ворота кастомный тип" />
-						</div>
 					</label>-->
 				</div>
 			</label>
 			<label class="calculator-field calculator-field--short">
 				<span>Ширина (мм)</span>
-				<select id="gate-width" class="text-input">
+				<input id="gate-width" class="text-input" type="number" min="2000" max="12000" step="1" placeholder="0" value="3000" />
+				<!--<select id="gate-width" class="text-input">
 					<option value="" disabled selected>Выберите ширину</option>
-				</select>
+				</select>-->
 			</label>
 			<label class="calculator-field calculator-field--short">
 				<span>Высота (мм)</span>
-				<select id="gate-height" class="text-input">
+				<input id="gate-height" class="text-input" type="number" min="1000" max="4000" step="1" placeholder="0" value="2000" />
+				<!--<select id="gate-height" class="text-input">
 					<option value="" disabled selected>Выберите высоту</option>
-				</select>
+				</select>-->
 			</label>
 			<label class="calculator-field calculator-field--short">
-				<span>Наценка на обрезь</span>
+				<span>Наценка на обрезь (%)</span>
 				<input id="gate-markup-on-trimmings" class="text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
 			</label>
 			<label class="calculator-field--with-markup">

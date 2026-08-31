@@ -14,6 +14,30 @@ function createDefaultSettings() {
 			calculatorConstants: {
 				title: "Константы расчётов",
 				fields: {
+					distanceBetweenPlanks: {
+						title: "Расстояние между планками",
+						type: "number",
+						defaultValue: 6,
+						value: 6,
+					},
+					wicketClearanceInFrame: {
+						title: "Зазор калитки в раме",
+						type: "number",
+						defaultValue: 6,
+						value: 6,
+					},
+					wicketClearanceBetweenPosts: {
+						title: "Зазор калитки между столбами",
+						type: "number",
+						defaultValue: 14,
+						value: 14,
+					},
+					gateClearanceBetweenPosts: {
+						title: "Зазор ворот между столбами",
+						type: "number",
+						defaultValue: 18,
+						value: 18,
+					},
 					wicketPostDepth: {
 						title: "Заглубление столба калитки",
 						type: "number",
@@ -50,43 +74,6 @@ function createDefaultSettings() {
 						options: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
 						defaultValue: 30,
 						value: 30,
-					},
-				},
-			},
-			wicketSettings: {
-				title: "Параметры калитки",
-				fields: {
-					wicketWidth: {
-						title: "Ширина калитки",
-						type: "select",
-						options: [1000, 1250, 1500, 1750, 2000],
-						value: null,
-					},
-					wicketHeight: {
-						title: "Высота калитки",
-						type: "select",
-						options: [1030, 1230, 1530, 1730, 1930, 2030, 2230, 2430],
-						value: null,
-					},
-				},
-			},
-			gateSettings: {
-				title: "Параметры ворот",
-				fields: {
-					gateWidth: {
-						title: "Ширина ворот",
-						type: "select",
-						options: [
-							2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000,
-							7500, 8000, 8500, 9000, 9500, 10000,
-						],
-						value: null,
-					},
-					gateHeight: {
-						title: "Высота ворот",
-						type: "select",
-						options: [1030, 1230, 1530, 1730, 1930, 2030, 2230, 2430],
-						value: null,
 					},
 				},
 			},
@@ -130,23 +117,16 @@ class SettingsManager {
 			}
 		} catch (err) {
 			if (err.code === "ENOENT") {
-				console.log(
-					"[Settings] ⚠️ settings.json не найден — создаём дефолтный",
-				);
+				console.log("[Settings] ⚠️ settings.json не найден — создаём дефолтный");
 			} else {
-				console.warn(
-					"[Settings] ⚠️ settings.json повреждён — делаем backup и создаём новый",
-				);
+				console.warn("[Settings] ⚠️ settings.json повреждён — делаем backup и создаём новый");
 
 				try {
 					const backupPath = `${this.filePath}.corrupt-${Date.now()}.bak`;
 					await fs.copyFile(this.filePath, backupPath);
 					console.log(`[Settings] 💾 Backup сохранён: ${backupPath}`);
 				} catch (backupErr) {
-					console.warn(
-						"[Settings] Не удалось сделать backup:",
-						backupErr.message,
-					);
+					console.warn("[Settings] Не удалось сделать backup:", backupErr.message);
 				}
 			}
 
@@ -221,24 +201,14 @@ class SettingsManager {
 	 * Установить значение одного поля и сохранить на диск.
 	 */
 	async setValue(sectionKey, fieldKey, rawValue) {
-		console.log(
-			"setValue sectionKey: ",
-			sectionKey,
-			"  fieldKey: ",
-			fieldKey,
-			"  rawValue: ",
-			rawValue,
-		);
+		console.log("setValue sectionKey: ", sectionKey, "  fieldKey: ", fieldKey, "  rawValue: ", rawValue);
 		if (!this._initialised) await this.init();
 
 		const section = this.data.sections[sectionKey];
 		if (!section) throw new Error(`Раздел "${sectionKey}" не найден`);
 
 		const field = section.fields[fieldKey];
-		if (!field)
-			throw new Error(
-				`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`,
-			);
+		if (!field) throw new Error(`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`);
 
 		field.value = this._validateValue(field, rawValue);
 
@@ -256,10 +226,7 @@ class SettingsManager {
 		if (!section) throw new Error(`Раздел "${sectionKey}" не найден`);
 
 		const field = section.fields[fieldKey];
-		if (!field)
-			throw new Error(
-				`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`,
-			);
+		if (!field) throw new Error(`Поле "${fieldKey}" не найдено в разделе "${sectionKey}"`);
 
 		if (!Array.isArray(field.options)) {
 			throw new Error(`Поле "${fieldKey}" не имеет массива options`);
@@ -303,24 +270,16 @@ class SettingsManager {
 
 				// ⬇️ Сбрасываем И value, И options, И любые другие поля
 				// Глубокое клонирование через JSON, чтобы не было ссылок
-				currentField.value = JSON.parse(
-					JSON.stringify(
-						defaultField.value ?? defaultField.defaultValue ?? null,
-					),
-				);
+				currentField.value = JSON.parse(JSON.stringify(defaultField.value ?? defaultField.defaultValue ?? null));
 
 				if (Array.isArray(defaultField.options)) {
-					currentField.options = JSON.parse(
-						JSON.stringify(defaultField.options),
-					);
+					currentField.options = JSON.parse(JSON.stringify(defaultField.options));
 				}
 			}
 		}
 
 		await this._saveNow();
-		console.log(
-			"[Settings] 🔄 Настройки полностью сброшены к значениям по умолчанию",
-		);
+		console.log("[Settings] 🔄 Настройки полностью сброшены к значениям по умолчанию");
 
 		return JSON.parse(JSON.stringify(this.data));
 	}
@@ -332,11 +291,7 @@ class SettingsManager {
 	_isValidStructure(data) {
 		if (!data || typeof data !== "object") return false;
 		if (typeof data.version !== "number") return false;
-		if (
-			!data.sections ||
-			typeof data.sections !== "object" ||
-			Array.isArray(data.sections)
-		) {
+		if (!data.sections || typeof data.sections !== "object" || Array.isArray(data.sections)) {
 			return false;
 		}
 
@@ -344,11 +299,7 @@ class SettingsManager {
 		for (const section of Object.values(data.sections)) {
 			if (!section || typeof section !== "object") return false;
 			if (typeof section.title !== "string") return false;
-			if (
-				!section.fields ||
-				typeof section.fields !== "object" ||
-				Array.isArray(section.fields)
-			) {
+			if (!section.fields || typeof section.fields !== "object" || Array.isArray(section.fields)) {
 				return false;
 			}
 		}
@@ -359,8 +310,7 @@ class SettingsManager {
 	_validateValue(field, rawValue, { skipOptionsCheck = false } = {}) {
 		switch (field.type) {
 			case "number": {
-				const value =
-					typeof rawValue === "number" ? rawValue : Number(rawValue);
+				const value = typeof rawValue === "number" ? rawValue : Number(rawValue);
 				if (!Number.isFinite(value)) {
 					throw new Error(`Поле "${field.title}" должно быть числом`);
 				}
@@ -382,9 +332,7 @@ class SettingsManager {
 					}
 
 					if (!field.options.includes(value) && !skipOptionsCheck) {
-						throw new Error(
-							`Поле "${field.title}": значение ${rawValue} отсутствует в списке доступных`,
-						);
+						throw new Error(`Поле "${field.title}": значение ${rawValue} отсутствует в списке доступных`);
 					}
 				}
 

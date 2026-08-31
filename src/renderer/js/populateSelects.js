@@ -7,7 +7,7 @@ import { settingsManager } from "./settingsManager.js";
  */
 const SELECT_MAPPING = {
 	// Ворота — в шаблоне gate-calculator-template
-	"gate-width": {
+	/*"gate-width": {
 		templateId: "gate-calculator-template",
 		section: "gateSettings",
 		field: "gateWidth",
@@ -16,7 +16,7 @@ const SELECT_MAPPING = {
 		templateId: "gate-calculator-template",
 		section: "gateSettings",
 		field: "gateHeight",
-	},
+	},*/
 	"gate-cladding-step": {
 		templateId: "gate-calculator-template",
 		section: "calculatorConstants",
@@ -24,7 +24,7 @@ const SELECT_MAPPING = {
 	},
 
 	// Калитка — в шаблоне wicket-calculator-template
-	"wicket-width": {
+	/*"wicket-width": {
 		templateId: "wicket-calculator-template",
 		section: "wicketSettings",
 		field: "wicketWidth",
@@ -33,7 +33,7 @@ const SELECT_MAPPING = {
 		templateId: "wicket-calculator-template",
 		section: "wicketSettings",
 		field: "wicketHeight",
-	},
+	},*/
 	"wicket-cladding-step": {
 		templateId: "wicket-calculator-template",
 		section: "calculatorConstants",
