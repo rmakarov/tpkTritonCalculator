@@ -20,6 +20,12 @@ function createDefaultSettings() {
 						defaultValue: 6,
 						value: 6,
 					},
+					wicketClearanceBetweenGround: {
+						title: "Зазор калитки до земли",
+						type: "number",
+						defaultValue: 100,
+						value: 100,
+					},
 					wicketClearanceInFrame: {
 						title: "Зазор калитки в раме",
 						type: "number",
@@ -31,6 +37,12 @@ function createDefaultSettings() {
 						type: "number",
 						defaultValue: 14,
 						value: 14,
+					},
+					gateClearanceBetweenGround: {
+						title: "Зазор ворот до земли",
+						type: "number",
+						defaultValue: 100,
+						value: 100,
 					},
 					gateClearanceBetweenPosts: {
 						title: "Зазор ворот между столбами",

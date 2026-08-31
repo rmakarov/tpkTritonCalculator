@@ -1,5 +1,6 @@
 import { settingsManager } from "../settingsManager";
 import { showNotification } from "../utils/notification";
+import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
 export default class BaseCalculator {
 	static DEFAULT_CALCULATOR_CONSTANTS = {
@@ -35,6 +36,16 @@ export default class BaseCalculator {
 	constructor(rootElement, priceManager) {
 		this.element = rootElement;
 		this.priceManager = priceManager;
+		// 1. Находим глобальное поле наценки
+		this._globalMarkupInput = this.element.querySelector("#calculator-markup") || document.querySelector("#calculator-markup");
+
+		// 2. Вешаем на него валидацию (только один раз при создании)
+		if (this._globalMarkupInput) {
+			attachNumericValidation(this._globalMarkupInput, 0, 1000, {
+				allowFloat: false,
+				defaultValue: 0,
+			});
+		}
 	}
 
 	async init() {
@@ -55,8 +66,11 @@ export default class BaseCalculator {
 		const markupInput = materialInput.parentElement.querySelector(".calculator-markup");
 		if (!markupInput) return null;
 
-		const value = markupInput.value?.trim();
-		return value ? parseFloat(value) : null;
+		const validatedMarkup = getValidatedNumber(markupInput, 0, 1000, {
+			allowFloat: false,
+		});
+
+		return validatedMarkup;
 	}
 
 	// расчет ширины материала
@@ -77,66 +91,23 @@ export default class BaseCalculator {
 	 * Если значение вне диапазона 1-1000, корректирует его и обновляет поле ввода.
 	 */
 	getMarkup() {
-		// Ищем поле в текущей форме, если нет - ищем во всем документе (на случай глобального расположения)
-		const markupInput = this.element.querySelector("#calculator-markup") || document.querySelector("#calculator-markup");
-
-		if (markupInput) {
-			markupInput.addEventListener("input", function () {
-				// Если поле очистили полностью - ничего не делаем, пусть будет пустым
-				if (this.value === "") return;
-
-				let val = parseFloat(this.value);
-
-				// Если введено не число (например, пользователь начал печатать буквы), игнорируем
-				if (isNaN(val)) return;
-
-				// Жестко ограничиваем диапазон
-				if (val > 1000) {
-					this.value = 1000;
-				} else if (val < 1) {
-					this.value = 1;
-				}
-			});
-
-			// Дополнительно: запрещаем ввод точки/запятой, если вам нужны только целые числа
-			// (Если проценты могут быть дробными, например 15.5%, удалите этот блок)
-			markupInput.addEventListener("keydown", function (e) {
-				if (e.key === "." || e.key === ",") {
-					e.preventDefault();
-				}
-			});
-		}
-
-		if (!markupInput || markupInput.value === "") {
-			return 0; // Если не заполнено, наценка 0%
-		}
-
-		let value = parseFloat(markupInput.value);
-
-		if (isNaN(value)) {
-			return 0;
-		}
-
-		// Ограничиваем диапазон от 1 до 1000
-		if (value < 1 || value > 1000) {
-			value = Math.min(Math.max(value, 1), 1000);
-			// Опционально: сразу исправляем значение в поле ввода, чтобы пользователь видел ограничение
-			markupInput.value = value;
-		}
-
-		return value;
+		return getValidatedNumber(this._globalMarkupInput, 0, 1000, {
+			allowFloat: false,
+			defaultValue: 0,
+		});
 	}
 
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
 	getPriceWithMarkup(materialName, markup) {
-		console.log("getPriceWithMarkup materialName: ", materialName);
-		console.log("getPriceWithMarkup markup: ", markup);
 		const basePrice = this.priceManager.getPrice(materialName);
 		if (!basePrice) return null;
 
 		const baseMarkup = this.getMarkup();
+		console.log("getPriceWithMarkup baseMarkup: ", baseMarkup);
+		console.log("getPriceWithMarkup materialName: ", materialName);
+		console.log("getPriceWithMarkup markup: ", markup);
 		// Если fieldPrice есть  - то наценку добавляем fieldPrice (даже если 0)
 		const finalMarkup = markup ?? baseMarkup;
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))

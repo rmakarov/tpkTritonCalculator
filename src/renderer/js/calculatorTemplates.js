@@ -2,8 +2,6 @@ import { priceManager } from "./priceManager.js";
 import { addMaterialToTable, removeAllMaterialsFromTable } from "./tableManager.js";
 import { WicketCalculator } from "./calculators/wicketCalculator.js";
 import { GateCalculator } from "./calculators/gateCalculator.js";
-import { openModal } from "./modal/modalManager.js";
-import { initCustomEditor } from "./modal/wicketAndGateEditor.js";
 
 function cloneCalculatorTemplate(templateId) {
 	const template = document.getElementById(templateId);
@@ -16,33 +14,6 @@ class BaseCalculatorView {
 		this.claddingInput = null;
 		this.stepSelect = null;
 		this.stepLabel = null;
-	}
-
-	// 🔥 Инициализация открытия модалки для кастомного типа
-	initCustomTypeModal() {
-		const customTypeInputs = this.element.querySelectorAll('input[type="radio"][value$="custom-type"]');
-		const editorDialog = document.getElementById("wicketAndGateEditorDialog");
-		initCustomEditor();
-
-		customTypeInputs.forEach((input) => {
-			input.addEventListener("change", (e) => {
-				if (e.target.checked) {
-					openModal(editorDialog, {
-						onOpen: () => {
-							console.log(`Открыта модалка ${editorDialog}. Тип:`, e.target.name);
-							// Здесь можно передать данные в модалку, если нужно.
-							// Например: document.getElementById('modal-context').dataset.type = e.target.name.includes('gate') ? 'gate' : 'wicket';
-						},
-						onClose: () => {
-							// Опционально: если модалка закрывается без сохранения,
-							// можно сбросить выбор на первый доступный тип, чтобы не зависать на "кастомном" без данных.
-							// const defaultInput = this.element.querySelector(`input[name="${e.target.name}"]:not([value$="custom-type"])`);
-							// if (defaultInput) defaultInput.checked = true;
-						},
-					});
-				}
-			});
-		});
 	}
 
 	// Универсальный метод, который подойдет и для Wicket, и для Gate
@@ -112,13 +83,12 @@ class WicketCalculatorView extends BaseCalculatorView {
 	constructor() {
 		super();
 		this.element = null;
+		this.calculator = null;
 	}
 
 	// 1. Только создаем и настраиваем DOM (без await)
 	createDOM() {
 		this.element = cloneCalculatorTemplate("wicket-calculator-template");
-
-		this.initCustomTypeModal();
 
 		this.calcButton = this.element.querySelector(".calculator-card__button");
 		if (this.calcButton) {
@@ -131,6 +101,9 @@ class WicketCalculatorView extends BaseCalculatorView {
 	// 2. Инициализируем данные (вызывается ПОСЛЕ вставки элемента в реальный DOM!)
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
+
+		this.calculator = new WicketCalculator(this.element, priceManager);
+		this.calculator.init();
 
 		this.initCladdingToggle("#wicket-cladding", "#wicket-cladding-step");
 		this.initCalcButtonState("#wicket-width", "#wicket-height");
@@ -146,9 +119,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 
 	handleCalculate() {
 		try {
-			let calculator = new WicketCalculator(this.element, priceManager);
-			calculator.init();
-			const calculatedItems = calculator.calculate();
+			const calculatedItems = this.calculator.calculate();
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
@@ -165,6 +136,7 @@ class GateCalculatorView extends BaseCalculatorView {
 	constructor() {
 		super();
 		this.element = null;
+		this.calculator = null;
 		this.openingInputs = [];
 		this.slidingRows = [];
 
@@ -177,8 +149,6 @@ class GateCalculatorView extends BaseCalculatorView {
 	// 1. Только создаем и настраиваем DOM
 	createDOM() {
 		this.element = cloneCalculatorTemplate("gate-calculator-template");
-
-		this.initCustomTypeModal();
 
 		this.openingInputs = [...this.element.querySelectorAll('input[name="gate-opening"]')];
 		this.slidingRows = [...this.element.querySelectorAll(".calculator-field--sliding")];
@@ -210,6 +180,9 @@ class GateCalculatorView extends BaseCalculatorView {
 	// 2. Инициализируем данные ПОСЛЕ вставки в DOM
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
+
+		this.calculator = new GateCalculator(this.element, priceManager);
+		this.calculator.init();
 
 		this.initCladdingToggle("#gate-cladding", "#gate-cladding-step");
 		this.initCalcButtonState("#gate-width", "#gate-height");
@@ -271,9 +244,7 @@ class GateCalculatorView extends BaseCalculatorView {
 
 	handleCalculate() {
 		try {
-			let calculator = new GateCalculator(this.element, priceManager);
-			calculator.init();
-			const calculatedItems = calculator.calculate();
+			const calculatedItems = this.calculator.calculate();
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {

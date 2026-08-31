@@ -82,15 +82,17 @@
 				</div>
 			</label>
 			<label class="calculator-field calculator-field--short">
-				<span>Ширина (мм)</span>
+				<span>Ширина проёма (мм)</span>
 				<input id="wicket-width" class="text-input" type="number" min="800" max="2000" step="1" placeholder="1000" value="1000" />
+				<small>Параметры от 800 до 2000</small>
 				<!--<select id="wicket-width" class="text-input">
 					<option value="" disabled selected>Выберите ширину</option>
 				</select>-->
 			</label>
 			<label class="calculator-field calculator-field--short">
-				<span>Высота (мм)</span>
-				<input id="wicket-height" class="text-input" type="number" min="800" max="2000" step="1" placeholder="1000" value="1000" />
+				<span>Высота проёма (мм)</span>
+				<input id="wicket-height" class="text-input" type="number" min="800" max="4000" step="1" placeholder="1000" value="1000" />
+				<small>Параметры от 800 до 4000</small>
 				<!--<select id="wicket-height" class="text-input">
 					<option value="" disabled selected>Выберите высоту</option>
 				</select>-->
@@ -103,25 +105,25 @@
 				<span>Материал каркаса</span>
 				<input type="search" id="wicket-frame-material" class="text-input calculator-item-from-price" name="wicket-frame-material" placeholder="Поиск товара..." required />
 				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
-				<span>Наценка (от 1 до 1000 %)</span>
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 			<label class="calculator-field--with-markup">
 				<span>Материал перегородок</span>
 				<input type="search" id="wicket-partitions-material" class="text-input calculator-item-from-price" name="wicket-partitions-material" placeholder="Поиск товара..." required />
 				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
-				<span>Наценка (от 1 до 1000 %)</span>
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 			<label class="calculator-field--with-markup">
 				<span>Столбы (Рама)</span>
 				<input type="search" id="wicket-posts" class="text-input calculator-item-from-price" name="wicket-posts" placeholder="Поиск товара..." required />
 				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
-				<span>Наценка (от 1 до 1000 %)</span>
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 			<label class="calculator-field--with-markup">
 				<span>Обшивка</span>
 				<input type="search" id="wicket-cladding" class="text-input calculator-item-from-price" name="wicket-cladding" placeholder="Поиск товара..." required />
 				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
-				<span>Наценка (от 1 до 1000 %)</span>
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 			<label class="calculator-field calculator-field--inactive">
 				<span>Шаг штакетника (мм)</span>
@@ -131,7 +133,7 @@
 				<span>Покраска</span>
 				<input type="search" id="wicket-paint" class="text-input calculator-item-from-price" name="wicket-paint" placeholder="Поиск товара..." required />
 				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" value="0" />
-				<span>Наценка (от 1 до 1000 %)</span>
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 		</div>
 
