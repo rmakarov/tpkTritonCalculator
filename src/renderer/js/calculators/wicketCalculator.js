@@ -189,8 +189,6 @@ class WicketCalculator extends BaseCalculator {
 			const claddingMaterialStep = parseFloat(this._getValue("claddingStep")) || 0;
 			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep);
 
-			//const finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? widthMm + claddingMaterialStep : widthMm;
-			//let claddingCount = finalWidth / materialWidth;
 			let claddingCount = calculateWicketMaterials(widthMm, materialWidth, claddingMaterial, inFrameChecked, bothSideSheathing);
 
 			materials.push({

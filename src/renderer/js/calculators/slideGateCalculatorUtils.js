@@ -422,7 +422,9 @@ export function calcSlideGateFrame(H_proem, W_proem, isRectangular = false) {
 
 	const result = interpolateFromTable(W_proem, H_proem, isRectangular);
 	const catet = calcBeamCatet(H_proem, W_proem, isRectangular);
-	const diagonal = calcDiagonalBeam(height, catet);
+	const diagonal = calcDiagonalBeam(result.height, catet);
+	const stiffener1 = result.height/100 * 54 ;
+	const stiffener2 = calcDiagonalBeam(result.height/2, stiffener1,) 
 
 	return {
 		height: Math.round(result.height),
@@ -430,5 +432,7 @@ export function calcSlideGateFrame(H_proem, W_proem, isRectangular = false) {
 		bottomWidth: Math.round(result.bottomWidth),
 		catet, // горизонтальный катет наклонного ребра
 		diagonal, // длина наклонного ребра (гипотенуза)
+		stiffener1,
+		stiffener2
 	};
 }

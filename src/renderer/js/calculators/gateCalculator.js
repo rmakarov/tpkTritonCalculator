@@ -1,5 +1,5 @@
 import { BaseCalculator } from "./baseCalculator.js";
-import { calculateGateFrameByType, calculateGatePartitionsByType } from "./gateCalculatorUtils.js";
+import { calculateGateFrameByType, calculateGatePartitionsByType, calculateGatePosts, calculateGateMaterials } from "./gateCalculatorUtils.js";
 import { showNotification } from "../utils/notification";
 import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
@@ -137,6 +137,8 @@ class GateCalculator extends BaseCalculator {
 				rectangularTechPart,
 			});
 
+			console.log("GATE frameResult: ", frameResult);
+
 			this.gateFrameParts.frame.items.push(...frameResult.parts);
 
 			materials.push({
@@ -153,12 +155,21 @@ class GateCalculator extends BaseCalculator {
 		const partitionsMaterialSubName = this._cachedInputs.partitionsMaterial?.previousElementSibling?.textContent.trim() || "";
 
 		if (partitionsMaterial) {
-			const partitionsLengthMm = calculateGatePartitionsByType(widthMm, heightMm, this.selectedType, markupOnTrimmings);
+			const partitionsResult = calculateGatePartitionsByType({
+				widthMm,
+				heightMm,
+				gateType: this.selectedType,
+				slidingGate: isSliding,
+				markupOnTrimmings,
+				materialName: `${partitionsMaterial} (${partitionsMaterialSubName})`,
+				materialFrameName: frameMaterial,
+				rectangularTechPart
+			});
 
 			materials.push({
 				name: partitionsMaterial,
 				subName: ` (${partitionsMaterialSubName})`,
-				quantity: Math.ceil((partitionsLengthMm / 1000) * 10) / 10,
+				quantity: Math.ceil((partitionsResult.totalLengthMm / 1000) * 10) / 10,
 				markup: this._getMarkupValue("partitions"),
 			});
 		}
@@ -168,26 +179,12 @@ class GateCalculator extends BaseCalculator {
 		const postsMaterialSubName = this._cachedInputs.postsMaterial?.previousElementSibling?.textContent.trim() || "";
 
 		if (postsMaterial) {
-			let postLengthMm = 0;
-
-			if (isSliding) {
-				// 2 двойных столба выше высоты на 20см (200мм) с перемычкой 20см (400мм на два конца или как в оригинале)
-				// Оригинальная формула в метрах: (height + 0.2) * 4 + 0.4
-				// Перевод в мм:
-				postLengthMm = (heightMm + 200) * 4 + 400;
-			} else {
-				// 2 столба по высоте + заглубление (уже в мм в константах)
-				postLengthMm = (heightMm + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
-			}
-
-			// Применяем наценку на подрезку к длине в мм
-			const markupMultiplier = 1 + markupOnTrimmings / 100;
-			const finalPostsLengthMm = postLengthMm * markupMultiplier;
+			const postsResult = calculateGatePosts(heightMm, isSliding, markupOnTrimmings, postsMaterial);
 
 			materials.push({
 				name: postsMaterial,
 				subName: ` (${postsMaterialSubName})`,
-				quantity: Math.ceil((finalPostsLengthMm / 1000) * 10) / 10,
+				quantity: Math.ceil((postsResult.totalLengthMm / 1000) * 10) / 10,
 				markup: this._getMarkupValue("posts"),
 			});
 		}
@@ -198,26 +195,10 @@ class GateCalculator extends BaseCalculator {
 			const claddingMaterialStep = parseFloat(this._getValue("claddingStep")) || 0;
 			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep); // возвращает мм
 
-			let finalWidthMm;
-			let claddingCount;
-
-			if (isSliding) {
-				// расчет на всю ширину ворот
-				finalWidthMm = claddingMaterial.includes("штакет") && claddingMaterialStep ? widthMm + claddingMaterialStep : widthMm;
-				claddingCount = finalWidthMm / materialWidth; // Делим мм на мм, получаем штуки
-			} else {
-				// расчет на одну створку и * 2
-				finalWidthMm = claddingMaterial.includes("штакет") && claddingMaterialStep ? widthMm / 2 + claddingMaterialStep : widthMm / 2;
-				claddingCount = (finalWidthMm / materialWidth) * 2;
-			}
-
-			if (bothSideSheathing) {
-				claddingCount = claddingCount * 2;
-			}
-
+			const claddingCount = calculateGateMaterials(widthMm, materialWidth, claddingMaterial, isSliding, rectangularTechPart, bothSideSheathing);
 			materials.push({
 				name: claddingMaterial,
-				quantity: claddingMaterial.includes("3D") || claddingMaterial.includes("сетк") ? Math.ceil(claddingCount * 100) / 100 : Math.ceil(claddingCount),
+				quantity: claddingCount,
 				markup: this._getMarkupValue("cladding"),
 			});
 		}
@@ -240,11 +221,10 @@ class GateCalculator extends BaseCalculator {
 
 		const rack = this._getValue("rack");
 		if (rack) {
-			// Длина ворот + 1 метр (1000 мм) запаса. Расчет в мм.
-			const rackLengthMm = widthMm + 1000;
+			//направляющая из прайса соотв. размера
 			materials.push({
 				name: rack,
-				quantity: Math.ceil((rackLengthMm / 1000) * 10) / 10, // Конвертация в метры для quantity
+				quantity: 1,
 				markup: this._getMarkupValue("rack"),
 			});
 		}

@@ -1,11 +1,5 @@
 import { settingsManager } from "../settingsManager";
 
-export const WICKET_CONSTANTS = {
-	GAP_BETWEEN_POSTS: 10,
-	GAP_IN_FRAME: 4,
-	GAP_BETWEEN_GROUND: 100,
-};
-
 const WICKET_TYPES = {
 	WICKET_TYPE1: "wicket-type1",
 	WICKET_TYPE2: "wicket-type2",
@@ -63,7 +57,7 @@ const getWicketPartitionsType2 = ({ frameWidthMm, markupOnTrimmings, materialNam
 	const totalLengthMm = partitionLengthMm + markupMm;
 
 	return {
-		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 1 }],
+		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 1, pn: 3 }],
 		totalLengthMm: totalLengthMm,
 	};
 };
@@ -76,7 +70,7 @@ const getWicketPartitionsType3 = ({ frameWidthMm, markupOnTrimmings, materialNam
 	const totalLengthMm = partitionLengthMm * 2 + markupMm;
 
 	return {
-		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 2 }],
+		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 2, pn: 3 }],
 		totalLengthMm: totalLengthMm,
 	};
 };
@@ -93,8 +87,8 @@ const getWicketPartitionsType4 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 
 	return {
 		parts: [
-			{ name: materialName, lengthMm: partitionLengthMm, count: 1 },
-			{ name: materialName, lengthMm: diagonal, count: 2 },
+			{ name: materialName, lengthMm: partitionLengthMm, count: 1, pn: 3 },
+			{ name: materialName, lengthMm: diagonal, count: 2, pn: 4 },
 		],
 		totalLengthMm: totalLengthMm,
 	};
@@ -113,8 +107,8 @@ const getWicketPartitionsType5 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 
 	return {
 		parts: [
-			{ name: materialName, lengthMm: partitionLengthMm, count: 2 },
-			{ name: materialName, lengthMm: diagonal, count: 2 },
+			{ name: materialName, lengthMm: partitionLengthMm, count: 2, pn: 3 },
+			{ name: materialName, lengthMm: diagonal, count: 2, pn: 4 },
 		],
 		totalLengthMm: totalLengthMm,
 	};
@@ -211,7 +205,7 @@ export const getDiagonal = (width, height) => {
 	return Math.sqrt(height * height + width * width);
 };
 
-const frameCalculators = {
+const wicketPartitionsCalculators = {
 	[WICKET_TYPES.WICKET_TYPE1]: getWicketPartitionsType1,
 	[WICKET_TYPES.WICKET_TYPE2]: getWicketPartitionsType2,
 	[WICKET_TYPES.WICKET_TYPE3]: getWicketPartitionsType3,
@@ -229,7 +223,7 @@ export const calculateWicketPartitionsByType = ({ widthMm, heightMm, wicketType,
 	const GAP_IN_FRAME = settingsManager.getCalculatorConstant("wicketClearanceInFrame");
 	const GAP_BETWEEN_POSTS = settingsManager.getCalculatorConstant("wicketClearanceBetweenPosts");
 	const GAP_BETWEEN_GROUND = settingsManager.getCalculatorConstant("wicketClearanceBetweenGround");
-	const calculator = frameCalculators[wicketType];
+	const calculator = wicketPartitionsCalculators[wicketType];
 	const frameWidthMm = inFrame ? widthMm - GAP_IN_FRAME : widthMm - GAP_BETWEEN_POSTS;
 	const frameHeightMm = inFrame ? heightMm - GAP_IN_FRAME : heightMm - GAP_BETWEEN_GROUND;
 
@@ -262,15 +256,14 @@ export const calculateWicketFrame = ({ widthMm, heightMm, inFrame, markupOnTrimm
 	// 3. Возвращаем структурированный результат
 	return {
 		parts: [
-			{ name: materialName, lengthMm: frameWidthMm, count: 2 },
-			{ name: materialName, lengthMm: frameHeightMm, count: 2 },
+			{ name: materialName, lengthMm: frameWidthMm, count: 2, pn: 1 },
+			{ name: materialName, lengthMm: frameHeightMm, count: 2, pn: 2 },
 		],
 		totalLengthMm: totalLengthMm,
 	};
 };
 
 export const calculatePosts = ({ widthMm, heightMm, inFrame, markupOnTrimmings, materialName }) => {
-	console.log("calculatePosts inFrame: ", inFrame);
 	if (inFrame) {
 		const postsLength = widthMm * 2 + heightMm * 2;
 		const markupMm = (postsLength / 100) * markupOnTrimmings;
@@ -310,8 +303,6 @@ export const calculateWicketMaterials = (widthMm, materialWidth, claddingMateria
 	const frameWidthMm = inFrame ? widthMm - GAP_IN_FRAME : widthMm - GAP_BETWEEN_POSTS;
 
 	if (materialFense) {
-		console.log("materialWidth:", materialWidth);
-		console.log("frameWidthMm: ", frameWidthMm);
 		materialCount = customMaterialRound(frameWidthMm / materialWidth);
 		if (bothSideSheathing) {
 			materialCount = materialCount * 2;
