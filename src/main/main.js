@@ -7,6 +7,19 @@ const { registerPdfPreview } = require("./pdfPreview");
 const { ensureTrialAccess, scheduleTrialExpiration } = require("./trialLicense");
 const { ensureTrialTestAccess, scheduleTrialTestExpiration } = require("./trialLicenseTest");
 
+// КРИТИЧНО: Обработчик ошибок main process
+process.on("uncaughtException", (error) => {
+	console.error("❌ [Main Process] Uncaught Exception:", error);
+	console.error("Stack:", error.stack);
+
+	// НЕ показываем alert — просто логируем
+	// В production можно отправлять в Sentry/лог-файл
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+	console.error("❌ [Main Process] Unhandled Rejection:", reason);
+});
+
 // ==========================================
 // 1. СОЗДАНИЕ ЭКЗЕМПЛЯРА (ОДИН РАЗ НА ВСЁ ПРИЛОЖЕНИЕ)
 // ==========================================

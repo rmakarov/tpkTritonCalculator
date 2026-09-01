@@ -1,3 +1,16 @@
+export const CALCULATOR_DEFAULTS = {
+	distanceBetweenPlanks: 60,
+	wicketClearanceBetweenGround: 100,
+	wicketClearanceInFrame: 6,
+	wicketClearanceBetweenPosts: 14,
+	gateClearanceBetweenGround: 100,
+	gateClearanceBetweenPosts: 18,
+	corrugatedSheetWidth: 1100,
+	threeDmeshWidth: 2500,
+	fenceWidth: 110,
+	wicketPostDepth: 1200,
+	gatePostDepth: 1500,
+};
 class SettingsManager {
 	constructor() {
 		this.settings = {};
@@ -28,13 +41,7 @@ class SettingsManager {
 	}
 
 	_isSettingsValid(settings) {
-		return (
-			settings &&
-			typeof settings === "object" &&
-			settings.sections &&
-			typeof settings.sections === "object" &&
-			Object.keys(settings.sections).length > 0
-		);
+		return settings && typeof settings === "object" && settings.sections && typeof settings.sections === "object" && Object.keys(settings.sections).length > 0;
 	}
 
 	async ensureLoaded() {
@@ -86,24 +93,22 @@ class SettingsManager {
 		return this.settings?.sections?.[sectionKey]?.fields?.[fieldKey];
 	}
 
+	getCalculatorConstant(fieldKey) {
+		return this.getValue("calculatorConstants", fieldKey) ?? CALCULATOR_DEFAULTS[fieldKey];
+	}
+
 	/**
 	 * Установить значение поля и сразу обновить локальный кеш.
 	 */
 	async setValue(sectionKey, fieldKey, value) {
 		// IPC-вызов в main, возвращает обновлённые данные
-		const updatedData = await window.settings.setValue(
-			sectionKey,
-			fieldKey,
-			value,
-		);
+		const updatedData = await window.settings.setValue(sectionKey, fieldKey, value);
 
 		// ⬇️ защита от затирания кеша
 		if (this._isSettingsValid(updatedData)) {
 			this.settings = updatedData;
 		} else {
-			console.warn(
-				"[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён",
-			);
+			console.warn("[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён");
 			// При желании можно сделать reload:
 			// this.isLoaded = false;
 			// await this.ensureLoaded();
@@ -114,9 +119,7 @@ class SettingsManager {
 		this.isLoaded = true;
 		this.loadPromise = null;
 
-		console.log(
-			`[SettingsManager] ✅ Кеш обновлён после setValue: ${sectionKey}.${fieldKey}`,
-		);
+		console.log(`[SettingsManager] ✅ Кеш обновлён после setValue: ${sectionKey}.${fieldKey}`);
 		return this.settings;
 	}
 
@@ -124,20 +127,13 @@ class SettingsManager {
 	 * Установить элемент options и сразу обновить локальный кеш.
 	 */
 	async setOptionValue(sectionKey, fieldKey, optionIndex, value) {
-		const updatedData = await window.settings.setOptionValue(
-			sectionKey,
-			fieldKey,
-			optionIndex,
-			value,
-		);
+		const updatedData = await window.settings.setOptionValue(sectionKey, fieldKey, optionIndex, value);
 
 		// ⬇️ защита от затирания кеша
 		if (this._isSettingsValid(updatedData)) {
 			this.settings = updatedData;
 		} else {
-			console.warn(
-				"[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён",
-			);
+			console.warn("[SettingsManager] ⚠️ Main вернул невалидные данные, кеш не обновлён");
 			// При желании можно сделать reload:
 			// this.isLoaded = false;
 			// await this.ensureLoaded();
@@ -153,9 +149,7 @@ class SettingsManager {
 		this.isLoaded = true;
 		this.loadPromise = null;
 
-		console.log(
-			`[SettingsManager] ✅ Кеш обновлён после setOptionValue: ${sectionKey}.${fieldKey}[${optionIndex}]`,
-		);
+		console.log(`[SettingsManager] ✅ Кеш обновлён после setOptionValue: ${sectionKey}.${fieldKey}[${optionIndex}]`);
 		return this.settings;
 	}
 

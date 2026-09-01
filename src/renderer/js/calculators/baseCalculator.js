@@ -1,31 +1,44 @@
 import { settingsManager } from "../settingsManager";
+import { showNotification } from "../utils/notification";
+import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
 export default class BaseCalculator {
-	static DEFAULT_CALCULATOR_CONSTANTS = {
-		corrugatedSheetWidth: 1.1, // профлист
-		threeDmeshWidth: 2.5, // 3D сетка
-		fenceWidth: 0.11, // штакетник
-		wicketPostDepth: 1.2, //заглубление столба калитки
-		gatePostDepth: 1.5, //заглубление столба ворот
+	/*static DEFAULT_CALCULATOR_CONSTANTS = {
+		distanceBetweenPlanks: 60,
+		wicketClearanceBetweenGround: 100,
+		wicketClearanceInFrame: 6,
+		wicketClearanceBetweenPosts: 14,
+		gateClearanceBetweenGround: 100,
+		gateClearanceBetweenPosts: 18,
+		corrugatedSheetWidth: 1100, // профлист
+		threeDmeshWidth: 2500, // 3D сетка
+		fenceWidth: 110, // штакетник
+		wicketPostDepth: 1200, //заглубление столба калитки
+		gatePostDepth: 1500, //заглубление столба ворот
 	};
 
-	// Getter: возвращает актуальные значения из настроек, конвертируя мм → м
+	// Getter: возвращает актуальные значения из настроек
 	static get CALCULATOR_CONSTANTS() {
 		const get = (fieldKey) => settingsManager.getValue("calculatorConstants", fieldKey);
 
 		const D = BaseCalculator.DEFAULT_CALCULATOR_CONSTANTS;
 
-		// Хелпер: получает значение в мм, возвращает в м (или дефолт)
-		const mmToMeters = (mmValue, defaultMeters) => (mmValue != null ? mmValue / 1000 : defaultMeters);
+		const settingValue = (mmValue, defaultValue) => (mmValue != null ? mmValue : defaultValue);
 
 		return {
-			corrugatedSheetWidth: mmToMeters(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
-			threeDmeshWidth: mmToMeters(get("threeDmeshWidth"), D.threeDmeshWidth),
-			fenceWidth: mmToMeters(get("fenceWidth"), D.fenceWidth),
-			wicketPostDepth: mmToMeters(get("wicketPostDepth"), D.wicketPostDepth),
-			gatePostDepth: mmToMeters(get("gatePostDepth"), D.gatePostDepth),
+			distanceBetweenPlanks: settingValue(get("distanceBetweenPlanks"), D.distanceBetweenPlanks),
+			wicketClearanceBetweenGround: settingValue(get("wicketClearanceBetweenGround"), D.wicketClearanceBetweenGround),
+			wicketClearanceInFrame: settingValue(get("wicketClearanceInFrame"), D.wicketClearanceInFrame),
+			wicketClearanceBetweenPosts: settingValue(get("wicketClearanceBetweenPosts"), D.wicketClearanceBetweenPosts),
+			gateClearanceBetweenGround: settingValue(get("gateClearanceBetweenGround"), D.gateClearanceBetweenGround),
+			gateClearanceBetweenPosts: settingValue(get("gateClearanceBetweenPosts"), D.gateClearanceBetweenPosts),
+			corrugatedSheetWidth: settingValue(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
+			threeDmeshWidth: settingValue(get("threeDmeshWidth"), D.threeDmeshWidth),
+			fenceWidth: settingValue(get("fenceWidth"), D.fenceWidth),
+			wicketPostDepth: settingValue(get("wicketPostDepth"), D.wicketPostDepth),
+			gatePostDepth: settingValue(get("gatePostDepth"), D.gatePostDepth),
 		};
-	}
+	}*/
 
 	/**
 	 * @param {HTMLElement} rootElement - Корневой элемент формы калькулятора
@@ -34,6 +47,16 @@ export default class BaseCalculator {
 	constructor(rootElement, priceManager) {
 		this.element = rootElement;
 		this.priceManager = priceManager;
+		// 1. Находим глобальное поле наценки
+		this._globalMarkupInput = this.element.querySelector("#calculator-markup") || document.querySelector("#calculator-markup");
+
+		// 2. Вешаем на него валидацию (только один раз при создании)
+		if (this._globalMarkupInput) {
+			attachNumericValidation(this._globalMarkupInput, 0, 1000, {
+				allowFloat: false,
+				defaultValue: 0,
+			});
+		}
 	}
 
 	async init() {
@@ -47,16 +70,41 @@ export default class BaseCalculator {
 		return this.element.querySelector(selector)?.value?.trim() || null;
 	}
 
+	getMarkupByFieldId(fieldId) {
+		const materialInput = this.element.querySelector(`${fieldId}`);
+		if (!materialInput) return null;
+
+		const markupInput = materialInput.parentElement.querySelector(".calculator-markup");
+		if (!markupInput) return null;
+
+		const validatedMarkup = getValidatedNumber(markupInput, 0, 1000, {
+			allowFloat: false,
+		});
+
+		return validatedMarkup;
+	}
+
 	// расчет ширины материала
-	getMaterialWidth(materialName, fenceStep) {
+	/*getMaterialWidth(materialName, fenceStep) {
 		if (materialName.includes("штакет")) {
-			const fenceStepInMeter = fenceStep ? fenceStep / 1000 : 0;
-			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepInMeter;
+			const fenceStepFinal = fenceStep ? fenceStep : 0;
+			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepFinal;
 		}
 		if (materialName.includes("3D") || materialName.includes("сетк")) {
 			return BaseCalculator.CALCULATOR_CONSTANTS.threeDmeshWidth;
 		}
 		return BaseCalculator.CALCULATOR_CONSTANTS.corrugatedSheetWidth;
+	}*/
+
+	getMaterialWidth(materialName, fenceStep = 0) {
+		if (materialName.includes("штакет")) {
+			const fenceWidth = settingsManager.getCalculatorConstant("fenceWidth");
+			return fenceWidth + fenceStep;
+		}
+		if (materialName.includes("3D") || materialName.includes("сетк")) {
+			return settingsManager.getCalculatorConstant("threeDmeshWidth");
+		}
+		return settingsManager.getCalculatorConstant("corrugatedSheetWidth");
 	}
 
 	/**
@@ -65,82 +113,25 @@ export default class BaseCalculator {
 	 * Если значение вне диапазона 1-1000, корректирует его и обновляет поле ввода.
 	 */
 	getMarkup() {
-		// Ищем поле в текущей форме, если нет - ищем во всем документе (на случай глобального расположения)
-		const markupInput = this.element.querySelector("#calculator-markup") || document.querySelector("#calculator-markup");
-
-		if (markupInput) {
-			markupInput.addEventListener("input", function () {
-				// Если поле очистили полностью - ничего не делаем, пусть будет пустым
-				if (this.value === "") return;
-
-				let val = parseFloat(this.value);
-
-				// Если введено не число (например, пользователь начал печатать буквы), игнорируем
-				if (isNaN(val)) return;
-
-				// Жестко ограничиваем диапазон
-				if (val > 1000) {
-					this.value = 1000;
-				} else if (val < 1) {
-					this.value = 1;
-				}
-			});
-
-			// Дополнительно: запрещаем ввод точки/запятой, если вам нужны только целые числа
-			// (Если проценты могут быть дробными, например 15.5%, удалите этот блок)
-			markupInput.addEventListener("keydown", function (e) {
-				if (e.key === "." || e.key === ",") {
-					e.preventDefault();
-				}
-			});
-		}
-
-		if (!markupInput || markupInput.value === "") {
-			return 0; // Если не заполнено, наценка 0%
-		}
-
-		let value = parseFloat(markupInput.value);
-
-		if (isNaN(value)) {
-			return 0;
-		}
-
-		// Ограничиваем диапазон от 1 до 1000
-		if (value < 1 || value > 1000) {
-			value = Math.min(Math.max(value, 1), 1000);
-			// Опционально: сразу исправляем значение в поле ввода, чтобы пользователь видел ограничение
-			markupInput.value = value;
-		}
-
-		return value;
-	}
-
-	showNotification(message, type = "error", duration = 3000) {
-		const notif = document.getElementById("notification");
-		if (!notif) return;
-
-		notif.textContent = message;
-		notif.className = `notification ${type}`;
-
-		// Автоскрытие через duration мс
-		setTimeout(() => {
-			notif.classList.add("hidden");
-		}, duration);
+		return getValidatedNumber(this._globalMarkupInput, 0, 1000, {
+			allowFloat: false,
+			defaultValue: 0,
+		});
 	}
 
 	/**
 	 * Возвращает цену материала с учетом наценки
 	 */
-	getPriceWithMarkup(materialName, finalPrice) {
-		console.log("getPriceWithMarkup materialName: ", materialName);
-		console.log("getPriceWithMarkup finalPrice: ", finalPrice);
+	getPriceWithMarkup(materialName, markup) {
 		const basePrice = this.priceManager.getPrice(materialName);
 		if (!basePrice) return null;
 
-		const markup = this.getMarkup();
-		// Если finalPrice  - то наценку  не  добавляемж
+		const baseMarkup = this.getMarkup();
+
+		// Если fieldPrice есть  - то наценку добавляем fieldPrice (даже если 0)
+		const finalMarkup = markup ?? baseMarkup;
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))
-		return finalPrice ? basePrice : parseFloat((basePrice * (1 + markup / 100)).toFixed(2));
+		return parseFloat((basePrice * (1 + finalMarkup / 100)).toFixed(2));
 	}
 
 	/**
@@ -148,7 +139,7 @@ export default class BaseCalculator {
 	 * @returns {Array<{name: string, quantity: number}>}
 	 */
 	calculateRawMaterials() {
-		this.showNotification("Метод calculateRawMaterials() должен быть реализован в классе-наследнике");
+		showNotification("Метод calculateRawMaterials() должен быть реализован в классе-наследнике");
 	}
 
 	/**
@@ -159,14 +150,15 @@ export default class BaseCalculator {
 		const rawMaterials = this.calculateRawMaterials();
 
 		if (rawMaterials.length === 0) {
-			this.showNotification("Пожалуйста, выберите хотя бы один материал!");
+			showNotification("Пожалуйста, выберите хотя бы один материал!");
 		}
 
 		return rawMaterials.map((mat) => {
-			const finalPrice = this.getPriceWithMarkup(mat.name, mat.finalPrice);
+			const finalPrice = this.getPriceWithMarkup(mat.name, mat.markup);
 
 			return {
 				name: mat.name,
+				subName: mat.subName,
 				price: finalPrice,
 				quantity: mat.quantity,
 			};

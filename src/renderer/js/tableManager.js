@@ -19,14 +19,11 @@ function updateRowNumbers() {
 export function updateTotalSum() {
 	const tbody = document.querySelector(".mainTable tbody");
 	const totalElement = document.getElementById("totalSumm");
-	console.log("tbody: ", tbody);
-	console.log("totalElement: ", totalElement);
 
 	if (!tbody || !totalElement) return;
 
 	let total = 0;
 	const rows = tbody.querySelectorAll("tr");
-	console.log("rows: ", rows);
 
 	rows.forEach((row) => {
 		// Берем "чистое" число из data-атрибута, который мы добавим при создании строки
@@ -56,12 +53,7 @@ export function removeAllMaterialsFromTable() {
 	updateTotalSum();
 }
 
-export function addMaterialToTable(
-	name,
-	price,
-	quantity = 1,
-	summ = price * quantity,
-) {
+export function addMaterialToTable(name, price, quantity = 1, summ = price * quantity) {
 	const tbody = document.querySelector(".mainTable tbody");
 	if (!tbody) {
 		console.warn("Таблица .mainTable tbody не найдена!");

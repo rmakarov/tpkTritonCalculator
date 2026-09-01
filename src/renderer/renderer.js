@@ -14,28 +14,37 @@ import "./styles/calculatorTemplates.css";
 import "./styles/print.css";
 import "./styles/customAutocomplete.css";
 import "./styles/notification.css";
+import "./styles/wicketAndGateEditor.css";
 
 import { priceManager } from "./js/priceManager.js";
 import { settingsManager } from "./js/settingsManager.js";
-import {
-	populateSelectsFromSettings,
-	populateLiveSelectsFromSettings,
-} from "./js/populateSelects.js";
+import { populateSelectsFromSettings, populateLiveSelectsFromSettings } from "./js/populateSelects.js";
 
 // ============================================
 // Функции инициализации
 // ============================================
 
+window.onerror = function (message, source, lineno, colno, error) {
+	console.error("❌ [Renderer] Error:", {
+		message,
+		source,
+		lineno,
+		colno,
+		stack: error?.stack,
+	});
+	// Возвращаем false, чтобы предотвратить стандартный alert
+	return false;
+};
+
+window.addEventListener("unhandledrejection", (event) => {
+	console.error("❌ [Renderer] Unhandled Promise Rejection:", event.reason);
+	event.preventDefault(); // Предотвращаем alert
+});
+
 function mountComponents() {
 	// 1. HTML в DOM
-	document.body.insertAdjacentHTML(
-		"beforeend",
-		addItemDialogHTML + helpDialogHTML + confirmDialogHTML,
-	);
-	document.body.insertAdjacentHTML(
-		"beforeend",
-		wicketTemplateHTML + gateTemplateHTML,
-	);
+	document.body.insertAdjacentHTML("beforeend", addItemDialogHTML + helpDialogHTML + confirmDialogHTML);
+	document.body.insertAdjacentHTML("beforeend", wicketTemplateHTML + gateTemplateHTML);
 }
 
 // 2. Динамические импорты JS — выполнятся ПОСЛЕ mountComponents

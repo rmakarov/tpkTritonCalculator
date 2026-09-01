@@ -83,6 +83,7 @@ class WicketCalculatorView extends BaseCalculatorView {
 	constructor() {
 		super();
 		this.element = null;
+		this.calculator = null;
 	}
 
 	// 1. Только создаем и настраиваем DOM (без await)
@@ -101,12 +102,16 @@ class WicketCalculatorView extends BaseCalculatorView {
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
 
+		this.calculator = new WicketCalculator(this.element, priceManager);
+		this.calculator.init();
+
 		this.initCladdingToggle("#wicket-cladding", "#wicket-cladding-step");
 		this.initCalcButtonState("#wicket-width", "#wicket-height");
 
 		priceManager.populateFilteredAutocomplete("wicket-frame-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("wicket-partitions-material", this.element, ["профиль"]);
 		priceManager.populateFilteredAutocomplete("wicket-posts", this.element, ["профиль"]);
-		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("wicket-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист", "жалюзи", "сайдинг"]);
 		priceManager.populateFilteredAutocomplete("wicket-paint", this.element, ["краска"]);
 
 		this.toggleStepFieldState();
@@ -114,16 +119,15 @@ class WicketCalculatorView extends BaseCalculatorView {
 
 	handleCalculate() {
 		try {
-			let calculator = new WicketCalculator(this.element, priceManager);
-			calculator.init();
-			const calculatedItems = calculator.calculate();
+			const calculatedItems = this.calculator.calculate();
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
-				addMaterialToTable(item.name, item.price, item.quantity);
+				const itemFullName = item.subName ? item.name + item.subName : item.name;
+				addMaterialToTable(itemFullName, item.price, item.quantity);
 			});
 		} catch (error) {
-			alert(error.message);
+			console.error(error.message);
 		}
 	}
 }
@@ -132,6 +136,7 @@ class GateCalculatorView extends BaseCalculatorView {
 	constructor() {
 		super();
 		this.element = null;
+		this.calculator = null;
 		this.openingInputs = [];
 		this.slidingRows = [];
 
@@ -157,10 +162,12 @@ class GateCalculatorView extends BaseCalculatorView {
 		this.openingInputs.forEach((input) => {
 			input.addEventListener("change", () => {
 				this.updateSlidingFields();
+				this.updateTechPart();
 			});
 		});
 
 		this.updateSlidingFields();
+		this.updateTechPart();
 
 		this.calcButton = this.element.querySelector(".calculator-card__button");
 		if (this.calcButton) {
@@ -174,12 +181,16 @@ class GateCalculatorView extends BaseCalculatorView {
 	async populateDatalists() {
 		await priceManager.ensureLoaded();
 
+		this.calculator = new GateCalculator(this.element, priceManager);
+		this.calculator.init();
+
 		this.initCladdingToggle("#gate-cladding", "#gate-cladding-step");
 		this.initCalcButtonState("#gate-width", "#gate-height");
 
 		priceManager.populateFilteredAutocomplete("gate-posts", this.element, ["профиль"]);
 		priceManager.populateFilteredAutocomplete("gate-frame-material", this.element, ["профиль"]);
-		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист"]);
+		priceManager.populateFilteredAutocomplete("gate-partitions-material", this.element, ["профиль"]);
+		priceManager.populateFilteredAutocomplete("gate-cladding", this.element, ["сетка", "штакетник", "панель", "профнастил", "профлист", "жалюзи", "сайдинг"]);
 		priceManager.populateFilteredAutocomplete("gate-paint", this.element, ["краска"]);
 		priceManager.populateFilteredAutocomplete("gate-rollers", this.element, ["ролик"]);
 		priceManager.populateAutocomplete("gate-rack", this.element);
@@ -221,15 +232,24 @@ class GateCalculatorView extends BaseCalculatorView {
 		}
 	}
 
+	updateTechPart() {
+		const selectedType = this.openingInputs.find((input) => input.checked);
+		const isSliding = selectedType.value === "sliding";
+		const techPart = this.element.querySelector("#gate-technological-part-label");
+
+		if (techPart) {
+			techPart.style.display = isSliding ? "flex" : "none";
+		}
+	}
+
 	handleCalculate() {
 		try {
-			let calculator = new GateCalculator(this.element, priceManager);
-			calculator.init();
-			const calculatedItems = calculator.calculate();
+			const calculatedItems = this.calculator.calculate();
 
 			removeAllMaterialsFromTable();
 			calculatedItems.forEach((item) => {
-				addMaterialToTable(item.name, item.price, item.quantity);
+				const itemFullName = item.subName ? item.name + item.subName : item.name;
+				addMaterialToTable(itemFullName, item.price, item.quantity);
 			});
 		} catch (error) {
 			console.log(error.message);

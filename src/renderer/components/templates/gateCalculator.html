@@ -9,20 +9,28 @@
 				<input id="sliding-gate" type="radio" name="gate-opening" value="sliding" />
 				<span>Откатные</span>
 			</label>
+			<label class="calculator-card__checkbox">
+				<input id="gate-both-sides-sheathing" type="checkbox" name="gate-both-sides-sheathing" />
+				<span>Обшивка с 2-х сторон</span>
+			</label>
+			<label id="gate-technological-part-label" class="calculator-card__checkbox">
+				<input id="gate-technological-part" type="checkbox" name="gate-technological-part" />
+				<span>Техн. часть прямоугольная с зашивкой</span>
+			</label>
 		</div>
 
 		<div class="calculator-fields">
 			<label class="calculator-field">
 				<span>Тип ворот</span>
 				<div class="field-row radio-cards-box">
-					<label class="radio-card">
+					<!--<label-- class="radio-card">
 						<input class="hidden" type="radio" name="gate-type" value="gate-type1" checked />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type1.svg" alt="ворота тип 1" />
 						</div>
-					</label>
+					</label-->
 					<label class="radio-card">
-						<input class="hidden" type="radio" name="gate-type" value="gate-type2" />
+						<input class="hidden" type="radio" name="gate-type" value="gate-type2" checked />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type2.svg" alt="ворота тип 2" />
 						</div>
@@ -45,7 +53,7 @@
 							<img src="./assets/gate/gate-type5.svg" alt="ворота тип 5" />
 						</div>
 					</label>
-					<label class="radio-card">
+					<!--<label class="radio-card">
 						<input class="hidden" type="radio" name="gate-type" value="gate-type6" />
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type6.svg" alt="ворота тип 6" />
@@ -74,7 +82,7 @@
 						<div class="radio-card-box" type="button">
 							<img src="./assets/gate/gate-type10.svg" alt="ворота тип 10" />
 						</div>
-					</label>
+					</label>-->
 					<label class="radio-card">
 						<input class="hidden" type="radio" name="gate-type" value="sliding-gate-type1" />
 						<div class="radio-card-box" type="button">
@@ -90,22 +98,32 @@
 				</div>
 			</label>
 			<label class="calculator-field calculator-field--short">
-				<span>Ширина (мм)</span>
-				<select id="gate-width" class="text-input">
+				<span>Ширина проёма (мм)</span>
+				<input id="gate-width" class="text-input" type="number" min="2000" max="12000" step="1" placeholder="0" value="3000" />
+				<small>Параметры от 2000 до 12000</small>
+				<!--<select id="gate-width" class="text-input">
 					<option value="" disabled selected>Выберите ширину</option>
-				</select>
+				</select>-->
 			</label>
 			<label class="calculator-field calculator-field--short">
-				<span>Высота (мм)</span>
-				<select id="gate-height" class="text-input">
+				<span>Высота проёма (мм)</span>
+				<input id="gate-height" class="text-input" type="number" min="1000" max="4000" step="1" placeholder="0" value="2000" />
+				<small>Параметры от 1000 до 4000</small>
+				<!--<select id="gate-height" class="text-input">
 					<option value="" disabled selected>Выберите высоту</option>
-				</select>
+				</select>-->
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field calculator-field--short">
+				<span>Наценка на обрезь (%)</span>
+				<input id="gate-markup-on-trimmings" class="text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+			</label>
+			<label class="calculator-field--with-markup">
 				<span>Столбы</span>
 				<input type="search" id="gate-posts" class="text-input calculator-item-from-price" name="gate-posts" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
 				<span>Материал каркаса</span>
 				<input
 					type="search"
@@ -116,34 +134,48 @@
 					placeholder="Поиск товара..."
 					required
 				/>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
+				<span>Материал перегородок</span>
+				<input type="search" id="gate-partitions-material" class="text-input calculator-item-from-price" name="gate-partitions-material" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
+			</label>
+			<label class="calculator-field--with-markup">
 				<span>Обшивка</span>
 				<input type="search" id="gate-cladding" class="text-input calculator-item-from-price" name="gate-cladding" placeholder="Поиск товара..." required />
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 			<label class="calculator-field calculator-field--inactive">
 				<span>Шаг штакетника (мм)</span>
 				<select id="gate-cladding-step" class="text-input" disabled></select>
 			</label>
-			<label class="calculator-field">
+			<label class="calculator-field--with-markup">
 				<span>Покраска</span>
 				<input type="search" id="gate-paint" class="text-input calculator-item-from-price" name="gate-paint" placeholder="Поиск товара..." required />
-				<small><span class="text-red">Поле без наценки</span></small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" value="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Комплект роликов</span>
 				<input type="search" id="gate-rollers" class="text-input calculator-item-from-price" name="gate-rollers" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Рейка</span>
 				<input type="search" id="gate-rack" class="text-input calculator-item-from-price" name="gate-rack" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
-			<label class="calculator-field calculator-field--sliding">
+			<label class="calculator-field--with-markup calculator-field--sliding">
 				<span>Привод</span>
 				<input type="search" id="gate-drive" class="text-input calculator-item-from-price" name="gate-drive" placeholder="Поиск товара..." required />
-				<small>Только в откатных</small>
+				<input class="calculator-markup text-input" type="number" min="1" max="1000" step="1" placeholder="0" />
+				<span>Наценка <small>(от 1 до 1000 %)</small></span>
 			</label>
 		</div>
 

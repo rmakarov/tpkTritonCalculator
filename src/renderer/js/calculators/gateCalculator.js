@@ -1,9 +1,86 @@
 import { BaseCalculator } from "./baseCalculator.js";
-import { calculateGateFrameByType } from "./gateCalculatorUtils.js";
+import { calculateGateFrameByType, calculateGatePartitionsByType, calculateGatePosts, calculateGateMaterials } from "./gateCalculatorUtils.js";
+import { showNotification } from "../utils/notification";
+import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
 class GateCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
 		super(rootElement, priceManager);
+		this.gateFrameParts = {
+			frame: {
+				name: "Каркас рамы",
+				items: [],
+			},
+			partitions: {
+				name: " Перегородки",
+				items: [],
+			},
+			posts: {
+				name: "Столбы",
+				items: [],
+			},
+		};
+		this._cachedInputs = {};
+	}
+
+	async init() {
+		await super.init();
+		this._setupInputs();
+	}
+
+	_setupInputs() {
+		const getAndValidateMarkup = (materialFieldId) => {
+			const materialInput = this.element.querySelector(materialFieldId);
+			if (!materialInput) return null;
+
+			const markupInput = materialInput.parentElement.querySelector(".calculator-markup");
+			if (markupInput && !markupInput.dataset.validationAttached) {
+				attachNumericValidation(markupInput, 0, 1000, { allowFloat: false });
+				markupInput.dataset.validationAttached = "true";
+			}
+			return markupInput;
+		};
+
+		this._cachedInputs = {
+			width: this.element.querySelector("#gate-width"),
+			height: this.element.querySelector("#gate-height"),
+			trimmingsMarkup: this.element.querySelector("#gate-markup-on-trimmings"),
+			claddingStep: this.element.querySelector("#gate-cladding-step"),
+
+			bothSides: this.element.querySelector('input[name="gate-both-sides-sheathing"]'),
+			techPart: this.element.querySelector('input[name="gate-technological-part"]'),
+			openingSliding: this.element.querySelector('input[id="sliding-gate"]'),
+
+			postsMaterial: this.element.querySelector("#gate-posts"),
+			frameMaterial: this.element.querySelector("#gate-frame-material"),
+			partitionsMaterial: this.element.querySelector("#gate-partitions-material"),
+			claddingMaterial: this.element.querySelector("#gate-cladding"),
+			paintMaterial: this.element.querySelector("#gate-paint"),
+			rollers: this.element.querySelector("#gate-rollers"),
+			rack: this.element.querySelector("#gate-rack"),
+			drive: this.element.querySelector("#gate-drive"),
+			slidingGateMaterial: this.element.querySelector("#sliding-gate"),
+
+			postsMarkup: getAndValidateMarkup("#gate-posts"),
+			frameMarkup: getAndValidateMarkup("#gate-frame-material"),
+			partitionsMarkup: getAndValidateMarkup("#gate-partitions-material"),
+			claddingMarkup: getAndValidateMarkup("#gate-cladding"),
+			paintMarkup: getAndValidateMarkup("#gate-paint"),
+			rollersMarkup: getAndValidateMarkup("#gate-rollers"),
+			rackMarkup: getAndValidateMarkup("#gate-rack"),
+			driveMarkup: getAndValidateMarkup("#gate-drive"),
+			slidingGateMarkup: getAndValidateMarkup("#sliding-gate"),
+		};
+	}
+
+	_getValue(key) {
+		const el = this._cachedInputs[key];
+		return el ? el.value?.trim() : null;
+	}
+
+	_getMarkupValue(key) {
+		const el = this._cachedInputs[`${key}Markup`];
+		return getValidatedNumber(el, 0, 1000, { allowFloat: false });
 	}
 
 	// метод для получения выбранного типа ворот
@@ -12,104 +89,152 @@ class GateCalculator extends BaseCalculator {
 		return checkedInput ? checkedInput.value : null;
 	}
 
+	getBothSidesSheathing() {
+		return this._cachedInputs.bothSides?.checked ?? false;
+	}
+
+	getRectangularTechPart() {
+		return this._cachedInputs.techPart?.checked ?? false;
+	}
+
+	isSlidingGate() {
+		return this._cachedInputs.openingSliding?.checked ?? false;
+	}
+
 	calculateRawMaterials() {
 		const materials = [];
+		this.gateFrameParts.frame.items = [];
+		this.gateFrameParts.partitions.items = [];
+		this.gateFrameParts.posts.items = [];
 
-		// выбранный тип
 		this.selectedType = this.getSelectedType();
-		console.log("Выбран тип ворот:", this.selectedType);
 
-		// 1. Получаем размеры в миллиметрах из выпадающего списка
-		const widthMm = parseFloat(this.getVal("#gate-width")) || 0;
-		const heightMm = parseFloat(this.getVal("#gate-height")) || 0;
+		// 1. Получаем размеры СТРОГО в миллиметрах
+		const widthMm = parseFloat(this._getValue("width")) || 0;
+		const heightMm = parseFloat(this._getValue("height")) || 0;
 
-		// ВАЖНО: Проверяем, выбрал ли пользователь размеры (защита от пустого placeholder)
 		if (widthMm === 0 || heightMm === 0) {
-			this.showNotification("Пожалуйста, выберите ширину и высоту ворот!");
+			showNotification("Пожалуйста, выберите ширину и высоту ворот!");
+			return [];
 		}
 
-		// 2. Конвертируем в метры для инженерных расчетов
-		const width = widthMm / 1000;
-		const height = heightMm / 1000;
+		const bothSideSheathing = this.getBothSidesSheathing();
+		const rectangularTechPart = this.getRectangularTechPart();
+		const isSliding = this.isSlidingGate();
+		const markupOnTrimmings = parseFloat(this._getValue("trimmingsMarkup")) || 0;
 
-		const postsMaterial = this.getVal("#gate-posts");
-		const frameMaterial = this.getVal("#gate-frame-material");
-		const claddingMaterial = this.getVal("#gate-cladding");
-		const claddingMaterialStep = this.getVal("#gate-cladding-step");
-		const paintMaterial = this.getVal("#gate-paint");
-		const rollers = this.getVal("#gate-rollers");
-		const rack = this.getVal("#gate-rack");
-		const drive = this.getVal("#gate-drive");
-		const slidingGate = document.getElementById("sliding-gate");
+		// 2. Каркас (функция утилиты должна принимать мм)
+		const frameMaterial = this._getValue("frameMaterial");
+		const frameMaterialSubName = this._cachedInputs.frameMaterial?.previousElementSibling?.textContent.trim() || "";
 
-		// --- СПЕЦИФИКА ВОРОТ ---
 		if (frameMaterial) {
-			const frameLength = calculateGateFrameByType(width, height, this.selectedType);
+			const frameResult = calculateGateFrameByType({
+				widthMm,
+				heightMm,
+				slidingGate: isSliding,
+				markupOnTrimmings,
+				materialName: `${frameMaterial} (${frameMaterialSubName})`,
+				rectangularTechPart,
+			});
+
+			console.log("GATE frameResult: ", frameResult);
+
+			this.gateFrameParts.frame.items.push(...frameResult.parts);
 
 			materials.push({
 				name: frameMaterial,
-				quantity: Math.ceil(frameLength),
+				subName: ` (${frameMaterialSubName})`,
+				// Конвертация в метры только для quantity
+				quantity: Math.ceil((frameResult.totalLengthMm / 1000) * 10) / 10,
+				markup: this._getMarkupValue("frame"),
 			});
 		}
+
+		// 3. Перегородки (передаем мм, функция утилиты должна работать с мм)
+		const partitionsMaterial = this._getValue("partitionsMaterial");
+		const partitionsMaterialSubName = this._cachedInputs.partitionsMaterial?.previousElementSibling?.textContent.trim() || "";
+
+		if (partitionsMaterial) {
+			const partitionsResult = calculateGatePartitionsByType({
+				widthMm,
+				heightMm,
+				gateType: this.selectedType,
+				slidingGate: isSliding,
+				markupOnTrimmings,
+				materialName: `${partitionsMaterial} (${partitionsMaterialSubName})`,
+				materialFrameName: frameMaterial,
+				rectangularTechPart,
+			});
+
+			materials.push({
+				name: partitionsMaterial,
+				subName: ` (${partitionsMaterialSubName})`,
+				quantity: Math.ceil((partitionsResult.totalLengthMm / 1000) * 10) / 10,
+				markup: this._getMarkupValue("partitions"),
+			});
+		}
+
+		// 4. Столбы (ВСЕ РАСЧЕТЫ В ММ)
+		const postsMaterial = this._getValue("postsMaterial");
+		const postsMaterialSubName = this._cachedInputs.postsMaterial?.previousElementSibling?.textContent.trim() || "";
 
 		if (postsMaterial) {
-			let postLength;
-			if (slidingGate.checked) {
-				// 2 двойных столба выше высоты на 20см с перемычкой 20 см (не заглубляются)
-				postLength = (height + 0.2) * 4 + 0.4;
-				materials.push({
-					name: postsMaterial,
-					quantity: Math.ceil(postLength),
-				});
-			} else {
-				// 2 столба по высоте + 1.5 м на заглубление
-				postLength = (height + BaseCalculator.CALCULATOR_CONSTANTS.gatePostDepth) * 2;
-				materials.push({
-					name: postsMaterial,
-					quantity: Math.ceil(postLength),
-				});
-			}
-		}
+			const postsResult = calculateGatePosts(heightMm, isSliding, markupOnTrimmings, postsMaterial);
 
-		if (claddingMaterial) {
-			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep);
-
-			let finalWidth;
-			let claddingCount;
-			if (slidingGate.checked) {
-				// расчет штакетника на всю ширину ворот
-				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width + claddingMaterialStep / 1000 : width;
-				claddingCount = Math.ceil(finalWidth / materialWidth);
-			} else {
-				// расчет штакетника на одну  створку ворот и * 2;
-				finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? width / 2 + claddingMaterialStep / 1000 : width / 2;
-				claddingCount = Math.ceil(finalWidth / materialWidth) * 2;
-			}
-			// Количество  материала  округляем в  большую  сторону
 			materials.push({
-				name: claddingMaterial,
-				quantity: Math.ceil(claddingCount),
+				name: postsMaterial,
+				subName: ` (${postsMaterialSubName})`,
+				quantity: Math.ceil((postsResult.totalLengthMm / 1000) * 10) / 10,
+				markup: this._getMarkupValue("posts"),
 			});
 		}
 
+		// 5. Обшивка (Cladding) - ВСЕ РАСЧЕТЫ В ММ
+		const claddingMaterial = this._getValue("claddingMaterial");
+		if (claddingMaterial) {
+			const claddingMaterialStep = parseFloat(this._getValue("claddingStep")) || 0;
+			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep); // возвращает мм
+
+			const claddingCount = calculateGateMaterials(widthMm, heightMm, materialWidth, claddingMaterial, isSliding, rectangularTechPart, bothSideSheathing);
+			materials.push({
+				name: claddingMaterial,
+				quantity: claddingCount,
+				markup: this._getMarkupValue("cladding"),
+			});
+		}
+
+		// 6. Краска
+		const paintMaterial = this._getValue("paintMaterial");
 		if (paintMaterial) {
-			materials.push({ name: paintMaterial, quantity: 1, finalPrice: true });
+			materials.push({
+				name: paintMaterial,
+				quantity: 1,
+				markup: this._getMarkupValue("paint"),
+			});
 		}
 
-		// Ролики, зуб. рейка, привод обычно идут в штуках
+		// 7. Комплектующие для откатных ворот
+		const rollers = this._getValue("rollers");
 		if (rollers) {
-			materials.push({ name: rollers, quantity: 2 }); // 2 роликовые тележки
+			materials.push({ name: rollers, quantity: 2, markup: this._getMarkupValue("rollers") });
 		}
 
+		const rack = this._getValue("rack");
 		if (rack) {
-			const rackLength = width + 1; // Длина ворот +  метр запаса
-			materials.push({ name: rack, quantity: rackLength });
+			//направляющая из прайса соотв. размера
+			materials.push({
+				name: rack,
+				quantity: 1,
+				markup: this._getMarkupValue("rack"),
+			});
 		}
 
+		const drive = this._getValue("drive");
 		if (drive) {
-			materials.push({ name: drive, quantity: 1 }); // 1 привод
+			materials.push({ name: drive, quantity: 1, markup: this._getMarkupValue("drive") });
 		}
 
+		// Фильтруем материалы, у которых есть цена в прайсе
 		return materials.filter((m) => this.priceManager.getPrice(m.name));
 	}
 }
