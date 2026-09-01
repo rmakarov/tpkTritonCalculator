@@ -302,7 +302,7 @@ export const calculateGatePosts = (heightMm, slidingGate, markupOnTrimmings, mat
 	Если материал: штакетник - количество = общая ширина / ширину штакетника (приходит уже с шагом между штакетником) и округляем до целого. Если  обшивка с  2-х сторон, то количество = (общая ширина / ширину штакетника и округляем до целого) * 2.
 	Если материал: 3Д сетка - количество = общая ширина / ширину сетки. Если  обшивка с  2-х сторон, то количество = (общая ширина / ширину сетки) * 2. Округляем до 1 цифры  после  запятой (в большую сторону)
 */
-export const calculateGateMaterials = (widthMm, materialWidth, claddingMaterial, slidingGate, rectangularTechPart, bothSideSheathing) => {
+export const calculateGateMaterials = (widthMm, heightMm, materialWidth, claddingMaterial, slidingGate, rectangularTechPart, bothSideSheathing) => {
 	let materialCount;
 	let frameWidthMm;
 	const GAP_BETWEEN_POSTS = settingsManager.getCalculatorConstant("gateClearanceBetweenPosts");

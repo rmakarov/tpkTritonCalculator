@@ -163,7 +163,7 @@ class GateCalculator extends BaseCalculator {
 				markupOnTrimmings,
 				materialName: `${partitionsMaterial} (${partitionsMaterialSubName})`,
 				materialFrameName: frameMaterial,
-				rectangularTechPart
+				rectangularTechPart,
 			});
 
 			materials.push({
@@ -195,7 +195,7 @@ class GateCalculator extends BaseCalculator {
 			const claddingMaterialStep = parseFloat(this._getValue("claddingStep")) || 0;
 			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep); // возвращает мм
 
-			const claddingCount = calculateGateMaterials(widthMm, materialWidth, claddingMaterial, isSliding, rectangularTechPart, bothSideSheathing);
+			const claddingCount = calculateGateMaterials(widthMm, heightMm, materialWidth, claddingMaterial, isSliding, rectangularTechPart, bothSideSheathing);
 			materials.push({
 				name: claddingMaterial,
 				quantity: claddingCount,
