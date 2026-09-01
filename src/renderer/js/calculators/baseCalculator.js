@@ -3,7 +3,13 @@ import { showNotification } from "../utils/notification";
 import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
 export default class BaseCalculator {
-	static DEFAULT_CALCULATOR_CONSTANTS = {
+	/*static DEFAULT_CALCULATOR_CONSTANTS = {
+		distanceBetweenPlanks: 60,
+		wicketClearanceBetweenGround: 100,
+		wicketClearanceInFrame: 6,
+		wicketClearanceBetweenPosts: 14,
+		gateClearanceBetweenGround: 100,
+		gateClearanceBetweenPosts: 18,
 		corrugatedSheetWidth: 1100, // профлист
 		threeDmeshWidth: 2500, // 3D сетка
 		fenceWidth: 110, // штакетник
@@ -11,23 +17,28 @@ export default class BaseCalculator {
 		gatePostDepth: 1500, //заглубление столба ворот
 	};
 
-	// Getter: возвращает актуальные значения из настроек, конвертируя мм → м
+	// Getter: возвращает актуальные значения из настроек
 	static get CALCULATOR_CONSTANTS() {
 		const get = (fieldKey) => settingsManager.getValue("calculatorConstants", fieldKey);
 
 		const D = BaseCalculator.DEFAULT_CALCULATOR_CONSTANTS;
 
-		// Хелпер: получает значение в мм, возвращает в м (или дефолт)
-		const mmToMeters = (mmValue, defaultMeters) => (mmValue != null ? mmValue : defaultMeters);
+		const settingValue = (mmValue, defaultValue) => (mmValue != null ? mmValue : defaultValue);
 
 		return {
-			corrugatedSheetWidth: mmToMeters(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
-			threeDmeshWidth: mmToMeters(get("threeDmeshWidth"), D.threeDmeshWidth),
-			fenceWidth: mmToMeters(get("fenceWidth"), D.fenceWidth),
-			wicketPostDepth: mmToMeters(get("wicketPostDepth"), D.wicketPostDepth),
-			gatePostDepth: mmToMeters(get("gatePostDepth"), D.gatePostDepth),
+			distanceBetweenPlanks: settingValue(get("distanceBetweenPlanks"), D.distanceBetweenPlanks),
+			wicketClearanceBetweenGround: settingValue(get("wicketClearanceBetweenGround"), D.wicketClearanceBetweenGround),
+			wicketClearanceInFrame: settingValue(get("wicketClearanceInFrame"), D.wicketClearanceInFrame),
+			wicketClearanceBetweenPosts: settingValue(get("wicketClearanceBetweenPosts"), D.wicketClearanceBetweenPosts),
+			gateClearanceBetweenGround: settingValue(get("gateClearanceBetweenGround"), D.gateClearanceBetweenGround),
+			gateClearanceBetweenPosts: settingValue(get("gateClearanceBetweenPosts"), D.gateClearanceBetweenPosts),
+			corrugatedSheetWidth: settingValue(get("corrugatedSheetWidth"), D.corrugatedSheetWidth),
+			threeDmeshWidth: settingValue(get("threeDmeshWidth"), D.threeDmeshWidth),
+			fenceWidth: settingValue(get("fenceWidth"), D.fenceWidth),
+			wicketPostDepth: settingValue(get("wicketPostDepth"), D.wicketPostDepth),
+			gatePostDepth: settingValue(get("gatePostDepth"), D.gatePostDepth),
 		};
-	}
+	}*/
 
 	/**
 	 * @param {HTMLElement} rootElement - Корневой элемент формы калькулятора
@@ -74,7 +85,7 @@ export default class BaseCalculator {
 	}
 
 	// расчет ширины материала
-	getMaterialWidth(materialName, fenceStep) {
+	/*getMaterialWidth(materialName, fenceStep) {
 		if (materialName.includes("штакет")) {
 			const fenceStepFinal = fenceStep ? fenceStep : 0;
 			return BaseCalculator.CALCULATOR_CONSTANTS.fenceWidth + fenceStepFinal;
@@ -83,6 +94,17 @@ export default class BaseCalculator {
 			return BaseCalculator.CALCULATOR_CONSTANTS.threeDmeshWidth;
 		}
 		return BaseCalculator.CALCULATOR_CONSTANTS.corrugatedSheetWidth;
+	}*/
+
+	getMaterialWidth(materialName, fenceStep = 0) {
+		if (materialName.includes("штакет")) {
+			const fenceWidth = settingsManager.getCalculatorConstant("fenceWidth");
+			return fenceWidth + fenceStep;
+		}
+		if (materialName.includes("3D") || materialName.includes("сетк")) {
+			return settingsManager.getCalculatorConstant("threeDmeshWidth");
+		}
+		return settingsManager.getCalculatorConstant("corrugatedSheetWidth");
 	}
 
 	/**
@@ -105,9 +127,7 @@ export default class BaseCalculator {
 		if (!basePrice) return null;
 
 		const baseMarkup = this.getMarkup();
-		console.log("getPriceWithMarkup baseMarkup: ", baseMarkup);
-		console.log("getPriceWithMarkup materialName: ", materialName);
-		console.log("getPriceWithMarkup markup: ", markup);
+
 		// Если fieldPrice есть  - то наценку добавляем fieldPrice (даже если 0)
 		const finalMarkup = markup ?? baseMarkup;
 		// Округляем до 2 знаков после запятой (или до целых, если у вас так принято: Math.round(...))

@@ -1,5 +1,5 @@
 import { BaseCalculator } from "./baseCalculator.js";
-import { calculateWicketPartitionsByType, calculateWicketFrame, calculatePosts } from "./wicketCalculatorUtils.js";
+import { calculateWicketPartitionsByType, calculateWicketFrame, calculatePosts, calculateWicketMaterials } from "./wicketCalculatorUtils.js";
 import { showNotification } from "../utils/notification";
 import { getValidatedNumber, attachNumericValidation } from "../utils/inputValidators";
 
@@ -49,7 +49,7 @@ class WicketCalculator extends BaseCalculator {
 			height: this.element.querySelector("#wicket-height"),
 			trimmingsMarkup: this.element.querySelector("#wicket-markup-on-trimmings"),
 			claddingStep: this.element.querySelector("#wicket-cladding-step"),
-			inFrame: this.element.querySelector("#wicket-in-frame"), // Проверьте, что в HTML именно wicket-in-frame
+			inFrame: this.element.querySelector("#wicket-in-frame"),
 			bothSides: this.element.querySelector('input[name="wicket-both-sides-sheathing"]'),
 
 			// ⚠️ ДОБАВЛЕНО: Кэшируем сами поля выбора материалов
@@ -170,7 +170,6 @@ class WicketCalculator extends BaseCalculator {
 				widthMm,
 				heightMm,
 				inFrame: inFrameChecked,
-				wicketPostDepth: BaseCalculator.CALCULATOR_CONSTANTS.wicketPostDepth,
 				markupOnTrimmings,
 				materialName: `${postsMaterial} (${postsMaterialSubName})`, // Исправлена ошибка: было partitionsMaterial
 			});
@@ -190,16 +189,13 @@ class WicketCalculator extends BaseCalculator {
 			const claddingMaterialStep = parseFloat(this._getValue("claddingStep")) || 0;
 			const materialWidth = this.getMaterialWidth(claddingMaterial, claddingMaterialStep);
 
-			const finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? widthMm + claddingMaterialStep : widthMm;
-			let claddingCount = finalWidth / materialWidth;
-
-			if (bothSideSheathing) {
-				claddingCount = claddingCount * 2;
-			}
+			//const finalWidth = claddingMaterial.includes("штакет") && claddingMaterialStep ? widthMm + claddingMaterialStep : widthMm;
+			//let claddingCount = finalWidth / materialWidth;
+			let claddingCount = calculateWicketMaterials(widthMm, materialWidth, claddingMaterial, inFrameChecked, bothSideSheathing);
 
 			materials.push({
 				name: claddingMaterial,
-				quantity: claddingMaterial.includes("3D") || claddingMaterial.includes("сетк") ? Math.ceil(claddingCount * 100) / 100 : Math.ceil(claddingCount),
+				quantity: claddingCount,
 				markup: this._getMarkupValue("cladding"), // Исправлена опечатка: было caddingMarkup
 			});
 		}
@@ -215,7 +211,6 @@ class WicketCalculator extends BaseCalculator {
 			});
 		}
 
-		console.log("materials.length: ", materials.length);
 		// Фильтруем материалы, у которых есть цена в прайсе
 		return materials.filter((m) => this.priceManager.getPrice(m.name));
 	}

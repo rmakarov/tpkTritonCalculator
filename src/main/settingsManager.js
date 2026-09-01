@@ -17,8 +17,8 @@ function createDefaultSettings() {
 					distanceBetweenPlanks: {
 						title: "Расстояние между планками",
 						type: "number",
-						defaultValue: 6,
-						value: 6,
+						defaultValue: 60,
+						value: 60,
 					},
 					wicketClearanceBetweenGround: {
 						title: "Зазор калитки до земли",

@@ -1,3 +1,5 @@
+import { settingsManager } from "../settingsManager";
+
 export const WICKET_CONSTANTS = {
 	GAP_BETWEEN_POSTS: 10,
 	GAP_IN_FRAME: 4,
@@ -55,10 +57,11 @@ const getWicketPartitionsType1 = () => {
 
 const getWicketPartitionsType2 = ({ frameWidthMm, markupOnTrimmings, materialName, materialFrameName }) => {
 	const profile = parseProfileDimensions(materialFrameName);
-	const profileWidth = profile ? profile.width : 20;
+	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 	const markupMm = (partitionLengthMm / 100) * markupOnTrimmings;
 	const totalLengthMm = partitionLengthMm + markupMm;
+
 	return {
 		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 1 }],
 		totalLengthMm: totalLengthMm,
@@ -69,11 +72,12 @@ const getWicketPartitionsType3 = ({ frameWidthMm, markupOnTrimmings, materialNam
 	const profile = parseProfileDimensions(materialFrameName);
 	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
-	const markupMm = (partitionLengthMm / 100) * markupOnTrimmings;
-	const totalLengthWithMarkupMm = partitionLengthMm + markupMm * 2;
+	const markupMm = ((partitionLengthMm * 2) / 100) * markupOnTrimmings;
+	const totalLengthMm = partitionLengthMm * 2 + markupMm;
+
 	return {
 		parts: [{ name: materialName, lengthMm: partitionLengthMm, count: 2 }],
-		totalLengthMm: totalLengthWithMarkupMm,
+		totalLengthMm: totalLengthMm,
 	};
 };
 
@@ -82,17 +86,17 @@ const getWicketPartitionsType4 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 
-	let diagonal = getDiagonal(frameWidthMm, frameHeightMm / 2);
+	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth);
 	const totalPartitiosLength = partitionLengthMm + diagonal * 2;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
-	const totalLengthWithMarkupMm = totalPartitiosLength + markup;
+	const totalLengthMm = totalPartitiosLength + markup;
 
 	return {
 		parts: [
 			{ name: materialName, lengthMm: partitionLengthMm, count: 1 },
 			{ name: materialName, lengthMm: diagonal, count: 2 },
 		],
-		totalLengthMm: totalLengthWithMarkupMm,
+		totalLengthMm: totalLengthMm,
 	};
 };
 
@@ -100,20 +104,23 @@ const getWicketPartitionsType5 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 	const profile = parseProfileDimensions(materialFrameName);
 	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
+	const GAP_BETVEEN_PARTITIONS = settingsManager.getCalculatorConstant("distanceBetweenPlanks");
 
-	let diagonal = getDiagonal(frameWidthMm, frameHeightMm / 2);
+	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth - GAP_BETVEEN_PARTITIONS);
 	const totalPartitiosLength = partitionLengthMm * 2 + diagonal * 2;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
-	const totalLengthWithMarkupMm = totalPartitiosLength + markup;
+	const totalLengthMm = totalPartitiosLength + markup;
 
 	return {
 		parts: [
 			{ name: materialName, lengthMm: partitionLengthMm, count: 2 },
 			{ name: materialName, lengthMm: diagonal, count: 2 },
 		],
-		totalLengthMm: totalLengthWithMarkupMm,
+		totalLengthMm: totalLengthMm,
 	};
 };
+
+//Рассчеты проверены с 2 по 5 тип! Остальные пока не активны! Для активации какого либо типа нужен чертеж деталей!
 
 const getWicketPartitionsType6 = ({ frameHeightMm, markupOnTrimmings, materialName, materialFrameName }) => {
 	const profile = parseProfileDimensions(materialFrameName);
@@ -219,9 +226,12 @@ const frameCalculators = {
 
 // Return by default partitions lenght for wicket type2
 export const calculateWicketPartitionsByType = ({ widthMm, heightMm, wicketType, inFrame, markupOnTrimmings, materialName, materialFrameName }) => {
+	const GAP_IN_FRAME = settingsManager.getCalculatorConstant("wicketClearanceInFrame");
+	const GAP_BETWEEN_POSTS = settingsManager.getCalculatorConstant("wicketClearanceBetweenPosts");
+	const GAP_BETWEEN_GROUND = settingsManager.getCalculatorConstant("wicketClearanceBetweenGround");
 	const calculator = frameCalculators[wicketType];
-	const frameWidthMm = inFrame ? widthMm - WICKET_CONSTANTS.GAP_IN_FRAME : widthMm - WICKET_CONSTANTS.GAP_BETWEEN_POSTS;
-	const frameHeightMm = inFrame ? heightMm - WICKET_CONSTANTS.GAP_IN_FRAME : heightMm - WICKET_CONSTANTS.GAP_BETWEEN_GROUND;
+	const frameWidthMm = inFrame ? widthMm - GAP_IN_FRAME : widthMm - GAP_BETWEEN_POSTS;
+	const frameHeightMm = inFrame ? heightMm - GAP_IN_FRAME : heightMm - GAP_BETWEEN_GROUND;
 
 	let result;
 
@@ -232,15 +242,17 @@ export const calculateWicketPartitionsByType = ({ widthMm, heightMm, wicketType,
 	}
 
 	result = calculator({ frameWidthMm, frameHeightMm, markupOnTrimmings, materialName, materialFrameName });
-	//const partitionsMarkupOnTrimmings = (partitionsLength / 100) * markupOnTrimmings;
 
 	return result;
 };
 
 export const calculateWicketFrame = ({ widthMm, heightMm, inFrame, markupOnTrimmings, materialName }) => {
 	// 1. Расчет чистых размеров
-	const frameWidthMm = inFrame ? widthMm - WICKET_CONSTANTS.GAP_IN_FRAME : widthMm - WICKET_CONSTANTS.GAP_BETWEEN_POSTS;
-	const frameHeightMm = inFrame ? heightMm - WICKET_CONSTANTS.GAP_IN_FRAME : heightMm - WICKET_CONSTANTS.GAP_BETWEEN_GROUND;
+	const GAP_IN_FRAME = settingsManager.getCalculatorConstant("wicketClearanceInFrame");
+	const GAP_BETWEEN_POSTS = settingsManager.getCalculatorConstant("wicketClearanceBetweenPosts");
+	const GAP_BETWEEN_GROUND = settingsManager.getCalculatorConstant("wicketClearanceBetweenGround");
+	const frameWidthMm = inFrame ? widthMm - GAP_IN_FRAME : widthMm - GAP_BETWEEN_POSTS;
+	const frameHeightMm = inFrame ? heightMm - GAP_IN_FRAME : heightMm - GAP_BETWEEN_GROUND;
 
 	// 2. Расчет длины с наценкой на подрезку
 	const rawLengthMm = frameWidthMm * 2 + frameHeightMm * 2;
@@ -257,7 +269,8 @@ export const calculateWicketFrame = ({ widthMm, heightMm, inFrame, markupOnTrimm
 	};
 };
 
-export const calculatePosts = ({ widthMm, heightMm, inFrame, wicketPostDepth, markupOnTrimmings, materialName }) => {
+export const calculatePosts = ({ widthMm, heightMm, inFrame, markupOnTrimmings, materialName }) => {
+	console.log("calculatePosts inFrame: ", inFrame);
 	if (inFrame) {
 		const postsLength = widthMm * 2 + heightMm * 2;
 		const markupMm = (postsLength / 100) * markupOnTrimmings;
@@ -270,7 +283,8 @@ export const calculatePosts = ({ widthMm, heightMm, inFrame, wicketPostDepth, ma
 			totalLengthMm: totalLengthMm,
 		};
 	} else {
-		const postLength = heightMm + wicketPostDepth;
+		const WICKET_POST_DEPTH = settingsManager.getCalculatorConstant("wicketPostDepth");
+		const postLength = heightMm + WICKET_POST_DEPTH;
 		const postsLength = postLength * 2;
 		const markupMm = (postsLength / 100) * markupOnTrimmings;
 		const totalLengthMm = postsLength + markupMm;
@@ -281,3 +295,55 @@ export const calculatePosts = ({ widthMm, heightMm, inFrame, wicketPostDepth, ma
 		};
 	}
 };
+
+/*
+	Если материал: профиль - количество = общая ширина / ширину профиля и округляем до целого. Если  обшивка с  2-х сторон, то количество = (общая ширина / ширину профиля) * 2 и округляем до целого.
+	Если материал: штакетник - количество = общая ширина / ширину штакетника (приходит уже с шагом между штакетником) и округляем до целого. Если  обшивка с  2-х сторон, то количество = (общая ширина / ширину штакетника и округляем до целого) * 2.
+	Если материал: 3Д сетка - количество = общая ширина / ширину сетки. Если  обшивка с  2-х сторон, то количество = (общая ширина / ширину сетки) * 2. Округляем до 1 цифры  после  запятой (в большую сторону)
+*/
+export const calculateWicketMaterials = (widthMm, materialWidth, claddingMaterial, inFrame, bothSideSheathing) => {
+	let materialCount;
+	const GAP_IN_FRAME = settingsManager.getCalculatorConstant("wicketClearanceInFrame");
+	const GAP_BETWEEN_POSTS = settingsManager.getCalculatorConstant("wicketClearanceBetweenPosts");
+	const materialFense = claddingMaterial.includes("штакет");
+	const material3DGrid = claddingMaterial.includes("3D") || claddingMaterial.includes("3Д") || claddingMaterial.includes("сетк");
+	const frameWidthMm = inFrame ? widthMm - GAP_IN_FRAME : widthMm - GAP_BETWEEN_POSTS;
+
+	if (materialFense) {
+		console.log("materialWidth:", materialWidth);
+		console.log("frameWidthMm: ", frameWidthMm);
+		materialCount = customMaterialRound(frameWidthMm / materialWidth);
+		if (bothSideSheathing) {
+			materialCount = materialCount * 2;
+		}
+	} else if (material3DGrid) {
+		materialCount = frameWidthMm / materialWidth;
+		if (bothSideSheathing) {
+			materialCount = materialCount * 2;
+		}
+		materialCount = Math.ceil(materialCount * 10) / 10;
+	} else {
+		materialCount = frameWidthMm / materialWidth;
+		if (bothSideSheathing) {
+			materialCount = Math.round(materialCount * 2);
+		} else {
+			materialCount = Math.round(materialCount);
+		}
+	}
+	return materialCount;
+};
+
+export function customMaterialRound(num) {
+	if (num === null || num === undefined || isNaN(num)) return 0;
+
+	// Получаем первую цифру после запятой.
+	// Умножаем на 10, берем остаток от деления на 10 и округляем вниз.
+	// Пример: 5.29 * 10 = 52.9 -> 52.9 % 10 = 2.9 -> Math.floor(2.9) = 2
+	const firstDecimalDigit = Math.floor((num * 10) % 10);
+
+	if (firstDecimalDigit <= 2) {
+		return Math.round(num);
+	} else {
+		return Math.ceil(num);
+	}
+}
