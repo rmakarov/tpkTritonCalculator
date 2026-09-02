@@ -19,6 +19,10 @@ contextBridge.exposeInMainWorld("pdfAPI", {
 	openPreview: () => ipcRenderer.invoke("pdf:preview"),
 });
 
+contextBridge.exposeInMainWorld("pdfDrawingAPI", {
+	openDrawingPreview: (htmlContent) => ipcRenderer.invoke('pdf:drawingPreview', htmlContent)
+});
+
 contextBridge.exposeInMainWorld("settings", {
 	get: () => ipcRenderer.invoke("settings:get"),
 	getValue: (sectionKey, fieldKey) =>
