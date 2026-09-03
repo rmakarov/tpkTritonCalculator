@@ -130,6 +130,10 @@ class WicketCalculatorView extends BaseCalculatorView {
 			console.error(error.message);
 		}
 	}
+
+	getReportData() {
+		return this.calculator.getSimpleReportData();
+	}
 }
 
 class GateCalculatorView extends BaseCalculatorView {
@@ -255,6 +259,10 @@ class GateCalculatorView extends BaseCalculatorView {
 			console.log(error.message);
 		}
 	}
+
+	getReportData() {
+		return this.calculator.getSimpleReportData();
+	}
 }
 
 class CalculatorViewSwitcher {
@@ -310,6 +318,16 @@ class CalculatorViewSwitcher {
 			await this.currentCalculator.populateDatalists();
 		}
 	}
+
+	getCurrentReportData() {
+		if (!this.currentCalculator || !this.currentCalculator.calculator) {
+			throw new Error("Калькулятор еще не инициализирован или выбран неверный тип");
+		}
+		// Вызываем метод, который мы добавили в Step 2
+		return this.currentCalculator.getReportData();
+	}
 }
 
 new CalculatorViewSwitcher();
+
+export const calculatorSwitcher = new CalculatorViewSwitcher();

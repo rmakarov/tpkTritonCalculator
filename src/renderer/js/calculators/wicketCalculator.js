@@ -10,6 +10,8 @@ class WicketCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
 		super(rootElement, priceManager);
 		this.wicketFrameParts = {
+			name: "",
+			screen: "",
 			frame: {
 				name: "Каркас рамы",
 				items: [],
@@ -101,6 +103,8 @@ class WicketCalculator extends BaseCalculator {
 		this.wicketFrameParts.posts.items = [];
 
 		this.selectedType = this.getSelectedType();
+
+		this.addNameAndScreen();
 
 		// 1. Получаем размеры (используем кэшированные геттеры)
 		const widthMm = parseFloat(this._getValue("width")) || 0;
@@ -200,7 +204,6 @@ class WicketCalculator extends BaseCalculator {
 
 		// 6. Краска
 		const paintMaterial = this._getValue("paintMaterial") || this.element.querySelector("#wicket-paint")?.value?.trim();
-		console.log("paintMaterial: ", paintMaterial);
 		if (paintMaterial) {
 			materials.push({
 				name: paintMaterial,
@@ -211,6 +214,25 @@ class WicketCalculator extends BaseCalculator {
 
 		// Фильтруем материалы, у которых есть цена в прайсе
 		return materials.filter((m) => this.priceManager.getPrice(m.name));
+	}
+
+	addNameAndScreen() {
+		const match = this.selectedType?.match(/wicket-type(\d+)/);
+
+		if (match) {
+			const typeNumber = parseInt(match[1], 10);
+			const nameIndex = typeNumber - 1; // type2 -> тип 1, type3 -> тип 2 и т.д.
+
+			this.wicketFrameParts.name = `Калитка тип ${nameIndex}`;
+			this.wicketFrameParts.screen = `./assets/drawing/drawingWicketType${typeNumber}.svg`;
+		} else {
+			this.wicketFrameParts.name = "Неизвестный тип";
+			this.wicketFrameParts.screen = "";
+		}
+	}
+
+	getSimpleReportData() {
+		return this.wicketFrameParts;
 	}
 }
 

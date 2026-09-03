@@ -7,6 +7,8 @@ class GateCalculator extends BaseCalculator {
 	constructor(rootElement, priceManager) {
 		super(rootElement, priceManager);
 		this.gateFrameParts = {
+			name: "",
+			screen: "",
 			frame: {
 				name: "Каркас рамы",
 				items: [],
@@ -108,6 +110,7 @@ class GateCalculator extends BaseCalculator {
 		this.gateFrameParts.posts.items = [];
 
 		this.selectedType = this.getSelectedType();
+		this.addNameAndScreen();
 
 		// 1. Получаем размеры СТРОГО в миллиметрах
 		const widthMm = parseFloat(this._getValue("width")) || 0;
@@ -137,8 +140,6 @@ class GateCalculator extends BaseCalculator {
 				rectangularTechPart,
 			});
 
-			console.log("GATE frameResult: ", frameResult);
-
 			this.gateFrameParts.frame.items.push(...frameResult.parts);
 
 			materials.push({
@@ -166,6 +167,8 @@ class GateCalculator extends BaseCalculator {
 				rectangularTechPart,
 			});
 
+			this.gateFrameParts.partitions.items.push(...partitionsResult.parts);
+
 			materials.push({
 				name: partitionsMaterial,
 				subName: ` (${partitionsMaterialSubName})`,
@@ -180,6 +183,8 @@ class GateCalculator extends BaseCalculator {
 
 		if (postsMaterial) {
 			const postsResult = calculateGatePosts(heightMm, isSliding, markupOnTrimmings, postsMaterial);
+
+			this.gateFrameParts.posts.items.push(...postsResult.parts);
 
 			materials.push({
 				name: postsMaterial,
@@ -236,6 +241,25 @@ class GateCalculator extends BaseCalculator {
 
 		// Фильтруем материалы, у которых есть цена в прайсе
 		return materials.filter((m) => this.priceManager.getPrice(m.name));
+	}
+
+	addNameAndScreen() {
+		const match = this.selectedType?.match(/gate-type(\d+)/);
+
+		if (match) {
+			const typeNumber = parseInt(match[1], 10);
+			const nameIndex = typeNumber - 1; // type2 -> тип 1, type3 -> тип 2 и т.д.
+
+			this.gateFrameParts.name = `Ворота тип ${nameIndex}`;
+			this.gateFrameParts.screen = `./assets/drawing/drawingGateType${typeNumber}.svg`;
+		} else {
+			this.gateFrameParts.name = "Неизвестный тип";
+			this.gateFrameParts.screen = "";
+		}
+	}
+
+	getSimpleReportData() {
+		return this.gateFrameParts;
 	}
 }
 
