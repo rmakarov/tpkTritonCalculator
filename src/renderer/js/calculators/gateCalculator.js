@@ -71,7 +71,7 @@ class GateCalculator extends BaseCalculator {
 			rollersMarkup: getAndValidateMarkup("#gate-rollers"),
 			rackMarkup: getAndValidateMarkup("#gate-rack"),
 			driveMarkup: getAndValidateMarkup("#gate-drive"),
-			slidingGateMarkup: getAndValidateMarkup("#sliding-gate"),
+			slidingGateMarkup: getAndValidateMarkup("#sliding-gate")
 		};
 	}
 

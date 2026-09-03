@@ -48,48 +48,61 @@ previewDrawingPdfButton?.addEventListener("click", async () => {
 });
 
 async function generateSimpleDrawingHtml(data) {
-	// 1. Пытаемся загрузить SVG как текст (это самый надежный способ для PDF в Electron)
-	let drawingHtml = '<p style="text-align:center; color:gray;">Чертеж не найден</p>';
-	console.log('data.screen: ',data.screen);
+	// 1. Пытаемся загрузить SVG как текст
+	let drawingHtml = '<p style="text-align:center; color:gray; margin: 10px 0;">Чертеж не найден</p>';
+
 	if (data.screen) {
 		try {
 			const response = await fetch(data.screen);
 			const svgText = await response.text();
-			// Вставляем SVG прямо в HTML, чтобы он точно отобразился в PDF
-			drawingHtml = `<div style="text-align:center; margin: 15px 0;">${svgText}</div>`;
+
+			// Внедряем стили прямо в открывающий тег <svg>
+			const styledSvgText = svgText.replace(/<svg\b([^>]*)>/i, (match, attributes) => {
+				const cleanAttributes = attributes.replace(/\bwidth\s*=\s*["'][^"']*["']/gi, "").replace(/\bheight\s*=\s*["'][^"']*["']/gi, "");
+
+				// ДОБАВЛЕНО: vertical-align: top и line-height: 0 в родителе убирают "призрачные" отступы
+				return `<svg${cleanAttributes} style="height: 500px; width: auto; max-width: 100%; display: block; margin: 0 auto; vertical-align: top;">`;
+			});
+
+			// ИЗМЕНЕНО: margin: 0 сверху, 10px снизу. line-height: 0 убивает отступ под/над SVG
+			drawingHtml = `<div style="text-align:center; margin: 0 auto 10px auto; line-height: 0;">${styledSvgText}</div>`;
 		} catch (e) {
-			// Если fetch не сработал, пробуем как обычную картинку
-			drawingHtml = `<img src="${data.screen}" style="max-width:100%; height:auto; display:block; margin: 0 auto;" />`;
+			// Для fallback-картинки применяем те же правила
+			drawingHtml = `<div style="text-align:center; margin: 0 auto 10px auto; line-height: 0;"><img src="${data.screen}" style="height: 500px; width: auto; max-width: 100%; display: block; margin: 0 auto; vertical-align: top;" /></div>`;
 		}
 	}
 
-	// 2. Генерируем строки таблицы для каркаса
-	const rowsFrame = data.frame.items
+	// 2. Генерируем строки таблицы
+	const frameItems = data.frame?.items || [];
+	const partitionItems = data.partitions?.items || [];
+
+	const rowsFrame = frameItems
 		.map(
 			(part) => `
 		<tr>
-			<td>${part.name}</td>
-			<td style="text-align:center;">${part.lengthMm} мм</td>
-			<td style="text-align:center;">${part.count} шт.</td>
-			<td style="text-align:center;">${part.pn || "—"}</td>
-		</tr>
-	`,
-		)
-		.join("");
-	const rowsPartitions = data.partitions.items
-		.map(
-			(part) => `
-		<tr>
-			<td>${part.name}</td>
-			<td style="text-align:center;">${part.lengthMm} мм</td>
-			<td style="text-align:center;">${part.count} шт.</td>
+			<td>${part.name || "—"}</td>
+			<td style="text-align:center;">${part.lengthMm || "—"} мм</td>
+			<td style="text-align:center;">${part.count || "—"} шт.</td>
 			<td style="text-align:center;">${part.pn || "—"}</td>
 		</tr>
 	`,
 		)
 		.join("");
 
-	// 3. Собираем минималистичный HTML для печати
+	const rowsPartitions = partitionItems
+		.map(
+			(part) => `
+		<tr>
+			<td>${part.name || "—"}</td>
+			<td style="text-align:center;">${part.lengthMm || "—"} мм</td>
+			<td style="text-align:center;">${part.count || "—"} шт.</td>
+			<td style="text-align:center;">${part.pn || "—"}</td>
+		</tr>
+	`,
+		)
+		.join("");
+
+	// 3. Собираем HTML для печати
 	return `
 		<!DOCTYPE html>
 		<html>
@@ -97,16 +110,20 @@ async function generateSimpleDrawingHtml(data) {
 			<meta charset="UTF-8">
 			<style>
 				body { font-family: Arial, sans-serif; font-size: 11pt; padding: 12mm; color: #000; }
-				h2 { text-align: center; margin-bottom: 5mm; }
-				h3 { margin-top: 10mm; border-bottom: 1px solid #000; padding-bottom: 2mm; }
+				
+				/* ИЗМЕНЕНО: жестко задаем отступы для заголовка */
+				h2 { text-align: center; margin: 0 0 2mm 0; font-size: 14pt; }
+				
+				h3 { margin-top: 5mm; border-bottom: 1px solid #000; padding-bottom: 2mm; }
 				table { width: 100%; border-collapse: collapse; }
 				th, td { border: 1px solid #333; padding: 6px; }
 				th { background-color: #f0f0f0 !important; text-align: center; font-weight: bold; }
+				
 				@page { size: A4 portrait; margin: 12mm; }
 			</style>
 		</head>
 		<body>
-			<h2>${data.name}</h2>
+			<h2>${data.name || "Без названия"}</h2>
 			${drawingHtml}
 			<h3>Детали каркаса</h3>
 			<table>

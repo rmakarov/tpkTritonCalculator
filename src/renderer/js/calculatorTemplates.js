@@ -234,6 +234,21 @@ class GateCalculatorView extends BaseCalculatorView {
 				fallbackInput.dispatchEvent(new Event("change", { bubbles: true }));
 			}
 		}
+
+		const printDrawingContainer = document.querySelector("#printDrawingContainer");
+
+		console.log("Тип объекта:", typeof printDrawingContainer);
+		console.log("Это HTMLElement?", printDrawingContainer instanceof HTMLElement);
+		console.log("Сам объект:", printDrawingContainer);
+		console.log("isSliding:", isSliding);
+
+		if (printDrawingContainer) {
+			if (isSliding) {
+				printDrawingContainer.style.display = "none";
+			} else {
+				printDrawingContainer.style.display = "flex";
+			}
+		}
 	}
 
 	updateTechPart() {
