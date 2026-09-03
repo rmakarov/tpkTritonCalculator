@@ -236,12 +236,6 @@ class GateCalculatorView extends BaseCalculatorView {
 		}
 
 		const printDrawingContainer = document.querySelector("#printDrawingContainer");
-
-		console.log("Тип объекта:", typeof printDrawingContainer);
-		console.log("Это HTMLElement?", printDrawingContainer instanceof HTMLElement);
-		console.log("Сам объект:", printDrawingContainer);
-		console.log("isSliding:", isSliding);
-
 		if (printDrawingContainer) {
 			if (isSliding) {
 				printDrawingContainer.style.display = "none";
