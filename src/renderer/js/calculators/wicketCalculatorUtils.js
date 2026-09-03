@@ -80,7 +80,7 @@ const getWicketPartitionsType4 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 
-	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth);
+	let diagonal = Math.round(getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth));
 	const totalPartitiosLength = partitionLengthMm + diagonal * 2;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
 	const totalLengthMm = totalPartitiosLength + markup;
@@ -100,7 +100,7 @@ const getWicketPartitionsType5 = ({ frameWidthMm, frameHeightMm, markupOnTrimmin
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 	const GAP_BETVEEN_PARTITIONS = settingsManager.getCalculatorConstant("distanceBetweenPlanks");
 
-	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth - GAP_BETVEEN_PARTITIONS);
+	let diagonal = Math.round(getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth - GAP_BETVEEN_PARTITIONS));
 	const totalPartitiosLength = partitionLengthMm * 2 + diagonal * 2;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
 	const totalLengthMm = totalPartitiosLength + markup;

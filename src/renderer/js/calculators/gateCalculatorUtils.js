@@ -52,7 +52,7 @@ const getGatePartitionsType4 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings
 	const profileWidth = profile ? profile.width : 40;
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 
-	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth);
+	let diagonal = Math.round(getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth));
 	const totalPartitiosLength = partitionLengthMm * 2 + diagonal * 4;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
 	const totalLengthMm = totalPartitiosLength + markup;
@@ -72,7 +72,7 @@ const getGatePartitionsType5 = ({ frameWidthMm, frameHeightMm, markupOnTrimmings
 	const partitionLengthMm = frameWidthMm - profileWidth * 2;
 	const GAP_BETVEEN_PARTITIONS = settingsManager.getCalculatorConstant("distanceBetweenPlanks");
 
-	let diagonal = getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth - GAP_BETVEEN_PARTITIONS);
+	let diagonal = Math.round(getDiagonal(partitionLengthMm, frameHeightMm / 2 - profileWidth - GAP_BETVEEN_PARTITIONS));
 	const totalPartitiosLength = partitionLengthMm * 4 + diagonal * 4;
 	const markup = (totalPartitiosLength / 100) * markupOnTrimmings;
 	const totalLengthMm = totalPartitiosLength + markup;
@@ -266,8 +266,8 @@ export const calculateGateFrameByType = ({ widthMm, heightMm, slidingGate, marku
 		const totalLengthMm = rawLengthMm + markupMm;
 		return {
 			parts: [
-				{ name: materialName, lengthMm: frameWidthMm, count: 4 },
-				{ name: materialName, lengthMm: frameHeightMm, count: 4 },
+				{ name: materialName, lengthMm: frameWidthMm, count: 4, pn: 1 },
+				{ name: materialName, lengthMm: frameHeightMm, count: 4, pn: 2 },
 			],
 			totalLengthMm: totalLengthMm,
 		};

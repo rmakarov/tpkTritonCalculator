@@ -4,6 +4,7 @@ const { ipcMain } = require("electron");
 const { PriceListManager } = require("./priceListManager");
 const { SettingsManager } = require("./settingsManager");
 const { registerPdfPreview } = require("./pdfPreview");
+const { registerPdfDrawingPreview } = require("./pdfDrawingPreview");
 const { ensureTrialAccess, scheduleTrialExpiration } = require("./trialLicense");
 const { ensureTrialTestAccess, scheduleTrialTestExpiration } = require("./trialLicenseTest");
 
@@ -26,6 +27,7 @@ process.on("unhandledRejection", (reason, promise) => {
 const priceManager = new PriceListManager();
 const settingsManager = new SettingsManager();
 registerPdfPreview();
+registerPdfDrawingPreview();
 
 // ==========================================
 // 2. НАСТРОЙКА IPC (МОСТЫ ДЛЯ RENDERER)
